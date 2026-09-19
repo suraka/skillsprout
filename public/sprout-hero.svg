@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" role="img" aria-labelledby="title description">
+  <title id="title">A cheerful sprout learning on a purple laptop</title>
+  <desc id="description">A friendly green sprout sits behind a purple laptop while two smiling stars float nearby.</desc>
+  <defs>
+    <linearGradient id="screen" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8b72d9"/>
+      <stop offset="1" stop-color="#6350b5"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#174c38" flood-opacity=".14"/>
+    </filter>
+  </defs>
+
+  <ellipse cx="455" cy="554" rx="310" ry="34" fill="#ccebd2" opacity=".7"/>
+
+  <g filter="url(#shadow)">
+    <path d="M431 268c-73-17-91-86-85-145 73 3 128 52 117 126" fill="#80c96d" stroke="#245c43" stroke-width="9" stroke-linejoin="round"/>
+    <path d="M471 248c-4-76 49-134 125-141 9 70-32 136-109 153" fill="#a6dd72" stroke="#245c43" stroke-width="9" stroke-linejoin="round"/>
+    <path d="M466 276v-92" fill="none" stroke="#245c43" stroke-width="12" stroke-linecap="round"/>
+
+    <circle cx="463" cy="332" r="116" fill="#d9f59e" stroke="#245c43" stroke-width="10"/>
+    <circle cx="423" cy="324" r="10" fill="#234f3c"/>
+    <circle cx="503" cy="324" r="10" fill="#234f3c"/>
+    <path d="M427 365c21 24 51 24 72 0" fill="none" stroke="#234f3c" stroke-width="10" stroke-linecap="round"/>
+    <circle cx="397" cy="350" r="15" fill="#f3a7a7" opacity=".65"/>
+    <circle cx="529" cy="350" r="15" fill="#f3a7a7" opacity=".65"/>
+
+    <path d="M258 375h410l-48 158H306z" fill="url(#screen)" stroke="#3e337d" stroke-width="10" stroke-linejoin="round"/>
+    <path d="M220 533h486c-9 35-31 48-68 48H288c-37 0-59-13-68-48Z" fill="#7965c7" stroke="#3e337d" stroke-width="10" stroke-linejoin="round"/>
+    <g transform="translate(463 454)" fill="none" stroke="#e7f7a8" stroke-width="8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M0 35V-4"/>
+      <path d="M0 14C-33 15-39-15-39-15-9-20 2-5 0 14Z"/>
+      <path d="M0 5C2-25 37-28 37-28s2 32-37 33Z"/>
+    </g>
+  </g>
+
+  <g transform="translate(178 208)" stroke="#7a5a18" stroke-width="6" stroke-linejoin="round">
+    <path d="m0-42 14 28 31 5-23 22 5 32L0 30l-28 15 6-32-23-22 31-5Z" fill="#ffd66b"/>
+    <circle cx="-10" cy="-2" r="3.5" fill="#7a5a18" stroke="none"/>
+    <circle cx="10" cy="-2" r="3.5" fill="#7a5a18" stroke="none"/>
+    <path d="M-10 11Q0 20 10 11" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <g transform="translate(730 273) scale(.82)" stroke="#7a5a18" stroke-width="6" stroke-linejoin="round">
+    <path d="m0-42 14 28 31 5-23 22 5 32L0 30l-28 15 6-32-23-22 31-5Z" fill="#ffd66b"/>
+    <circle cx="-10" cy="-2" r="3.5" fill="#7a5a18" stroke="none"/>
+    <circle cx="10" cy="-2" r="3.5" fill="#7a5a18" stroke="none"/>
+    <path d="M-10 11Q0 20 10 11" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <g fill="#fff" opacity=".9">
+    <circle cx="690" cy="145" r="9"/>
+    <circle cx="229" cy="330" r="7"/>
+    <circle cx="654" cy="340" r="6"/>
+  </g>
+</svg>
