@@ -1,6 +1,16 @@
 'use client';
-import Link from 'next/link';
-import {useEffect,useState} from 'react';
+import {
+  useEffect,
+  useState,
+  type AnchorHTMLAttributes,
+} from 'react';
+
+function Link({
+  href,
+  ...props
+}: AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }) {
+  return <a href={href} {...props} />;
+}
 import {Sprout,ArrowRight,ArrowLeft,Search,Bot,Code2,Palette,ShieldCheck,Sparkles,BookOpen,Clock,Check,Plus,Users,LogOut,Play,GraduationCap} from 'lucide-react';
 import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog';
 import {Select,SelectTrigger,SelectValue,SelectContent,SelectItem} from '@/components/ui/select';
