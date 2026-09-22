@@ -13,4 +13,7 @@ jobs:
       - uses: pnpm/action-setup@v4
       - run: pnpm install --frozen-lockfile
       - run: pnpm exec tsc --noEmit
+      - run: pnpm test:runtime
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:browser
       - run: pnpm build

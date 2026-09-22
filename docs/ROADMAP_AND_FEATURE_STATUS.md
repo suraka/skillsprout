@@ -69,10 +69,19 @@ Implemented means source functionality exists; verified scope is separately stat
 - [x] Record baseline references, public deployment checks and evidence-based gaps.
 - [x] Produce roadmap before implementation; preserve production data and main branches.
 - [x] Implement guest demo runtime/editor and regression/browser test definitions.
-- [ ] Execute restored-version checks and record exact results in TEST_PLAN_AND_RESULTS.md.
-- [ ] Verify remote branch/PR contents and record exact references.
+- [x] Execute restored-version runtime/typecheck/build/backend checks and record actual results.
+- [ ] Execute complete browser suite; local browser installation blocked; latest CI must be checked.
+- [x] Save code/docs via connected GitHub app and create both draft PRs; first checkpoint CI passed.
 - [ ] Browser/device/screen-reader/family review and real Firebase staging verification.
 
 Continue by reading this checklist, MASTER_BLUEPRINT.md and TEST_PLAN_AND_RESULTS.md. Fetch current development branches/PRs; preserve user edits. Next unblocked work is completing M1 browser/accessibility validation, then the reviewed next slice. Do not jump to generic subject pages. No lesson/outcome IDs were published; no migration was run.
 
 Recovery note: workspace maintenance removed the first local implementation before terminal push could authenticate. Original local-only commits cfbf875/7f50b70 were NOT pushed and are not delivery references. This restored version is being checked again and saved through the connected GitHub app. Never claim the first tests certify changed restored code without rerunning.
+
+## Verified delivery references
+
+- Frontend [draft PR 1](https://github.com/suraka/skillsprout/pull/1), first restored commit `f0ed7af6f03b9de2ff3879a7a4ab662181c683d4`; checkpoint typecheck/build CI passed. Follow-up test/checklist commits are on the same branch.
+- Backend [draft PR 1](https://github.com/suraka/skillsprout-backend/pull/1), documentation-only commit `79a4987e700a4cf8afa68338b9512a3e7754b78a`.
+- Restored local checks rerun: 10 runtime tests, TypeScript, targeted lint, frontend build; backend 4 tests and lint passed.
+- No merges, production deployments, database migrations or published curriculum outcomes.
+- Next step: execute final browser CI, fix any observed interaction issues, then real accessibility/device and qualified review gates. M1 remains PARTIAL for release until these pass.

@@ -66,3 +66,11 @@ The private Sites preview can be published without external secrets. Real accoun
 TypeScript compilation, production build, catalog filtering, sample enrollment, lesson completion and parent-dashboard progress are checked during delivery. Real Firebase end-to-end authentication is pending your Firebase configuration. The backend repository contains API integration tests and PostgreSQL CI.
 
 The preview browser does not expose `document.modelContext`, so live WebMCP validation was unavailable; course search continues through the normal interface.
+
+## v2.3 implementation branch
+
+See [the authoritative blueprint](docs/MASTER_BLUEPRINT.md), [audit and implementation checklist](docs/ROADMAP_AND_FEATURE_STATUS.md), and [actual test results](docs/TEST_PLAN_AND_RESULTS.md).
+
+`/demo/sorting-garden` adds an explicitly labeled guest rules simulator preview with executable blocks, stage, trace and repair challenge. It does not train AI, save projects, assess mastery or call the learning backend. Human content/family/device review remains pending. Existing accounts and courses remain intact.
+
+Run `pnpm test:runtime`; install Chromium with `pnpm exec playwright install --with-deps chromium` then `pnpm test:browser`. The presence of a test does not mean it passed; consult the evidence file.
