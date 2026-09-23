@@ -24,6 +24,7 @@ import {
   wholeHourAnswerIsCorrect,
   heavierBalanceSideAnswerIsCorrect,
   pretendTokenAmountAnswerIsCorrect,
+  pretendTokenPurseWithMorePointsAnswerIsCorrect,
   nextNumberAfterIsCorrect,
   seedSet,
   zeroAnswerIsCorrect,
@@ -164,6 +165,23 @@ function BalanceModel() {
   </svg>;
 }
 
+function TokenPurseModel({ values, label }: { values: number[]; label: string }) {
+  return <div className="ng-token-purse" role="img" aria-label={label}>
+    {values.map((value, index) => <span className="ng-token" key={`${value}-${index}`}>{value} {value === 1 ? 'point' : 'points'}</span>)}
+  </div>;
+}
+
+function TokenPurseChoices({ onChoose, disabled = false }: { onChoose: (answer: 'left' | 'right') => void; disabled?: boolean }) {
+  return <div className="ng-compare-grid" role="group" aria-label="Choose the purse with more pretend points">
+    <button type="button" className="ng-measure-choice" disabled={disabled} onClick={() => onChoose('left')} aria-label="First purse, 3 pretend points">
+      <TokenPurseModel values={[2, 1]} label="First pretend purse: one token worth 2 points and one token worth 1 point, 3 points total"/><strong>First purse</strong>
+    </button>
+    <button type="button" className="ng-measure-choice" disabled={disabled} onClick={() => onChoose('right')} aria-label="Second purse, 2 pretend points">
+      <TokenPurseModel values={[1, 1]} label="Second pretend purse: two tokens worth 1 point each, 2 points total"/><strong>Second purse</strong>
+    </button>
+  </div>;
+}
+
 function BalanceChoices({ onChoose, disabled = false }: { onChoose: (side: 'left' | 'right') => void; disabled?: boolean }) {
   return <div className="ng-split-choices" role="group" aria-label="Choose the heavier balance pan">
     {(['left', 'right'] as const).map((side) => <button type="button" className="ng-button ng-split-choice" key={side} disabled={disabled} onClick={() => onChoose(side)}>{side === 'left' ? 'Left pan' : 'Right pan'}</button>)}
@@ -275,7 +293,7 @@ export function NumberGarden() {
       <p className="ng-intro">Count a group, notice zero and number order, then compare two small groups. Optional previews explore operations, groups, place value, and fractions.</p>
       <aside className="ng-review" aria-label="Draft content review status">
         <strong>Draft preview</strong>
-        <p>The user reports reviewing MATH-05 prompts through version 12, as well as MATH-03 and MATH-04. The new version 13 mass prompt needs review. A grown-up can read every prompt aloud. This visit does not measure lasting math ability.</p>
+        <p>The user reports reviewing MATH-05 prompts through version 14, as well as MATH-03 and MATH-04. The new version 15 pretend-purse comparison needs review. A grown-up can read every prompt aloud. This visit does not measure lasting math ability.</p>
       </aside>
 
       {step === 0 && <section className="ng-panel" aria-labelledby="ng-start-title">
@@ -295,7 +313,8 @@ export function NumberGarden() {
         <p className="ng-recap"><strong>Optional preview · MATH-05 solids and volume</strong><br/>Recognize a sphere and count unit cubes across two layers.</p>
         <p className="ng-recap"><strong>Optional preview · MATH-05 telling time</strong><br/>Read a clock when the minute hand points to 12. The user reports reviewing this prompt.</p>
         <p className="ng-recap"><strong>Optional preview · MATH-05 comparing mass</strong><br/>Compare identical unit weights on a balance; the user reports reviewing this prompt.</p>
-        <p className="ng-recap"><strong>New draft · MATH-05 pretend tokens</strong><br/>Count make-believe token values. These are learning tokens, not real money or local currency; this new prompt needs review.</p>
+        <p className="ng-recap"><strong>New preview · MATH-05 pretend tokens</strong><br/>Add make-believe token values; the user reports reviewing this prompt. These are not real money or local currency.</p>
+        <p className="ng-recap"><strong>New draft · MATH-05 comparing pretend points</strong><br/>Compare two make-believe purses with token points; this new prompt needs review. It does not use real currency.</p>
         <div className="ng-actions">
           <button className="ng-button primary" disabled={!ready} onClick={() => { setStep(1); setFeedback('Tap each seed once, then choose how many there are.'); }}>Begin Number Garden</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(11); setFeedback('MATH-03 draft preview: look at the equal groups.'); }}>Explore equal groups and sharing</button>
@@ -306,7 +325,8 @@ export function NumberGarden() {
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(26); setFeedback('MATH-05 draft preview: look for the solid with no flat faces.'); }}>Explore solids and volume</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(29); setFeedback('MATH-05 time draft: look at both clock hands.'); }}>Explore telling time</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(31); setFeedback('MATH-05 mass preview: compare the identical unit weights.'); }}>Explore comparing mass</button>
-          <button className="ng-button" disabled={!ready} onClick={() => { setStep(33); setFeedback('MATH-05 money draft: count the pretend token values.'); }}>Explore pretend tokens</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(33); setFeedback('MATH-05 pretend-token preview: add the point values.'); }}>Explore pretend tokens</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(35); setFeedback('MATH-05 draft: compare the points in both pretend purses.'); }}>Compare pretend purses</button>
         </div>
       </section>}
 
@@ -695,7 +715,7 @@ export function NumberGarden() {
       </section>}
 
       {step === 31 && <section className="ng-panel" aria-labelledby="ng-mass-title">
-        <p className="ng-step">NEW DRAFT PREVIEW · MATH-05 · COMPARING MASS</p>
+        <p className="ng-step">OPTIONAL PREVIEW · MATH-05 · COMPARING MASS</p>
         <h2 id="ng-mass-title">Each block has the same mass. Which balance pan is heavier?</h2>
         <BalanceModel />
         <p>Look at the balance and compare the identical unit weights. The lower pan carries more mass.</p>
@@ -718,7 +738,7 @@ export function NumberGarden() {
       </section>}
 
       {step === 33 && <section className="ng-panel" aria-labelledby="ng-money-title">
-        <p className="ng-step">NEW DRAFT PREVIEW · MATH-05 · PRETEND TOKEN VALUES</p>
+        <p className="ng-step">OPTIONAL PREVIEW · MATH-05 · PRETEND TOKEN VALUES</p>
         <h2 id="ng-money-title">These are make-believe shop tokens. How many points are in this purse?</h2>
         <p>Each token shows its point value. Add the two values: 2 points and 1 point.</p>
         <div className="ng-token-purse" role="img" aria-label="Make-believe purse with one token worth 2 points and one token worth 1 point">
@@ -737,9 +757,32 @@ export function NumberGarden() {
       </section>}
 
       {step === 34 && <section className="ng-panel" aria-labelledby="ng-money-finish-title">
-        <p className="ng-step">MATH-05 PRETEND TOKEN DRAFT · NO SCORE SAVED</p>
+        <p className="ng-step">MATH-05 PRETEND TOKEN PREVIEW · NO SCORE SAVED</p>
         <h2 id="ng-money-finish-title">Two points and one point make three pretend points.</h2>
         <p>This is a make-believe counting example, not a lesson about real prices or currency.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 35 && <section className="ng-panel" aria-labelledby="ng-token-compare-title">
+        <p className="ng-step">NEW DRAFT PREVIEW · MATH-05 · COMPARING PRETEND POINTS</p>
+        <h2 id="ng-token-compare-title">Which pretend purse has more points?</h2>
+        <p>Look at the point values on the tokens. You can count the points together.</p>
+        <TokenPurseChoices disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          if (!pretendTokenPurseWithMorePointsAnswerIsCorrect(answer, [2, 1], [1, 1])) {
+            setFeedback('Count the point values in each purse, then choose the one with more.');
+            return;
+          }
+          setStep(36);
+          setFeedback('The first purse has 3 pretend points. The second has 2. Three is more than two.');
+        }} />
+        <p>These make-believe learning points are not real money, prices, or local currency.</p>
+      </section>}
+
+      {step === 36 && <section className="ng-panel" aria-labelledby="ng-token-compare-finish-title">
+        <p className="ng-step">MATH-05 PRETEND-POINT DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-token-compare-finish-title">The first purse has more pretend points.</h2>
+        <p>Three pretend points are more than two. This example does not teach real prices or currency.</p>
         <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
       </section>}
 

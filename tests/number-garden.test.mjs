@@ -17,6 +17,7 @@ import {
   wholeHourAnswerIsCorrect,
   heavierBalanceSideAnswerIsCorrect,
   pretendTokenAmountAnswerIsCorrect,
+  pretendTokenPurseWithMorePointsAnswerIsCorrect,
   isValidDecomposition,
   markSeedCounted,
   mathPublicationBlockers,
@@ -178,14 +179,14 @@ test('EDU-M20: balance answer matches the heavier bounded unit-mass side', () =>
 
 test('EDU-M05: this is a guest draft with publication review still blocked', () => {
   assert.equal(numberGardenManifest.reviewStatus, 'draft');
-  assert.equal(numberGardenManifest.version, 14);
+  assert.equal(numberGardenManifest.version, 15);
   assert.equal(numberGardenManifest.requiresAccount, false);
   assert.equal(numberGardenManifest.requiresAi, false);
   assert.equal(numberGardenManifest.requiresCameraOrMic, false);
   assert.equal(numberGardenManifest.savesLearnerData, false);
   assert.ok(mathPublicationBlockers().length >= 3);
   assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('reviewing the MATH-05 solid-shape and unit-cube volume')));
-  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('pretend-token amount')));
+  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('purse-comparison')));
 });
 
 
@@ -195,4 +196,14 @@ test('EDU-M21: pretend token totals are deterministic and bounded', () => {
   assert.equal(pretendTokenAmountAnswerIsCorrect(3, [2, 1.5]), false);
   assert.equal(pretendTokenAmountAnswerIsCorrect(3, []), false);
   assert.equal(pretendTokenAmountAnswerIsCorrect(3, [2, 1, 0]), false);
+});
+
+
+test('EDU-M22: pretend-purse comparison totals bounded token points', () => {
+  assert.equal(pretendTokenPurseWithMorePointsAnswerIsCorrect('left', [2, 1], [1, 1]), true);
+  assert.equal(pretendTokenPurseWithMorePointsAnswerIsCorrect('right', [2, 1], [1, 1]), false);
+  assert.equal(pretendTokenPurseWithMorePointsAnswerIsCorrect('right', [1, 1], [2, 1]), true);
+  assert.equal(pretendTokenPurseWithMorePointsAnswerIsCorrect('left', [2], [1, 1]), false);
+  assert.equal(pretendTokenPurseWithMorePointsAnswerIsCorrect('left', [2, 0], [1]), false);
+  assert.equal(pretendTokenPurseWithMorePointsAnswerIsCorrect('left', [2, 1, 1, 1, 1, 1], [1]), false);
 });

@@ -238,3 +238,17 @@ test('EDU-MB11: MATH-05 adds pretend token values with retry and no real-currenc
   await page.getByRole('button', { name: '3' }).click();
   await expect(page.getByRole('heading', { name: 'Two points and one point make three pretend points.' })).toBeVisible();
 });
+
+
+test('EDU-MB12: MATH-05 compares two pretend purses by their token points', async ({ page }) => {
+  await page.goto(route);
+  await page.getByRole('button', { name: 'Compare pretend purses' }).click();
+  await expect(page.getByRole('heading', { name: 'Which pretend purse has more points?' })).toBeVisible();
+  await expect(page.getByRole('img', { name: 'First pretend purse: one token worth 2 points and one token worth 1 point, 3 points total' })).toBeVisible();
+  await expect(page.getByRole('img', { name: 'Second pretend purse: two tokens worth 1 point each, 2 points total' })).toBeVisible();
+  await page.getByRole('button', { name: 'Second purse, 2 pretend points' }).click();
+  await expect(page.getByRole('status')).toContainText('Count the point values in each purse');
+  await page.getByRole('button', { name: 'First purse, 3 pretend points' }).click();
+  await expect(page.getByRole('heading', { name: 'The first purse has more pretend points.' })).toBeVisible();
+  await expect(page.getByText('Three pretend points are more than two. This example does not teach real prices or currency.')).toBeVisible();
+});
