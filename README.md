@@ -74,3 +74,6 @@ See [the authoritative blueprint](docs/MASTER_BLUEPRINT.md), [audit and implemen
 `/demo/sorting-garden` adds an explicitly labeled guest rules simulator preview with executable blocks, stage, trace and repair challenge. It does not train AI, save projects, assess mastery or call the learning backend. Human content/family/device review remains pending. Existing accounts and courses remain intact.
 
 Run `pnpm test:runtime`; install Chromium with `pnpm exec playwright install --with-deps chromium` then `pnpm test:browser`. The presence of a test does not mean it passed; consult the evidence file.
+
+
+`/little-explorers` is a guest hub with one playable Rainbow Habitat activity. The other three cards are clearly marked “Coming soon.” Matching, adult-chosen sensory/choice settings, pause, Home, finish and the offline Grownup Playbook run locally for this visit only. No account or saved learner data is used. Phase 1B browser CI and early-years review status are recorded in `docs/TEST_PLAN_AND_RESULTS.md`; this is an original matching activity, not AI or a developmental assessment.
