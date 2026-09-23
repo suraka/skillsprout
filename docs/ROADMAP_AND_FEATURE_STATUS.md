@@ -1,6 +1,6 @@
 # SkillSprout v2.3 implementation roadmap and continuity checklist
 
-Updated 2026-09-22. Authority: attached SkillSprout-2.3.md, preserved at MASTER_BLUEPRINT.md.
+Updated 2026-09-23. Authority: attached SkillSprout-2.3.md, preserved at MASTER_BLUEPRINT.md.
 Canonical shared docs: suraka/skillsprout. Backend implementation stays in suraka/skillsprout-backend.
 
 ## Audit baseline
@@ -53,7 +53,7 @@ Implemented means source functionality exists; verified scope is separately stat
 ## Roadmap, in dependency order
 
 1. **M0 audit (PARTIAL operational evidence):** source/baselines/public endpoints inspected; real auth/deployment provenance/backups still unverified.
-2. **M1 Phase 1 Sorting Garden (BUILT; release PARTIAL):** original ordered colored blocks, synthetic cards, bounded rules interpreter, actual stage/trace, wrong-rule repair, Run/Pause/Step, undo/redo, clear/reset/finish, accessible non-drag controls. Browser-local guest only. No auth/API/DB changes apply per §§10/12/15. Human/device/browser verification gates remain explicit.
+2. **M1 Phase 1 Sorting Garden (BUILT; release PARTIAL):** original ordered colored blocks, synthetic cards, bounded rules interpreter, actual stage/trace, wrong-rule repair, Run/Pause/Step, undo/redo, clear/reset/finish, accessible non-drag controls. Browser-local guest only. No auth/API/DB changes apply per §§10/12/15. Seven Chromium browser tests and the production build passed at the fix commit below. Human/physical-device release gates remain open.
 3. **M1B Phase 1B (PLANNED):** one Rainbow Habitat, adult controls/playbook/offline companion; all LE release checks and early-years review.
 4. **M1C / EDU-M0/M1 (BLOCKED on human content review):** choose qualified reviewer/locale, three sound→letter→word lessons, original reviewed media, deterministic evidence and accessible alternatives.
 5. **M2 saved family learning (PLANNED):** reviewed consent/retention/account boundaries; additive project/revision/evidence schema; API + authenticated UI + authorization + conflict/idempotency tests; complete reviewed first course and private parent Invention Cards. Preserve legacy self-reported completion provenance.
@@ -70,11 +70,11 @@ Implemented means source functionality exists; verified scope is separately stat
 - [x] Produce roadmap before implementation; preserve production data and main branches.
 - [x] Implement guest demo runtime/editor and regression/browser test definitions.
 - [x] Execute restored-version runtime/typecheck/build/backend checks and record actual results.
-- [ ] Execute complete browser suite; local browser installation blocked; latest CI must be checked.
+- [x] Execute complete Chromium browser suite in CI: SG-B01…06 and REG-B01 passed (7/7); fix first-interaction hydration loss and add a slow-loading regression.
 - [x] Save code/docs via connected GitHub app and create both draft PRs; first checkpoint CI passed.
 - [ ] Browser/device/screen-reader/family review and real Firebase staging verification.
 
-Continue by reading this checklist, MASTER_BLUEPRINT.md and TEST_PLAN_AND_RESULTS.md. Fetch current development branches/PRs; preserve user edits. Next unblocked work is completing M1 browser/accessibility validation, then the reviewed next slice. Do not jump to generic subject pages. No lesson/outcome IDs were published; no migration was run.
+Continue by reading this checklist, MASTER_BLUEPRINT.md and TEST_PLAN_AND_RESULTS.md. Fetch current development branches/PRs; preserve user edits. Next work is the remaining M1 accessibility, physical-device and qualified content/family reviews documented in TEST_PLAN_AND_RESULTS.md, then the reviewed next slice. Automated Chromium checks have passed; do not repeat the resolved local-browser-install investigation. Do not jump to generic subject pages. No lesson/outcome IDs were published; no migration was run.
 
 Recovery note: workspace maintenance removed the first local implementation before terminal push could authenticate. Original local-only commits cfbf875/7f50b70 were NOT pushed and are not delivery references. This restored version is being checked again and saved through the connected GitHub app. Never claim the first tests certify changed restored code without rerunning.
 
@@ -84,4 +84,8 @@ Recovery note: workspace maintenance removed the first local implementation befo
 - Backend [draft PR 1](https://github.com/suraka/skillsprout-backend/pull/1), documentation-only commit `79a4987e700a4cf8afa68338b9512a3e7754b78a`.
 - Restored local checks rerun: 10 runtime tests, TypeScript, targeted lint, frontend build; backend 4 tests and lint passed.
 - No merges, production deployments, database migrations or published curriculum outcomes.
-- Next step: execute final browser CI, fix any observed interaction issues, then real accessibility/device and qualified review gates. M1 remains PARTIAL for release until these pass.
+- Verified frontend implementation: `78845d0d7a948ea4bf6ae0a0e8961f2d3f8332ae`; [CI 35824919320](https://github.com/suraka/skillsprout/actions/runs/35824919320) passed TypeScript, all 10 runtime tests, all 7 Chromium browser tests and the production build. Job logs inspected: no captured browser exceptions. Following commits may update documentation only; check their diffs and CI separately.
+- Backend [CI 35787871190](https://github.com/suraka/skillsprout-backend/actions/runs/35787871190) passed at `79a4987e700a4cf8afa68338b9512a3e7754b78a`.
+- First browser failures were real: clicks and edits before hydration were lost. Controls now wait for event handlers; slow-script test SG-B06 proves readiness and the first edit/run. Earlier failed runs remain recorded in the test evidence.
+- Existing Cloudflare PR bot reports a preview for the older `eaecada2` commit. The current branch preview and its deployed source version have NOT been verified; passing CI is not deployment evidence.
+- Next step: physical-device, screen-reader, visual and qualified educator/family review gates. M1 remains PARTIAL for release until these pass. No real Firebase staging journey is verified.
