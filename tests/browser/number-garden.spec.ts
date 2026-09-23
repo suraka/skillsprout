@@ -6,7 +6,7 @@ test('EDU-MB00: Explore links to the clearly labeled Number Garden draft', async
   await page.goto('/');
   await page.getByRole('link', { name: 'Number Garden · maths draft preview' }).click();
   await expect(page.getByRole('heading', { name: 'Number Garden' })).toBeVisible();
-  await expect(page.getByText('EARLY MATHEMATICS · DRAFT · HUMAN REVIEW PENDING')).toBeVisible();
+  await expect(page.getByText('EARLY MATHEMATICS · DRAFT · REVIEW STATUS IN NOTES')).toBeVisible();
 });
 
 test('EDU-MB01: counting, comparison and change activities recover from wrong answers', async ({ page }) => {
@@ -41,7 +41,17 @@ test('EDU-MB01: counting, comparison and change activities recover from wrong an
   await page.getByRole('button', { name: 'Choose group of 4 seeds' }).click();
 
   await expect(page.getByRole('heading', { name: 'You counted, noticed zero, and compared groups.' })).toBeVisible();
-  await page.getByRole('button', { name: 'Try optional number changes' }).click();
+  await page.getByRole('button', { name: 'Try optional operations practice' }).click();
+
+  await expect(page.getByRole('heading', { name: 'Two groups join the garden. How many seeds are there altogether?' })).toBeVisible();
+  await page.getByRole('button', { name: '4 seeds' }).click();
+  await expect(page.getByRole('status')).toContainText('Count the two groups together');
+  await page.getByRole('button', { name: '5 seeds' }).click();
+
+  await expect(page.getByRole('heading', { name: 'Which two groups can make five seeds?' })).toBeVisible();
+  await page.getByRole('button', { name: '2 + 4' }).click();
+  await expect(page.getByRole('status')).toContainText('do not make five');
+  await page.getByRole('button', { name: '2 + 3' }).click();
 
   await page.getByRole('button', { name: 'Add one seed' }).click();
   await expect(page.getByRole('img', { name: 'Garden after adding one: 3 seeds' })).toBeVisible();
@@ -54,7 +64,7 @@ test('EDU-MB01: counting, comparison and change activities recover from wrong an
   await page.getByRole('button', { name: '2 seeds' }).click();
   await expect(page.getByRole('status')).toContainText('Count the visible seeds and try again');
   await page.getByRole('button', { name: '3 seeds' }).click();
-  await expect(page.getByRole('heading', { name: 'You explored six number ideas.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'You explored number groups and changes.' })).toBeVisible();
   await expect(page.getByText('This describes practice in this visit. It is not a score or a measure of lasting math skill.')).toBeVisible();
   await page.getByRole('button', { name: 'Finish and clear this visit' }).click();
   await expect(page.getByRole('heading', { name: 'Count, notice zero, and compare groups.' })).toBeVisible();

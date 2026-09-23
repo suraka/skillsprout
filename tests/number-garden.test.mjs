@@ -6,6 +6,7 @@ import {
   compareAnswerIsCorrect,
   countAnswerIsCorrect,
   countIsComplete,
+  isValidDecomposition,
   markSeedCounted,
   mathPublicationBlockers,
   numberGardenManifest,
@@ -54,13 +55,21 @@ test('EDU-M04: adding and taking away use bounded, deterministic quantities', ()
   assert.throws(() => changeAmount(5, 1), RangeError);
 });
 
+test('EDU-M07: composing and decomposing small amounts supports multiple valid splits', () => {
+  assert.equal(isValidDecomposition(5, 1, 4), true);
+  assert.equal(isValidDecomposition(5, 2, 3), true);
+  assert.equal(isValidDecomposition(5, 2, 4), false);
+  assert.equal(isValidDecomposition(5, 2.5, 2.5), false);
+  assert.equal(isValidDecomposition(5, 0, 5), false);
+});
+
 test('EDU-M05: this is a guest draft with publication review still blocked', () => {
   assert.equal(numberGardenManifest.reviewStatus, 'draft');
-  assert.equal(numberGardenManifest.version, 4);
+  assert.equal(numberGardenManifest.version, 5);
   assert.equal(numberGardenManifest.requiresAccount, false);
   assert.equal(numberGardenManifest.requiresAi, false);
   assert.equal(numberGardenManifest.requiresCameraOrMic, false);
   assert.equal(numberGardenManifest.savesLearnerData, false);
   assert.ok(mathPublicationBlockers().length >= 4);
-  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('Review completion is reported by the product owner')));
+  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('new MATH-02 compose and decompose prompts')));
 });

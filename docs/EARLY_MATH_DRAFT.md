@@ -1,13 +1,13 @@
 # Number Garden — early mathematics draft
 
 **Status: DRAFT / NOT APPROVED FOR PUBLICATION**  
-**Activity:** `math-number-garden-001`, version 4
+**Activity:** `math-number-garden-001`, version 5
 **Language:** English; completion of the English-locale review is reported by the product owner
 **Evidence:** guest practice held only in the current page visit; never treated as mastery
 
 ## Scope
 
-This draft is organized as three short number lessons: count a group; notice zero and number order; compare groups. It uses fixed quantities from zero to five. Adding one and taking one away are clearly optional Math-02 practice after the three-lesson path. Version 3 groups the existing version-2 prompts without changing their answer choices. The product owner reports that all reviews are complete and is satisfied with the prompts, number choices, English locale, age and ability fit, accessibility, and safety. Version 4 records that update; the activity remains a draft and is not the three reviewed units required for EDU-M2.
+This draft is organized as three short number-sense lessons: count a group; notice zero and number order; compare groups. It uses fixed quantities from zero to five. Optional MATH-02 practice follows the path: join two groups, split five in more than one valid way, add one, and take one away. Version 5 adds the compose/decompose interactions. The product owner reports the prior Number Garden reviews complete and satisfactory; these new MATH-02 prompts were authored afterward and need their own review. All work remains a draft and does not complete the remaining MATH-03…06 outcomes.
 
 | Draft step | Intended practice | Fixed interaction |
 |---|---|---|
@@ -15,10 +15,12 @@ This draft is organized as three short number lessons: count a group; notice zer
 | Zero | Match an empty garden to zero. | Empty set with explicit zero choice and fixed distractors. |
 | Number order | Select the numeral after three. | Visible zero-to-five number path; choose the next numeral with retry feedback. |
 | Compare | Identify which visible group has more. | Groups of three and four; fixed correct answer with count-again recovery. |
+| Compose | Join groups of two and three. | Count both fixed groups or count on; choose the total with retry feedback. |
+| Decompose | Split five into two groups. | Accepts both 1+4 and 2+3; rejects a pair that does not total five. |
 | Add one | Observe the change from two objects to three. | One explicit Add button changes the visible set; choose the resulting amount. |
 | Take one away | Observe the change from four objects to three. | One explicit Take Away button changes the visible set; choose the amount left. |
 
-Every answer key and quantity is deterministic. The adult may read the exact on-screen question and numeral labels aloud. No supplied recording, built-in speech, external media, generated exercises, timer, score, streak, account or learner identifier is used. The comparison is lesson 3; addition and subtraction remain optional draft practice and do not make MATH-02 a reviewed course.
+Every answer key and quantity is deterministic. The adult may read the exact on-screen question and numeral labels aloud. No supplied recording, built-in speech, external media, generated exercises, timer, score, streak, account or learner identifier is used. The compose/decompose and add/take interactions are optional draft practice. They do not make MATH-02 a reviewed course.
 
 ## Guest privacy and function
 
@@ -35,4 +37,4 @@ This guest-only scope needs no Firebase authentication, backend endpoint or data
 - Test with consenting adults/families and real devices; record browser, device and observed results. Automated tests are not human review.
 - Add the remaining reviewed number-path units for MATH-01 through MATH-06 only as their own usable, tested slices. This draft does not complete EDU-M2.
 
-The product owner reports that all reviews are complete and is satisfied with the version-2 prompts, number choices, English locale, age and ability fit, accessibility, and safety. Reviewer identities, findings, formal sign-off records, and real-device/family review notes were not provided for this repository, so the manifest remains draft. The recap says only that a learner practiced during this visit; it does not infer durable number knowledge.
+The product owner reports that all reviews of the prior Number Garden content are complete and satisfactory. The MATH-02 compose/decompose prompts in version 5 were authored after that review and remain draft. Reviewer identities, findings, formal sign-off records, and real-device/family review notes were not provided for this repository, so the manifest remains draft. The recap says only that a learner practiced during this visit; it does not infer durable number knowledge.

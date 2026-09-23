@@ -8,6 +8,7 @@ import {
   compareAnswerIsCorrect,
   countAnswerIsCorrect,
   countIsComplete,
+  isValidDecomposition,
   markSeedCounted,
   nextNumberAfterIsCorrect,
   seedSet,
@@ -133,12 +134,12 @@ export function NumberGarden() {
       <a className="ng-grownup" href="#ng-grownup-note">For grown-ups</a>
     </header>
     <main className="ng-main">
-      <p className="ng-kicker">EARLY MATHEMATICS · DRAFT · HUMAN REVIEW PENDING</p>
+      <p className="ng-kicker">EARLY MATHEMATICS · DRAFT · REVIEW STATUS IN NOTES</p>
       <h1>Number Garden</h1>
       <p className="ng-intro">Count a group, notice zero and number order, then compare two small groups.</p>
       <aside className="ng-review" aria-label="Draft content review status">
         <strong>Draft preview</strong>
-        <p>The product owner reports that all reviews are complete and is satisfied with the prompts, number choices, English locale, age and ability fit, accessibility, and safety. This remains a draft; review records are not included here. A grown-up can read every prompt and number aloud. This visit does not measure lasting math ability.</p>
+        <p>The product owner reports that all reviews of the version-2 prompts are complete and is satisfied with them, including the English locale, age and ability fit, accessibility, and safety. New optional operations prompts were added after that review and remain draft content. A grown-up can read every prompt and number aloud. This visit does not measure lasting math ability.</p>
       </aside>
 
       {step === 0 && <section className="ng-panel" aria-labelledby="ng-start-title">
@@ -149,7 +150,7 @@ export function NumberGarden() {
           <li><span>2</span><div><strong>Notice zero and number order</strong><small>Match an empty garden to zero; find what comes after three.</small></div></li>
           <li><span>3</span><div><strong>Compare groups</strong><small>Look closely or count together to find which has more.</small></div></li>
         </ol>
-        <p className="ng-recap"><strong>Optional practice · Math changes</strong><br/>Add one seed and take one away.</p>
+        <p className="ng-recap"><strong>Optional practice · MATH-02 operations</strong><br/>Bring groups together, split a group in different ways, add one, and take one away.</p>
         <div className="ng-actions"><button className="ng-button primary" disabled={!ready} onClick={() => { setStep(1); setFeedback('Tap each seed once, then choose how many there are.'); }}>Begin Number Garden</button></div>
       </section>}
 
@@ -218,7 +219,45 @@ export function NumberGarden() {
         <p>This describes practice in this visit. It is not a score or a measure of lasting math skill.</p>
         <div className="ng-actions">
           <button className="ng-button primary" onClick={home}>Finish these number lessons</button>
-          <button className="ng-button" onClick={() => { setStep(5); setFeedback('Optional practice: add one seed, then choose how many.'); }}>Try optional number changes</button>
+          <button className="ng-button" onClick={() => { setStep(9); setFeedback('Optional operations practice: join two small groups.'); }}>Try optional operations practice</button>
+        </div>
+      </section>}
+
+      {step === 9 && <section className="ng-panel" aria-labelledby="ng-compose-title">
+        <p className="ng-step">OPTIONAL PRACTICE · MATH-02 · COMPOSE AMOUNTS</p>
+        <h2 id="ng-compose-title">Two groups join the garden. How many seeds are there altogether?</h2>
+        <div className="ng-operation-groups" role="group" aria-label="Two groups to join">
+          <div className="ng-operation-group"><Seeds count={2} label="First group"/><strong>2 seeds</strong></div>
+          <span aria-hidden="true" className="ng-operation-sign">+</span>
+          <div className="ng-operation-group"><Seeds count={3} label="Second group"/><strong>3 seeds</strong></div>
+        </div>
+        <p>Count both groups together, or count on from two.</p>
+        <NumeralChoices values={[2, 3, 4, 5]} onChoose={(value) => {
+          if (paused) return;
+          if (!amountAnswerIsCorrect(value, 5)) {
+            setFeedback('Count the two groups together and try again.');
+            return;
+          }
+          setStep(10);
+          setFeedback('Five seeds altogether. Now find a way to split five into two groups.');
+        }} disabled={paused} />
+      </section>}
+
+      {step === 10 && <section className="ng-panel" aria-labelledby="ng-decompose-title">
+        <p className="ng-step">OPTIONAL PRACTICE · MATH-02 · DECOMPOSE AMOUNTS</p>
+        <h2 id="ng-decompose-title">Which two groups can make five seeds?</h2>
+        <Seeds count={5} label="Five seeds to split" />
+        <p>There can be more than one way. Choose a pair that makes five altogether.</p>
+        <div className="ng-split-choices" role="group" aria-label="Choose two groups that make five">
+          {[[1, 4], [2, 3], [2, 4]].map(([first, second]) => <button className="ng-button ng-split-choice" key={`${first}-${second}`} onClick={() => {
+            if (paused) return;
+            if (!isValidDecomposition(5, first, second)) {
+              setFeedback('Those groups do not make five yet. Try another pair.');
+              return;
+            }
+            setStep(5);
+            setFeedback('That pair makes five. One amount can be split in different ways. Next, add one seed.');
+          }}>{first} + {second}</button>)}
         </div>
       </section>}
 
@@ -242,8 +281,8 @@ export function NumberGarden() {
 
       {step === 7 && <section className="ng-panel" aria-labelledby="ng-finish-title">
         <p className="ng-step">OPTIONAL PRACTICE COMPLETE · NO SCORE SAVED</p>
-        <h2 id="ng-finish-title">You explored six number ideas.</h2>
-        <p>You practiced touching each object once, noticing zero, ordering numbers, comparing groups, adding one, and taking one away.</p>
+        <h2 id="ng-finish-title">You explored number groups and changes.</h2>
+        <p>You practiced touching each object once, noticing zero, ordering numbers, comparing groups, joining and splitting amounts, adding one, and taking one away.</p>
         <Seeds count={3} label="Three seeds in the garden"/>
         <div className="ng-recap"><strong>Try it away from the screen</strong><p>With a grown-up, count a few safe household objects. Add one, take one away, and talk about what changed.</p></div>
         <p className="ng-disclaimer">This describes practice in this visit. It is not a score or a measure of lasting math skill.</p>
@@ -254,7 +293,7 @@ export function NumberGarden() {
 
       {step > 0 && <><p className="ng-feedback" role="status" aria-live="polite">{feedback}</p><nav className="ng-session-controls" aria-label="Activity controls">{!paused && <button className="ng-button" onClick={() => setPaused(true)}>Pause</button>}<button className="ng-button" onClick={home}>Home</button><button className="ng-button" onClick={home}>Restart</button></nav></>}
 
-      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. The product owner reports that all reviews are complete and is satisfied with the prompts, number choices, English locale, age and ability fit, accessibility, and safety. Review records are not included here. No score, profile, or progress record is made.</p></details>
+      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. The product owner reports version-2 reviews complete. The new optional MATH-02 compose and decompose prompts were added after that review and remain draft. No score, profile, or progress record is made.</p></details>
     </main>
     <footer className="ng-footer">Practice for this visit only · no account · no saved child data</footer>
   </div>;

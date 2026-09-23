@@ -1,8 +1,8 @@
 export const numberGardenManifest = {
   activityId: 'math-number-garden-001',
-  version: 4,
+  version: 5,
   language: 'en',
-  localeVariant: 'en_review_completion_reported',
+  localeVariant: 'en_reviewed_v2_new_m02_draft',
   reviewStatus: 'draft',
   requiresAccount: false,
   requiresAi: false,
@@ -68,11 +68,17 @@ export function amountAnswerIsCorrect(answer: number, expected: number): boolean
   return Number.isInteger(answer) && answer === expected && expected >= 0 && expected <= 5;
 }
 
+export function isValidDecomposition(total: number, firstPart: number, secondPart: number): boolean {
+  return Number.isInteger(total) && Number.isInteger(firstPart) && Number.isInteger(secondPart)
+    && total > 0 && firstPart > 0 && secondPart > 0
+    && firstPart + secondPart === total;
+}
+
 export function mathPublicationBlockers(): string[] {
   return [
-    'Review completion is reported by the product owner; reviewer identities, findings, and sign-off records are not attached to this draft.',
-    'Real-device, screen-reader, and family review outcomes are not documented in this repository.',
+    'The new MATH-02 compose and decompose prompts were authored after the reported version-2 review and still need review.',
+    'Review completion for the version-2 content is reported by the product owner; reviewer identities and findings are not attached to this draft.',
     'The activity remains a draft and has not been separately authorized for publication or merge.',
-    'EDU-M2 still requires the remaining reviewed number-path units.',
+    'EDU-M2 still requires the remaining MATH-03 through MATH-06 outcomes.',
   ];
 }

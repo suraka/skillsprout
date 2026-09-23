@@ -87,7 +87,7 @@ Release status remains PARTIAL / BLOCKED FOR RELEASE. No qualified literacy, loc
 
 ## EDU-M2 first mathematics draft — Number Garden
 
-Implementation adds `/learning/number-garden` as a guest-only draft. Version 3 organizes the existing version-2 prompts into three short lessons: count a group; notice zero and number order; compare groups. Adding one and taking one away follow as optional Math-02 practice. Wrong answers give recovery prompts. Its local manifest explicitly blocks publication pending qualified review. No database, feature API, Firebase, cookie, localStorage or sessionStorage writes are added.
+Implementation adds `/learning/number-garden` as a guest-only draft. Version 5 retains the three number-sense lessons and adds optional MATH-02 compose/decompose prompts alongside add-one/take-one practice. Both 1+4 and 2+3 are accepted ways to make five. Wrong answers give recovery prompts. The newly added MATH-02 copy remains draft pending review. No database, feature API, Firebase, cookie, localStorage or sessionStorage writes are added.
 
 Local verification after the change:
 
@@ -103,8 +103,8 @@ Verified version 2: [Frontend checks 35844395876](https://github.com/suraka/skil
 
 Verified final rerun: [Frontend checks 35841877262](https://github.com/suraka/skillsprout/actions/runs/35841877262), commit `56c5722000659e7c4d71fe44da1e0e4a25f8adc5`, passed frozen install, TypeScript, all 26 runtime tests, all 20 Chromium browser tests, and production build. Browser assertions confirmed the full activity/recovery flow, offline pause/resume, no API or external requests, no browser-storage writes, and mobile-width fit. Earlier failed runs exposed the issues above; they are resolved by this verified head.
 
-The product owner reports that all reviews are complete and is satisfied with the version-2 prompts, number choices, English locale, age and ability fit, accessibility and safety. Version 3 groups the prompts; version 4 records the user's review-completion update. The user asked to keep the PR in draft. Reviewer identities, findings, formal sign-off records and real-device/family review notes were not provided for the repository, so the manifest remains draft.
+The product owner reports that reviews of the prior Number Garden prompt set are complete and satisfactory. The MATH-02 compose/decompose prompts were added afterward and need review. The PR remains draft as instructed. Reviewer identities, findings and formal sign-off records were not provided for the repository.
 
 Verified version 3 grouping: [Frontend checks 35849147816](https://github.com/suraka/skillsprout/actions/runs/35849147816), commit `8f6065b0f13f1db1329e3dbaa03b01a113a923bd`, passed frozen install, TypeScript, all 27 runtime tests, all 20 Chromium browser tests, and production build. Browser coverage checked the three-lesson completion boundary, optional number-change practice, wrong-answer recovery, offline pause/resume, no API/external requests, no storage writes and mobile-width fit. EDU-M2 remains partial, not a reviewed three-unit course.
 
-The product owner now reports that all reviews are complete. This repository does not contain reviewer identities, findings, formal sign-off records, or real-device/family review notes. The draft status is retained as instructed. EDU-M2 is PARTIAL; this one draft is not the three reviewed units required by the blueprint. No proficiency claim or migration was made.
+The product owner reports that reviews of the prior Number Garden content are complete. New MATH-02 prompts in version 5 remain draft until reviewed. This repository does not contain reviewer identities, findings or formal sign-off records. EDU-M2 is PARTIAL; this activity is not the complete sequence required by the blueprint. No proficiency claim or migration was made.
