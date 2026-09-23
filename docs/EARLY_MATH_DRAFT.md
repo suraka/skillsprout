@@ -1,13 +1,13 @@
 # Number Garden — early mathematics draft
 
 **Status: DRAFT / NOT APPROVED FOR PUBLICATION**  
-**Activity:** `math-number-garden-001`, version 18
+**Activity:** `math-number-garden-001`, version 19
 **Language:** English; the currency example is specifically labeled for Ghana (`en-GH`), not offered as a universal currency lesson.
 **Evidence:** guest practice held only in the current page visit; never treated as mastery
 
 ## Scope
 
-This draft keeps the original three MATH-01 lessons and optional MATH-02 through MATH-06 previews. MATH-05 includes shape and screen-unit length, solids and unit-cube volume, exact-hour time, balance mass comparison, reviewed-source Ghana cedi prompts, and a further unit-cube volume comparison. MATH-06 now has a draft sequence: read a made-up table, build a bar chart from it, check a claim against the data, extend a repeating shape pattern, and choose its symbolic rule. The user reports reviewing the source prompts for the Ghana-currency and further MATH-05 lessons. The new MATH-06 chart, claim, and rule wording needs review. This is not the complete MATH-05 or MATH-06 curriculum; all activity content stays a draft.
+This draft keeps the original three MATH-01 lessons and optional MATH-02 through MATH-06 previews. MATH-05 now includes 2D shapes and quarter-turn orientation, a unit-grid perimeter, model-ruler reading, whole-hour elapsed time, equal-unit mass, unit-cube volume, and reviewed-source Ghana cedi prompts. MATH-06 now includes a synthetic table/chart/claim sequence, a repeating pattern rule, qualitative chance, equivalent ratios, and an add-three function table. Version 19's new wording is a draft and needs review. These slices do not complete all MATH-05 or MATH-06 outcomes.
 
 | Draft step | Intended practice | Fixed interaction |
 |---|---|---|
@@ -19,6 +19,11 @@ This draft keeps the original three MATH-01 lessons and optional MATH-02 through
 | Decompose | Split five into two groups. | Accepts both 1+4 and 2+3; rejects a pair that does not total five. |
 | 3D solid and volume | Identify a sphere and count unit cubes in two layers of a box. | Fixed cube/sphere/cylinder drawings and two labeled 2×2 cube layers with retry. |
 | Volume comparison | Compare 2×2×1 and 2×2×2 unit-cube models. | Drawn box models labeled by dimensions; retry feedback. |
+| Shape transformation | Follow an arrow through one clockwise quarter-turn. | Text-labelled cardinal directions; shape and size stay unchanged. |
+| Perimeter | Count outside unit edges around a 3-by-2 rectangle. | Two-by-three square grid; only its ten boundary edges count. |
+| Metric model ruler | Find length from the 1 cm mark to the 5 cm mark. | Illustrated marks; explicitly not a calibrated on-screen ruler. |
+| Elapsed time | Find whole hours from 2 o'clock to 5 o'clock on the same day. | Count-forward prompt; no minutes or midnight crossing. |
+| Mass in equal units | Match an object to three identical balance units. | Labeled model units; not grams or a calibrated real scale. |
 | 2D shape | Identify a triangle by its three straight sides. | Fixed triangle, square, and circle choices with retry. |
 | Length comparison | Compare two strips made of equal screen units. | Aligned bars of 3 and 5 units; explicitly not a real ruler. |
 | Fraction comparison | Compare one quarter and three quarters by position on a number line from zero to one. | Fixed quarter marks and retry feedback. |
@@ -32,6 +37,9 @@ This draft keeps the original three MATH-01 lessons and optional MATH-02 through
 | Ghana cedi values | Match GH¢2 to 200 pesewas and add GH¢1 plus 50 pesewas. | Text-only labels; totals are represented in integer pesewas; no price or purchase. |
 | Data chart and claim | Build bars for three invented counts, then check which bed has the most. | Fixed data, text-labelled keyboard controls and semantic table; no real-world inference. |
 | Pattern rule | Extend the alternating circle/triangle pattern and choose its repeating rule. | Fixed sequence and bounded choices with retry. |
+| Chance | Compare three leaf tiles with one flower tile and choose which is more likely. | Counts are visible; explains likely is not certain; no random draw or real-world prediction. |
+| Equivalent ratio | Double a 2-to-3 green-to-purple ratio. | Ordered pair choices; both parts scale together. |
+| Function rule | Infer the add-three rule from three input/output pairs. | Small fixed table; checks the rule across every row and states its limit. |
 | Add one | Observe the change from two objects to three. | One explicit Add button changes the visible set; choose the resulting amount. |
 | Take one away | Observe the change from four objects to three. | One explicit Take Away button changes the visible set; choose the amount left. |
 
@@ -50,10 +58,10 @@ This guest-only scope needs no Firebase authentication, backend endpoint or data
 - Accessibility reviewer checks semantic labels, keyboard and touch task completion, zoom/reflow, color-independent meaning and screen-reader feedback.
 - Safety and asset reviewer approves the offline prompt and original illustrations.
 - Test with consenting adults/families and real devices; record browser, device and observed results. Automated tests are not human review.
-- Complete remaining MATH-05 geometry and transformation, calibrated measurement, time and mass outcomes, and the suitable MATH-06 chance, ratio and algebra outcomes as separate reviewed slices. This draft does not complete EDU-M2.
+- Continue broader MATH-05 geometry, transformation and calibrated measurement outcomes, and suitable MATH-06 statistics, probability, ratio and algebra outcomes as separate reviewed slices. Version 19 is only a small draft sample and does not complete EDU-M2.
 - Complete local browser verification when a Playwright Chromium executable is available. This workspace run could not start any browser tests because the required executable was missing; GitHub CI is the browser verification gate.
 
-The user reports reviewing Number Garden prompts through version 17 and the source prompts for Ghana-currency and further MATH-05 lessons. Version 18 implements those MATH-05 areas as text-only coin-value exercises and a unit-cube volume comparison. The user has not separately reviewed the version 18 presentation in this repository. Reviewer identities, findings, and formal sign-off records are not attached; the manifest remains draft. Version 18 MATH-06 chart, claim-check, and rule-choice prompts need review.
+The user reports reviewing Number Garden prompts through version 17 and source prompts for Ghana-currency and further MATH-05 lessons. Versions 18–19 implement those MATH-05 areas and add bounded geometry/measurement plus MATH-06 reasoning samples. New version 19 wording and rendered screens have not been separately reviewed. Reviewer identities, findings, and formal sign-off records are not attached; the manifest remains draft.
 
 Version 14 MATH-05 adds a fixed 2-point plus 1-point make-believe token example. It is explicitly not real money, prices or local currency. This is a simple value-total exercise, not a complete money curriculum.
 
@@ -75,5 +83,9 @@ MATH-05 Ghana cedi: identify that a GH¢2 coin represents 200 pesewas, then add 
 MATH-05 volume comparison: compare drawn boxes sized 2×2×1 and 2×2×2 unit cubes. The labels explicitly describe a model, not a real container measurement.
 
 MATH-06 sequence: after reading the made-up sprout table, set each bar to 4, 2, and 3; decide whether the claim “sunflower bed has the most sprouts” is supported; extend the circle/triangle sequence; and choose the rule “circle, triangle, repeat.” The bar controls have text alternatives and keyboard operation. The data remain invented. The MATH-06 additions in this version need content review. This completes the current Data Detective/Pattern Lab draft path, not every advanced MATH-06 outcome such as chance, ratios, or algebra.
+
+## Version 19 additions
+
+MATH-05 adds an arrow quarter-turn, 3-by-2 grid perimeter, model metric ruler with nonzero starting mark, same-day elapsed whole hours, and mass expressed in identical model units. The labels distinguish drawings and unit models from calibrated real instruments. MATH-06 adds a qualitative likelihood comparison from a fixed pretend bag, a 2:3-to-4:6 equivalent ratio, and an add-three function-table rule. These are short previews for older learners where appropriate; they do not imply mastery or an approved curriculum map. Runtime and browser checks are added, but new wording and visual presentation still require human content/accessibility review.
 
 GitHub CI [Frontend checks 35924065190](https://github.com/suraka/skillsprout/actions/runs/35924065190), commit `6131a8fa3093b860fae1ead7593ef416e49be71c`, passed frozen install, TypeScript, all 50 runtime tests, all 35 Chromium browser tests, and production build. The first v18 CI attempt exposed two browser-test assertion/locator issues; those were corrected and the follow-up run passed. The local browser suite remains unavailable because this workspace lacks its Playwright Chromium executable.

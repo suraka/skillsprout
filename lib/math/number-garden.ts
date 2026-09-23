@@ -1,8 +1,8 @@
 export const numberGardenManifest = {
   activityId: 'math-number-garden-001',
-  version: 18,
+  version: 19,
   language: 'en',
-  localeVariant: 'en_GH_v18_m05_money_geometry_m06_data_pattern_draft',
+  localeVariant: 'en_GH_v19_m05_geometry_measurement_m06_chance_ratio_algebra_draft',
   reviewStatus: 'draft',
   requiresAccount: false,
   requiresAi: false,
@@ -256,6 +256,69 @@ export function unitCubeVolumeComparisonAnswerIsCorrect(
     && answer === (leftVolume > rightVolume ? 'left' : 'right');
 }
 
+export function quarterTurnDirectionAnswerIsCorrect(answer: string, startingDirection: string, clockwiseQuarterTurns: number): boolean {
+  const directions = ['up', 'right', 'down', 'left'];
+  if (!directions.includes(startingDirection) || !Number.isInteger(clockwiseQuarterTurns)
+    || clockwiseQuarterTurns < 1 || clockwiseQuarterTurns > 3) return false;
+  const expected = directions[(directions.indexOf(startingDirection) + clockwiseQuarterTurns) % directions.length];
+  return answer === expected;
+}
+
+export function rectanglePerimeterAnswerIsCorrect(answer: number, rows: number, columns: number): boolean {
+  return Number.isInteger(answer) && Number.isInteger(rows) && Number.isInteger(columns)
+    && rows >= 1 && columns >= 1 && rows <= 10 && columns <= 10 && rows * columns <= 50
+    && answer === 2 * (rows + columns);
+}
+
+export function modelRulerLengthAnswerIsCorrect(answerCm: number, startMark: number, endMark: number): boolean {
+  return Number.isInteger(answerCm) && Number.isInteger(startMark) && Number.isInteger(endMark)
+    && startMark >= 0 && startMark <= 12 && endMark > startMark && endMark <= 12
+    && answerCm === endMark - startMark;
+}
+
+export function elapsedWholeHoursAnswerIsCorrect(answerHours: number, startHour: number, endHour: number): boolean {
+  return Number.isInteger(answerHours) && Number.isInteger(startHour) && Number.isInteger(endHour)
+    && startHour >= 1 && startHour <= 11 && endHour > startHour && endHour <= 12
+    && answerHours === endHour - startHour;
+}
+
+export function equalUnitMassAnswerIsCorrect(answerUnits: number, shownUnits: number): boolean {
+  return Number.isInteger(answerUnits) && Number.isInteger(shownUnits)
+    && shownUnits >= 1 && shownUnits <= 10 && answerUnits === shownUnits;
+}
+
+export function moreLikelyOutcomeAnswerIsCorrect(answer: string, firstCount: number, secondCount: number): boolean {
+  if (!Number.isInteger(firstCount) || !Number.isInteger(secondCount)
+    || firstCount < 0 || secondCount < 0 || firstCount > 10 || secondCount > 10
+    || firstCount + secondCount < 1 || firstCount + secondCount > 10 || firstCount === secondCount) return false;
+  return answer === (firstCount > secondCount ? 'first-more-likely' : 'second-more-likely');
+}
+
+export function equivalentRatioAnswerIsCorrect(
+  answerFirst: number, answerSecond: number, originalFirst: number, originalSecond: number,
+): boolean {
+  return Number.isInteger(answerFirst) && Number.isInteger(answerSecond)
+    && Number.isInteger(originalFirst) && Number.isInteger(originalSecond)
+    && answerFirst >= 1 && answerFirst <= 20 && answerSecond >= 1 && answerSecond <= 20
+    && originalFirst >= 1 && originalFirst <= 10 && originalSecond >= 1 && originalSecond <= 10
+    && answerFirst * originalSecond === answerSecond * originalFirst;
+}
+
+export function additionFunctionOutputAnswerIsCorrect(answer: number, input: number, addend: number): boolean {
+  return Number.isInteger(answer) && Number.isInteger(input) && Number.isInteger(addend)
+    && input >= 0 && input <= 20 && addend >= 0 && addend <= 10
+    && answer === input + addend;
+}
+
+export function additionFunctionRuleAnswerIsCorrect(
+  answer: string, inputs: readonly number[], outputs: readonly number[], addend: number,
+): boolean {
+  return answer === 'add-constant' && Number.isInteger(addend) && addend >= 0 && addend <= 10
+    && inputs.length >= 2 && inputs.length <= 6 && outputs.length === inputs.length
+    && inputs.every((input, index) => Number.isInteger(input) && input >= 0 && input <= 20
+      && additionFunctionOutputAnswerIsCorrect(outputs[index], input, addend));
+}
+
 export function sproutChartAnswerIsCorrect(
   answer: readonly (number | null)[],
   data: readonly { bed: string; sprouts: number }[],
@@ -295,6 +358,7 @@ export function mathPublicationBlockers(): string[] {
     'The user reports reviewing the MATH-05 solid-shape and unit-cube volume prompts; reviewer identities and findings are not attached to this draft.',
     'Review completion for version-2 and MATH-02 through MATH-05 prompts is reported by the user; reviewer identities and findings are not attached to this draft.',
     'The new MATH-06 chart-building, claim-checking, and pattern-rule wording needs review.',
+    'Version 19 geometry, measurement, chance, ratio, and algebra prompts need separate recorded content review.',
     'The activity remains a draft and has not been separately authorized for publication or merge.',
     'EDU-M2 still requires broader MATH-05 outcomes and MATH-06 outcomes beyond this draft sequence; qualified and manual review gates remain open.',
   ];

@@ -31,6 +31,15 @@ import {
   ghanaCoinValueAnswerIsCorrect,
   ghanaCoinTotalAnswerIsCorrect,
   unitCubeVolumeComparisonAnswerIsCorrect,
+  quarterTurnDirectionAnswerIsCorrect,
+  rectanglePerimeterAnswerIsCorrect,
+  modelRulerLengthAnswerIsCorrect,
+  elapsedWholeHoursAnswerIsCorrect,
+  equalUnitMassAnswerIsCorrect,
+  moreLikelyOutcomeAnswerIsCorrect,
+  equivalentRatioAnswerIsCorrect,
+  additionFunctionOutputAnswerIsCorrect,
+  additionFunctionRuleAnswerIsCorrect,
   sproutChartAnswerIsCorrect,
   sproutClaimAnswerIsCorrect,
   nextNumberAfterIsCorrect,
@@ -365,12 +374,12 @@ export function NumberGarden() {
       <a className="ng-grownup" href="#ng-grownup-note">For grown-ups</a>
     </header>
     <main className="ng-main">
-      <p className="ng-kicker">EARLY MATHEMATICS · DRAFT · REVIEW STATUS IN NOTES</p>
+        <p className="ng-kicker">EARLY MATHEMATICS · DRAFT · REVIEW STATUS IN NOTES</p>
       <h1>Number Garden</h1>
-      <p className="ng-intro">Count a group, notice zero and number order, then compare two small groups. Optional previews explore operations, groups, place value, and fractions.</p>
+        <p className="ng-intro">Count a group, notice zero and number order, then compare two small groups. Optional previews explore operations, geometry, measurement, data, and patterns.</p>
       <aside className="ng-review" aria-label="Draft content review status">
         <strong>Draft preview</strong>
-        <p>The user reports reviewing Number Garden prompts through version 17 and the source material for the Ghana-currency and further MATH-05 lessons. Version 18 adds these practice screens and extends the MATH-06 data-and-pattern sequence. A grown-up can read every prompt aloud. This visit does not measure lasting math ability.</p>
+        <p>The user reports reviewing Number Garden prompts through version 17, plus source material for further MATH-05 lessons. Versions 18 and 19 add draft practice for geometry, measurement, and MATH-06 data, chance, ratio, and algebra. A grown-up can read every prompt aloud. This visit does not measure lasting math ability.</p>
       </aside>
 
       {step === 0 && <section className="ng-panel" aria-labelledby="ng-start-title">
@@ -397,6 +406,8 @@ export function NumberGarden() {
         <p className="ng-recap"><strong>Draft preview · MATH-06 data detective</strong><br/>Read a small made-up table and find which pretend garden bed has the most sprouts; the user reports reviewing this prompt.</p>
         <p className="ng-recap"><strong>New draft · MATH-06 shape pattern</strong><br/>Use a repeating circle-and-triangle pattern to choose what comes next; the user reports reviewing this prompt.</p>
         <p className="ng-recap"><strong>Draft sequence · MATH-06 data and patterns</strong><br/>Build a chart from the made-up table, check a claim against it, then describe the repeating shape rule.</p>
+        <p className="ng-recap"><strong>Draft preview · MATH-05 geometry and measurement</strong><br/>Turn an arrow, find a rectangle&apos;s perimeter, read a drawn metric ruler, compare whole-hour duration, and measure mass using equal model units.</p>
+        <p className="ng-recap"><strong>Older-learner drafts · MATH-06 reasoning</strong><br/>Compare which made-up outcome is more likely, find an equivalent ratio, and identify an add-three function rule.</p>
         <div className="ng-actions">
           <button className="ng-button primary" disabled={!ready} onClick={() => { setStep(1); setFeedback('Tap each seed once, then choose how many there are.'); }}>Begin Number Garden</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(11); setFeedback('MATH-03 draft preview: look at the equal groups.'); }}>Explore equal groups and sharing</button>
@@ -413,6 +424,13 @@ export function NumberGarden() {
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(35); setFeedback('MATH-05 preview: compare the points in both pretend purses.'); }}>Compare pretend purses</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(37); setFeedback('MATH-06 draft: read the made-up sprout data.'); }}>Explore MATH-06 data and patterns</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(39); setFeedback('MATH-06 draft: notice how the two shapes repeat.'); }}>Explore shape pattern</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(52); setFeedback('MATH-05 geometry: picture the arrow turning clockwise.'); }}>Explore shape turns and perimeter</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(56); setFeedback('MATH-05 measurement: read the model ruler from its marks.'); }}>Measure a length on a model ruler</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(58); setFeedback('MATH-05 time: find how many whole hours pass.'); }}>Measure elapsed time</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(60); setFeedback('MATH-05 mass: count the equal units shown on the balance.'); }}>Measure mass in equal units</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(62); setFeedback('MATH-06 chance: compare the counts in this made-up bag.'); }}>Explore chance</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(64); setFeedback('MATH-06 ratio: find an equal ratio.'); }}>Explore equivalent ratios</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(66); setFeedback('MATH-06 algebra: find the rule in the function table.'); }}>Explore a function rule</button>
         </div>
       </section>}
 
@@ -1058,6 +1076,207 @@ export function NumberGarden() {
         <p className="ng-step">MATH-06 DRAFT SEQUENCE COMPLETE · NO SCORE SAVED</p>
         <h2 id="ng-math06-sequence-finish-title">You read a table, built a chart, checked a claim, and described a pattern rule.</h2>
         <p>The examples use invented data and a small repeating shape pattern. This draft does not cover every data, chance, ratio, or algebra outcome in MATH-06.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 52 && <section className="ng-panel" aria-labelledby="ng-turn-title">
+        <p className="ng-step">MATH-05 GEOMETRY · QUARTER TURNS</p>
+        <h2 id="ng-turn-title">An arrow points up. Turn it one quarter-turn clockwise. Which way does it point?</h2>
+        <p className="ng-turn-model" role="img" aria-label="An arrow points up before it turns">↑</p>
+        <TextChoices label="Choose the arrow's new direction" choices={['Up', 'Right', 'Down', 'Left']} disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          if (!quarterTurnDirectionAnswerIsCorrect(answer.toLowerCase(), 'up', 1)) {
+            setFeedback('A clockwise quarter-turn moves to the next direction: up, right, down, left. Try again.');
+            return;
+          }
+          setStep(53);
+          setFeedback('After one clockwise quarter-turn, the arrow points right.');
+        }} />
+      </section>}
+
+      {step === 53 && <section className="ng-panel" aria-labelledby="ng-turn-finish-title">
+        <p className="ng-step">MATH-05 GEOMETRY DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-turn-finish-title">The arrow points right after a quarter-turn clockwise.</h2>
+        <p>A turn changes orientation. The arrow keeps the same shape and size.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={() => { setStep(54); setFeedback('Count the outside unit edges around the rectangle.'); }}>Continue to perimeter</button><button className="ng-button" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 54 && <section className="ng-panel" aria-labelledby="ng-perimeter-title">
+        <p className="ng-step">MATH-05 MEASUREMENT · PERIMETER MODEL</p>
+        <h2 id="ng-perimeter-title">This garden bed is 3 units long and 2 units wide. How many unit edges go around its outside?</h2>
+        <div className="ng-grid-model" role="img" aria-label="A rectangle with two rows and three columns of equal square units">
+          {Array.from({ length: 6 }, (_, i) => <span key={i} aria-hidden="true" />)}
+        </div>
+        <p>Count only the outside edges. Each edge is one equal model unit.</p>
+        <TextChoices label="Choose the perimeter in unit edges" choices={['8 unit edges', '10 unit edges', '12 unit edges']} disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          const n = Number(answer.match(/^\d+/)?.[0]);
+          if (!rectanglePerimeterAnswerIsCorrect(n, 2, 3)) {
+            setFeedback('Follow the outside boundary and count each unit edge once. Try again.');
+            return;
+          }
+          setStep(55);
+          setFeedback('The outside boundary has ten unit edges.');
+        }} />
+      </section>}
+
+      {step === 55 && <section className="ng-panel" aria-labelledby="ng-perimeter-finish-title">
+        <p className="ng-step">MATH-05 MEASUREMENT DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-perimeter-finish-title">The rectangle&apos;s perimeter is 10 unit edges.</h2>
+        <p>Two rows of three squares make a 3-by-2 rectangle. The outside edges total 2 × (3 + 2) = 10.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 56 && <section className="ng-panel" aria-labelledby="ng-ruler-title">
+        <p className="ng-step">MATH-05 MEASUREMENT · METRIC MODEL</p>
+        <h2 id="ng-ruler-title">The drawn leaf begins at 1 cm and ends at 5 cm. How long is it?</h2>
+        <svg className="ng-ruler" viewBox="0 0 360 100" role="img" aria-labelledby="ng-ruler-svg-title ng-ruler-svg-desc">
+          <title id="ng-ruler-svg-title">Illustrated ruler and leaf</title>
+          <desc id="ng-ruler-svg-desc">The leaf starts at the one centimetre mark and ends at the five centimetre mark. Each interval is one centimetre.</desc>
+          <path d="M48 54H318" stroke="#526c55" strokeWidth="3" />
+          {Array.from({ length: 7 }, (_, i) => <g key={i}><path d={`M${48 + i * 45} 54v${i % 2 === 0 ? 22 : 14}`} stroke="#526c55" strokeWidth="2" /><text x={48 + i * 45} y="94" textAnchor="middle">{i}</text></g>)}
+          <path d="M93 37c32-22 103-22 180 0-77 23-148 23-180 0Z" fill="#8dbb82" stroke="#315842" strokeWidth="2" />
+          <path d="M93 37l180 0" stroke="#315842" strokeWidth="2" />
+        </svg>
+        <p>This is an illustration. The on-screen drawing is not a calibrated ruler; use the labeled marks in this question.</p>
+        <TextChoices label="Choose the leaf length" choices={['3 cm', '4 cm', '5 cm']} disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          const n = Number(answer.match(/^\d+/)?.[0]);
+          if (!modelRulerLengthAnswerIsCorrect(n, 1, 5)) {
+            setFeedback('The object starts after zero, so find the difference between the two marks. Try again.');
+            return;
+          }
+          setStep(57);
+          setFeedback('Five minus one is four, so the drawn leaf is four centimetres long.');
+        }} />
+      </section>}
+
+      {step === 57 && <section className="ng-panel" aria-labelledby="ng-ruler-finish-title">
+        <p className="ng-step">MATH-05 MEASUREMENT DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-ruler-finish-title">The drawn leaf is 4 cm long.</h2>
+        <p>Read the start and end marks: 5 cm − 1 cm = 4 cm. A real ruler must be used for a real object&apos;s length.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 58 && <section className="ng-panel" aria-labelledby="ng-elapsed-title">
+        <p className="ng-step">MATH-05 MEASUREMENT · WHOLE-HOUR DURATION</p>
+        <h2 id="ng-elapsed-title">Garden time begins at 2 o&apos;clock and ends at 5 o&apos;clock on the same day. How many whole hours pass?</h2>
+        <p>These are example times, not a schedule. Count forward from 2 to 5.</p>
+        <TextChoices label="Choose the elapsed time" choices={['2 hours', '3 hours', '4 hours']} disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          const n = Number(answer.match(/^\d+/)?.[0]);
+          if (!elapsedWholeHoursAnswerIsCorrect(n, 2, 5)) {
+            setFeedback('Count each step: 2 to 3, 3 to 4, and 4 to 5. Try again.');
+            return;
+          }
+          setStep(59);
+          setFeedback('Three whole hours pass from 2 o’clock to 5 o’clock.');
+        }} />
+      </section>}
+
+      {step === 59 && <section className="ng-panel" aria-labelledby="ng-elapsed-finish-title">
+        <p className="ng-step">MATH-05 MEASUREMENT DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-elapsed-finish-title">Three whole hours pass.</h2>
+        <p>This short example stays within one day and uses exact hours; it does not cover minutes or crossing midnight.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 60 && <section className="ng-panel" aria-labelledby="ng-mass-units-title">
+        <p className="ng-step">MATH-05 MEASUREMENT · MASS MODEL</p>
+        <h2 id="ng-mass-units-title">A balance is level when this object is compared with three identical unit weights. What is its mass in those model units?</h2>
+        <div className="ng-mass-model" role="img" aria-label="A level balance with one object on the left and three identical unit weights on the right">
+          <span aria-hidden="true">●</span><span aria-hidden="true">● ● ●</span>
+        </div>
+        <p>This model compares equal units. It does not show grams or measure a real object&apos;s mass.</p>
+        <TextChoices label="Choose the mass in model units" choices={['2 units', '3 units', '4 units']} disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          const n = Number(answer.match(/^\d+/)?.[0]);
+          if (!equalUnitMassAnswerIsCorrect(n, 3)) {
+            setFeedback('Count the identical unit weights on the balanced side. Try again.');
+            return;
+          }
+          setStep(61);
+          setFeedback('The object matches three equal model mass units.');
+        }} />
+      </section>}
+
+      {step === 61 && <section className="ng-panel" aria-labelledby="ng-mass-units-finish-title">
+        <p className="ng-step">MATH-05 MEASUREMENT DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-mass-units-finish-title">The object balances with three equal model units.</h2>
+        <p>A real mass needs a suitable calibrated scale and unit. The picture is only a model.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 62 && <section className="ng-panel" aria-labelledby="ng-chance-title">
+        <p className="ng-step">MATH-06 OLDER-LEARNER PREVIEW · CHANCE</p>
+        <h2 id="ng-chance-title">A made-up bag has 3 leaf tiles and 1 flower tile. If one tile is picked without looking, which kind is more likely?</h2>
+        <p>The counts are shown; no random draw happens. More likely does not mean certain.</p>
+        <div className="ng-chance-model" role="img" aria-label="Three leaf tiles and one flower tile in a pretend bag"><span>Leaf</span><span>Leaf</span><span>Leaf</span><span>Flower</span></div>
+        <TextChoices label="Choose the more likely tile" choices={['Leaf is more likely', 'Flower is more likely', 'They are equally likely']} disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          const choice = answer.startsWith('Leaf') ? 'first-more-likely' : 'second-more-likely';
+          if (answer === 'They are equally likely' || !moreLikelyOutcomeAnswerIsCorrect(choice, 3, 1)) {
+            setFeedback('There are more leaf tiles, so leaf is more likely, but a flower tile could still be picked. Try again.');
+            return;
+          }
+          setStep(63);
+          setFeedback('Leaf is more likely, but it is not guaranteed.');
+        }} />
+      </section>}
+
+      {step === 63 && <section className="ng-panel" aria-labelledby="ng-chance-finish-title">
+        <p className="ng-step">MATH-06 CHANCE DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-chance-finish-title">Leaf is more likely, but not certain.</h2>
+        <p>Three of the four pretend tiles are leaves. This is a small chance comparison, not a prediction about real events.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 64 && <section className="ng-panel" aria-labelledby="ng-ratio-title">
+        <p className="ng-step">MATH-06 OLDER-LEARNER PREVIEW · EQUIVALENT RATIOS</p>
+        <h2 id="ng-ratio-title">Two green seedlings grow beside three purple seedlings. Which pair shows the same green-to-purple ratio after both groups double?</h2>
+        <p>The starting ratio is 2 to 3. Keep the order green first, purple second.</p>
+        <TextChoices label="Choose the equivalent green-to-purple ratio" choices={['4 to 6', '4 to 5', '6 to 4']} disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          const match = /^(\d+) to (\d+)$/.exec(answer);
+          const first = match ? Number(match[1]) : 0;
+          const second = match ? Number(match[2]) : 0;
+          if (!equivalentRatioAnswerIsCorrect(first, second, 2, 3)) {
+            setFeedback('Double both parts and keep green first: 2 to 3 becomes 4 to 6. Try again.');
+            return;
+          }
+          setStep(65);
+          setFeedback('Both parts doubled, so 4 to 6 has the same ratio as 2 to 3.');
+        }} />
+      </section>}
+
+      {step === 65 && <section className="ng-panel" aria-labelledby="ng-ratio-finish-title">
+        <p className="ng-step">MATH-06 RATIO DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-ratio-finish-title">The equivalent ratio is 4 to 6.</h2>
+        <p>Multiplying both parts of 2 to 3 by the same number keeps the relationship equivalent. These are example counts, not growing instructions.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 66 && <section className="ng-panel" aria-labelledby="ng-function-title">
+        <p className="ng-step">MATH-06 OLDER-LEARNER PREVIEW · ALGEBRAIC RULE</p>
+        <h2 id="ng-function-title">A function machine follows one rule for every input. Which rule matches this table?</h2>
+        <table className="ng-function-table"><caption>Example input and output pairs</caption><thead><tr><th scope="col">Input</th><th scope="col">Output</th></tr></thead><tbody><tr><td>2</td><td>5</td></tr><tr><td>4</td><td>7</td></tr><tr><td>6</td><td>9</td></tr></tbody></table>
+        <p>Choose one rule that works for every row.</p>
+        <TextChoices label="Choose the function rule" choices={['Add 2', 'Add 3', 'Multiply by 3']} disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          const rule = answer === 'Add 3' ? 'add-constant' : answer;
+          if (!additionFunctionRuleAnswerIsCorrect(rule, [2, 4, 6], [5, 7, 9], 3)) {
+            setFeedback('Check every row. The output is three more than its input each time. Try again.');
+            return;
+          }
+          setStep(67);
+          setFeedback('The rule is add three. For input five, the output would be eight.');
+        }} />
+      </section>}
+
+      {step === 67 && <section className="ng-panel" aria-labelledby="ng-function-finish-title">
+        <p className="ng-step">MATH-06 ALGEBRA DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-function-finish-title">The function rule is “add 3.”</h2>
+        <p>For a new input of 5, the rule gives 5 + 3 = {additionFunctionOutputAnswerIsCorrect(8, 5, 3) ? '8' : '—'}. The same rule fits each pair in the table.</p>
         <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
       </section>}
 

@@ -337,3 +337,73 @@ test('EDU-MB17: MATH-06 builds a chart, checks a data claim and describes a patt
   await expect(page.getByRole('heading', { name: 'You read a table, built a chart, checked a claim, and described a pattern rule.' })).toBeVisible();
   await expect(page.getByText(/does not cover every data, chance, ratio, or algebra outcome/)).toBeVisible();
 });
+
+test('EDU-MB18: MATH-05 quarter-turn and perimeter lessons recover from wrong answers', async ({ page }) => {
+  await page.goto(route);
+  await page.getByRole('button', { name: 'Explore shape turns and perimeter' }).click();
+  await expect(page.getByRole('heading', { name: /one quarter-turn clockwise/ })).toBeVisible();
+  await page.getByRole('button', { name: 'Left' }).click();
+  await expect(page.getByRole('status')).toContainText('clockwise quarter-turn');
+  await page.getByRole('button', { name: 'Right' }).click();
+  await expect(page.getByRole('heading', { name: 'The arrow points right after a quarter-turn clockwise.' })).toBeVisible();
+  await page.getByRole('button', { name: 'Continue to perimeter' }).click();
+  await page.getByRole('button', { name: '8 unit edges' }).click();
+  await expect(page.getByRole('status')).toContainText('outside boundary');
+  await page.getByRole('button', { name: '10 unit edges' }).click();
+  await expect(page.getByRole('heading', { name: "The rectangle's perimeter is 10 unit edges." })).toBeVisible();
+  await page.getByRole('button', { name: 'Finish and clear this visit' }).click();
+});
+
+test('EDU-MB19: MATH-05 ruler, duration and mass illustrations explain their limits', async ({ page }) => {
+  await page.goto(route);
+  await page.getByRole('button', { name: 'Measure a length on a model ruler' }).click();
+  await expect(page.getByRole('img', { name: 'Illustrated ruler and leaf' })).toBeVisible();
+  await expect(page.getByText(/not a calibrated ruler/)).toBeVisible();
+  await page.getByRole('button', { name: '5 cm' }).click();
+  await expect(page.getByRole('status')).toContainText('starts after zero');
+  await page.getByRole('button', { name: '4 cm' }).click();
+  await expect(page.getByRole('heading', { name: 'The drawn leaf is 4 cm long.' })).toBeVisible();
+  await page.getByRole('button', { name: 'Finish and clear this visit' }).click();
+
+  await page.getByRole('button', { name: 'Measure elapsed time' }).click();
+  await page.getByRole('button', { name: '2 hours' }).click();
+  await expect(page.getByRole('status')).toContainText('Count each step');
+  await page.getByRole('button', { name: '3 hours' }).click();
+  await expect(page.getByRole('heading', { name: 'Three whole hours pass.' })).toBeVisible();
+  await page.getByRole('button', { name: 'Finish and clear this visit' }).click();
+
+  await page.getByRole('button', { name: 'Measure mass in equal units' }).click();
+  await expect(page.getByRole('img', { name: /three identical unit weights/ })).toBeVisible();
+  await expect(page.getByText(/does not show grams/)).toBeVisible();
+  await page.getByRole('button', { name: '2 units' }).click();
+  await expect(page.getByRole('status')).toContainText('Count the identical unit weights');
+  await page.getByRole('button', { name: '3 units' }).click();
+  await expect(page.getByRole('heading', { name: 'The object balances with three equal model units.' })).toBeVisible();
+  await page.getByRole('button', { name: 'Finish and clear this visit' }).click();
+});
+
+test('EDU-MB20: MATH-06 chance, ratio and algebra previews distinguish each concept', async ({ page }) => {
+  await page.goto(route);
+  await page.getByRole('button', { name: 'Explore chance' }).click();
+  await expect(page.getByRole('img', { name: 'Three leaf tiles and one flower tile in a pretend bag' })).toBeVisible();
+  await page.getByRole('button', { name: 'They are equally likely' }).click();
+  await expect(page.getByRole('status')).toContainText('more leaf tiles');
+  await page.getByRole('button', { name: 'Leaf is more likely' }).click();
+  await expect(page.getByRole('heading', { name: 'Leaf is more likely, but not certain.' })).toBeVisible();
+  await page.getByRole('button', { name: 'Finish and clear this visit' }).click();
+
+  await page.getByRole('button', { name: 'Explore equivalent ratios' }).click();
+  await page.getByRole('button', { name: '4 to 5' }).click();
+  await expect(page.getByRole('status')).toContainText('Double both parts');
+  await page.getByRole('button', { name: '4 to 6' }).click();
+  await expect(page.getByRole('heading', { name: 'The equivalent ratio is 4 to 6.' })).toBeVisible();
+  await page.getByRole('button', { name: 'Finish and clear this visit' }).click();
+
+  await page.getByRole('button', { name: 'Explore a function rule' }).click();
+  await expect(page.getByRole('table', { name: 'Example input and output pairs' })).toBeVisible();
+  await page.getByRole('button', { name: 'Multiply by 3' }).click();
+  await expect(page.getByRole('status')).toContainText('three more than its input');
+  await page.getByRole('button', { name: 'Add 3' }).click();
+  await expect(page.getByRole('heading', { name: 'The function rule is “add 3.”' })).toBeVisible();
+  await expect(page.getByText('For a new input of 5, the rule gives 5 + 3 = 8. The same rule fits each pair in the table.')).toBeVisible();
+});

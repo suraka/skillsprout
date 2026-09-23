@@ -24,6 +24,15 @@ import {
   ghanaCoinValueAnswerIsCorrect,
   ghanaCoinTotalAnswerIsCorrect,
   unitCubeVolumeComparisonAnswerIsCorrect,
+  quarterTurnDirectionAnswerIsCorrect,
+  rectanglePerimeterAnswerIsCorrect,
+  modelRulerLengthAnswerIsCorrect,
+  elapsedWholeHoursAnswerIsCorrect,
+  equalUnitMassAnswerIsCorrect,
+  moreLikelyOutcomeAnswerIsCorrect,
+  equivalentRatioAnswerIsCorrect,
+  additionFunctionOutputAnswerIsCorrect,
+  additionFunctionRuleAnswerIsCorrect,
   sproutChartAnswerIsCorrect,
   sproutClaimAnswerIsCorrect,
   isValidDecomposition,
@@ -187,7 +196,7 @@ test('EDU-M20: balance answer matches the heavier bounded unit-mass side', () =>
 
 test('EDU-M05: this is a guest draft with publication review still blocked', () => {
   assert.equal(numberGardenManifest.reviewStatus, 'draft');
-  assert.equal(numberGardenManifest.version, 18);
+  assert.equal(numberGardenManifest.version, 19);
   assert.equal(numberGardenManifest.requiresAccount, false);
   assert.equal(numberGardenManifest.requiresAi, false);
   assert.equal(numberGardenManifest.requiresCameraOrMic, false);
@@ -280,4 +289,67 @@ test('EDU-M29: pattern rule matches a bounded two-shape alternating sequence', (
   assert.equal(alternatingShapeRuleAnswerIsCorrect('first-shape-second-shape-repeat', ['circle', 'triangle', 'circle']), false);
   assert.equal(alternatingShapeRuleAnswerIsCorrect('first-shape-second-shape-repeat', ['circle', 'circle', 'circle', 'circle']), false);
   assert.equal(alternatingShapeRuleAnswerIsCorrect('circle-triangle-repeat', ['circle', 'triangle', 'circle', 'triangle']), false);
+});
+
+test('EDU-M30: quarter turns rotate direction clockwise within four cardinal directions', () => {
+  assert.equal(quarterTurnDirectionAnswerIsCorrect('right', 'up', 1), true);
+  assert.equal(quarterTurnDirectionAnswerIsCorrect('left', 'up', 1), false);
+  assert.equal(quarterTurnDirectionAnswerIsCorrect('up', 'up', 4), false);
+  assert.equal(quarterTurnDirectionAnswerIsCorrect('right', 'north', 1), false);
+});
+
+test('EDU-M31: rectangle perimeter counts the outside unit edges', () => {
+  assert.equal(rectanglePerimeterAnswerIsCorrect(10, 2, 3), true);
+  assert.equal(rectanglePerimeterAnswerIsCorrect(12, 2, 3), false);
+  assert.equal(rectanglePerimeterAnswerIsCorrect(10.5, 2, 3), false);
+  assert.equal(rectanglePerimeterAnswerIsCorrect(10, 0, 3), false);
+});
+
+test('EDU-M32: model ruler length uses the difference between end marks', () => {
+  assert.equal(modelRulerLengthAnswerIsCorrect(4, 1, 5), true);
+  assert.equal(modelRulerLengthAnswerIsCorrect(5, 1, 5), false);
+  assert.equal(modelRulerLengthAnswerIsCorrect(4, 5, 1), false);
+  assert.equal(modelRulerLengthAnswerIsCorrect(4.5, 1, 5), false);
+});
+
+test('EDU-M33: elapsed whole hours stay within one same-day interval', () => {
+  assert.equal(elapsedWholeHoursAnswerIsCorrect(3, 2, 5), true);
+  assert.equal(elapsedWholeHoursAnswerIsCorrect(2, 2, 5), false);
+  assert.equal(elapsedWholeHoursAnswerIsCorrect(3, 5, 2), false);
+  assert.equal(elapsedWholeHoursAnswerIsCorrect(3.5, 2, 5), false);
+});
+
+test('EDU-M34: mass model counts identical units without claiming real grams', () => {
+  assert.equal(equalUnitMassAnswerIsCorrect(3, 3), true);
+  assert.equal(equalUnitMassAnswerIsCorrect(2, 3), false);
+  assert.equal(equalUnitMassAnswerIsCorrect(3.5, 3), false);
+  assert.equal(equalUnitMassAnswerIsCorrect(3, 11), false);
+});
+
+test('EDU-M35: more likely outcome compares bounded counts but rejects ties', () => {
+  assert.equal(moreLikelyOutcomeAnswerIsCorrect('first-more-likely', 3, 1), true);
+  assert.equal(moreLikelyOutcomeAnswerIsCorrect('second-more-likely', 3, 1), false);
+  assert.equal(moreLikelyOutcomeAnswerIsCorrect('first-more-likely', 2, 2), false);
+  assert.equal(moreLikelyOutcomeAnswerIsCorrect('first-more-likely', -1, 2), false);
+});
+
+test('EDU-M36: equivalent ratio scales both ordered parts by the same factor', () => {
+  assert.equal(equivalentRatioAnswerIsCorrect(4, 6, 2, 3), true);
+  assert.equal(equivalentRatioAnswerIsCorrect(4, 5, 2, 3), false);
+  assert.equal(equivalentRatioAnswerIsCorrect(6, 4, 2, 3), false);
+  assert.equal(equivalentRatioAnswerIsCorrect(40, 60, 2, 3), false);
+});
+
+test('EDU-M37: addition function rule matches every bounded input-output fixture', () => {
+  assert.equal(additionFunctionOutputAnswerIsCorrect(8, 5, 3), true);
+  assert.equal(additionFunctionOutputAnswerIsCorrect(7, 5, 3), false);
+  assert.equal(additionFunctionRuleAnswerIsCorrect('add-constant', [2, 4, 6], [5, 7, 9], 3), true);
+  assert.equal(additionFunctionRuleAnswerIsCorrect('add-constant', [2, 4, 6], [5, 7, 9], 2), false);
+  assert.equal(additionFunctionRuleAnswerIsCorrect('add-constant', [2, 4], [5], 3), false);
+});
+
+test('EDU-M06: newer lessons remain draft until the new review gates are documented', () => {
+  assert.equal(numberGardenManifest.reviewStatus, 'draft');
+  assert.equal(numberGardenManifest.version, 19);
+  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('Version 19 geometry, measurement, chance, ratio, and algebra')));
 });
