@@ -208,7 +208,7 @@ export function NumberGarden() {
 
       {paused && <section className="ng-panel ng-paused" aria-labelledby="ng-paused-title"><h2 id="ng-paused-title">Paused</h2><p>Take a break. Nothing from this visit is saved.</p><div className="ng-actions"><button className="ng-button primary" onClick={() => setPaused(false)}>Resume</button></div></section>}
 
-      {step > 0 && <><p className="ng-feedback" role="status" aria-live="polite">{feedback}</p><nav className="ng-session-controls" aria-label="Activity controls"><button className="ng-button" onClick={() => setPaused(!paused)}>{paused ? 'Resume' : 'Pause'}</button><button className="ng-button" onClick={home}>Home</button><button className="ng-button" onClick={home}>Restart</button></nav></>}
+      {step > 0 && <><p className="ng-feedback" role="status" aria-live="polite">{feedback}</p><nav className="ng-session-controls" aria-label="Activity controls">{!paused && <button className="ng-button" onClick={() => setPaused(true)}>Pause</button>}<button className="ng-button" onClick={home}>Home</button><button className="ng-button" onClick={home}>Restart</button></nav></>}
 
       <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. Qualified early-math, locale, safety, accessibility and family review has not happened. No score, profile, or progress record is made.</p></details>
     </main>
