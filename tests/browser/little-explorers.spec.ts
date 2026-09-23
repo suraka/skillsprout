@@ -14,6 +14,9 @@ test('LE-B01: the hub has one real guest activity and clear coming-soon cards', 
 
 test('LE-B02: shape and pattern matching gives calm feedback, retries, and finishes', async ({ page }) => {
   await page.goto('/little-explorers/rainbow-habitat');
+  await expect(page.getByRole('button',{name:'Pause'})).toBeEnabled();
+  await page.getByRole('button',{name:'Repeat prompt'}).click();
+  await expect(page.getByRole('status')).toContainText('Find the home with the same shape and pattern.');
   const homes=page.locator('.rh-home');
   await homes.nth(1).click();
   await expect(page.getByRole('status')).toContainText('Let’s compare');
@@ -33,12 +36,14 @@ test('LE-B03: adult-selected level, sensory options, pause, home, and reset stay
   const remote: string[]=[];
   page.on('request',request=>{const u=new URL(request.url());if(u.pathname.startsWith('/api/')||!['localhost','127.0.0.1'].includes(u.hostname))remote.push(request.url());});
   await page.goto('/little-explorers/rainbow-habitat');
-  await page.getByRole('link',{name:'For grownups'}).click();
+  await page.getByRole('banner').getByRole('link',{name:'For grownups'}).click();
   await page.getByLabel('Homes to choose from').selectOption('4');
   await page.getByLabel('Enable quiet sound effect').check();
   await page.getByLabel('Enable gentle motion').check();
+  await page.getByLabel('Enable high contrast').check();
   await page.getByRole('link',{name:'Back to Rainbow Habitat'}).click();
   await expect(page.locator('.rh-home')).toHaveCount(4);
+  await expect(page.locator('.rh')).toHaveClass(/rh-contrast/);
   await page.getByRole('button',{name:'Pause'}).click();
   await expect(page.getByRole('heading',{name:'Paused'})).toBeVisible();
   await page.getByRole('button',{name:'Continue'}).click();
@@ -56,6 +61,7 @@ test('LE-B04: mobile layout works after load when offline with reduced motion', 
   await page.emulateMedia({reducedMotion:'reduce'});
   await page.goto('/little-explorers/rainbow-habitat');
   await expect(page.getByRole('button',{name:/sunshine yellow/}).first()).toBeVisible();
+  await expect(page.getByRole('button',{name:'Pause'})).toBeEnabled();
   await context.setOffline(true);
   await page.getByRole('button',{name:'Pause'}).click();
   await expect(page.getByRole('heading',{name:'Paused'})).toBeVisible();

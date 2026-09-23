@@ -2,7 +2,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { makeRound, matches, type Home, type Pattern } from '@/lib/little-explorers/rainbow';
-import { useExplorerSettings } from './settings';
+import { useExplorerReady, useExplorerSettings } from './settings';
 
 const patternNames: Record<Pattern, string> = { dots: 'dotted', waves: 'wavy', stripes: 'striped' };
 const colorNames = { sunshine: 'sunshine yellow', berry: 'berry pink', leaf: 'leaf green', sky: 'sky blue' };
@@ -17,7 +17,8 @@ function Picture({ home, label }: { home: Home; label: string }) {
   </svg>;
 }
 function Frame({ children, title }: { children: React.ReactNode; title: string }) {
-  return <div className="rh"><header className="rh-header"><Link href="/little-explorers" className="rh-brand">SkillSprout · Little Explorers</Link><span>{title}</span><Link href="/little-explorers/grownups" className="rh-adult-link">For grownups</Link></header>{children}<footer className="rh-footer">Guest play stays in this visit. Nothing is saved to a learner profile.</footer></div>;
+  const settings=useExplorerSettings();
+  return <div className={`rh${settings.highContrast?' rh-contrast':''}`}><header className="rh-header"><Link href="/little-explorers" className="rh-brand">SkillSprout · Little Explorers</Link><span>{title}</span><Link href="/little-explorers/grownups" className="rh-adult-link">For grownups</Link></header>{children}<footer className="rh-footer">Guest play stays in this visit. Nothing is saved to a learner profile.</footer></div>;
 }
 export function ExplorerHome() {
   const cards: ({name:string;detail:string;live:true;href:string}|{name:string;detail:string;live:false})[] = [{ name: 'Rainbow Habitat', detail: 'Find a patterned home for each garden friend.', href: '/little-explorers/rainbow-habitat', live: true }, { name: 'Sound Seed Orchestra', detail: 'A quiet sound-play activity.', live: false }, { name: 'Little Market Makers', detail: 'Count and compare pretend produce.', live: false }, { name: 'Peek & Pair Nature Trail', detail: 'Look closely at matching nature cards.', live: false }];
@@ -25,6 +26,7 @@ export function ExplorerHome() {
 }
 export function RainbowHabitat() {
   const settings = useExplorerSettings();
+  const ready=useExplorerReady();
   const [roundIndex,setRoundIndex] = useState(0), [matchColor,setMatchColor] = useState(false), [paused,setPaused] = useState(false), [finished,setFinished] = useState(false), [bloom,setBloom]=useState(false), [feedback,setFeedback] = useState('Ready when you are. Find a home with the same shape and pattern.');
   const round = roundIndex < 3 ? makeRound(roundIndex, settings.choices, matchColor) : null;
   function giveSoftNote() {
@@ -43,21 +45,23 @@ export function RainbowHabitat() {
   return <Frame title="Rainbow Habitat"><main className="rh-page rh-game"><p className="rh-kicker">A GROWN-UP CAN HELP</p><h1>Rainbow Habitat</h1><p>Look at the garden friend. Choose a home with the same shape and pattern.</p>
     {finished ? <section className="rh-finish" aria-labelledby="rh-finished"><h2 id="rh-finished">All three friends found a home.</h2><p>No score is kept. Would you like to stop here?</p><p className="rh-offline"><strong>Try away from the screen:</strong> Find two safe household objects with a grown-up. What looks the same? What looks different?</p><div className="rh-actions"><button className="rh-button" onClick={restart}>Start again</button><Link className="rh-button secondary" href="/little-explorers">Finish and go home</Link></div></section> : paused ? <section className="rh-pause" aria-live="polite"><h2>Paused</h2><p>The garden will wait. Take a break together.</p><button className="rh-button" onClick={()=>{setPaused(false);setFeedback('Let’s continue when you are ready.');}}>Continue</button></section> : <>
       {round && <section className={`rh-round${settings.motion&&bloom?' rh-bloom':''}`} aria-label={`Garden turn ${round.number} of 3`}>
-        <div className="rh-friend"><p>Can you help this friend find a home?</p><Picture home={round.target} label={`Garden friend: ${round.target.shape} shape, ${patternNames[round.target.pattern]} pattern${matchColor?`, ${colorNames[round.target.color]}`:''}`}/></div>
-        <fieldset className="rh-color-choice"><legend>How shall we match?</legend><label><input type="checkbox" checked={matchColor} onChange={e=>{setMatchColor(e.target.checked);setFeedback(e.target.checked?'Let’s match the shape, pattern and color.':'Let’s match the shape and pattern.');}}/> Match the color too</label></fieldset>
-        <div className="rh-home-grid" aria-label="Choose a home">{round.homes.map(home=><button className="rh-home" key={home.id} onClick={()=>choose(home)} disabled={paused}><Picture home={home} label={`${colorNames[home.color]}, ${patternNames[home.pattern]}, ${home.shape} home`}/><span className="rh-home-name">{colorNames[home.color]} · {patternNames[home.pattern]} · {home.shape}</span></button>)}</div>
-        <p className="rh-feedback" role="status" aria-live="polite">{feedback}</p>
+        <div className="rh-friend"><p>Can you help this friend find a home?</p><Picture home={round.target} label={`Garden friend: ${round.target.shape} shape, ${patternNames[round.target.pattern]} pattern${matchColor?`, ${colorNames[round.target.color]}`:''}`}/><button className="rh-repeat" disabled={!ready} onClick={()=>setFeedback(matchColor?'Find the home with the same shape, pattern and color.':'Find the home with the same shape and pattern.')}>Repeat prompt</button></div>
+        <fieldset className="rh-color-choice"><legend>How shall we match?</legend><label><input type="checkbox" disabled={!ready} checked={matchColor} onChange={e=>{setMatchColor(e.target.checked);setFeedback(e.target.checked?'Let’s match the shape, pattern and color.':'Let’s match the shape and pattern.');}}/> Match the color too</label></fieldset>
+        <div className="rh-home-grid" aria-label="Choose a home">{round.homes.map(home=><button className="rh-home" key={home.id} onClick={()=>choose(home)} disabled={!ready||paused}><Picture home={home} label={`${colorNames[home.color]}, ${patternNames[home.pattern]}, ${home.shape} home`}/><span className="rh-home-name">{colorNames[home.color]} · {patternNames[home.pattern]} · {home.shape}</span></button>)}</div>
+        <p className="rh-feedback" role="status" aria-live="polite">{ready?feedback:'Loading the garden controls…'}</p>
       </section>}
-      <div className="rh-actions"><button className="rh-button secondary" onClick={()=>setPaused(true)}>Pause</button><Link className="rh-button secondary" href="/little-explorers">Home</Link><Link className="rh-button secondary" href="/little-explorers/grownups">For grownups</Link></div>
+      <div className="rh-actions"><button className="rh-button secondary" disabled={!ready} onClick={()=>setPaused(true)}>Pause</button><Link className="rh-button secondary" href="/little-explorers">Home</Link><Link className="rh-button secondary" href="/little-explorers/grownups">For grownups</Link></div>
     </>}
   </main></Frame>;
 }
 export function GrownupControls() {
   const s=useExplorerSettings();
+  const ready=useExplorerReady();
   return <Frame title="Grownup controls"><main className="rh-page"><p className="rh-kicker">ADULT-CHOSEN · THIS VISIT ONLY</p><h1>Grownup controls</h1><p>Choose a comfortable way to play together. These settings are temporary and reset when you leave the site.</p><section className="rh-settings">
-    <label className="rh-setting"><span><strong>Homes to choose from</strong><small>Start with two. You can choose more together.</small></span><select aria-label="Homes to choose from" value={s.choices} onChange={e=>s.setChoices(Number(e.target.value))}><option value={2}>2 homes</option><option value={3}>3 homes</option><option value={4}>4 homes</option></select></label>
-    <label className="rh-setting"><span><strong>Quiet sound effect</strong><small>Off by default. No speech or recorded sounds.</small></span><input type="checkbox" checked={s.sound} onChange={e=>s.setSound(e.target.checked)} aria-label="Enable quiet sound effect"/></label>
-    <label className="rh-setting"><span><strong>Gentle motion</strong><small>Optional small bloom when a match is found.</small></span><input type="checkbox" checked={s.motion} onChange={e=>s.setMotion(e.target.checked)} aria-label="Enable gentle motion"/></label>
+    <label className="rh-setting"><span><strong>Homes to choose from</strong><small>Start with two. You can choose more together.</small></span><select disabled={!ready} aria-label="Homes to choose from" value={s.choices} onChange={e=>s.setChoices(Number(e.target.value))}><option value={2}>2 homes</option><option value={3}>3 homes</option><option value={4}>4 homes</option></select></label>
+    <label className="rh-setting"><span><strong>Quiet sound effect</strong><small>Off by default. No speech or recorded sounds.</small></span><input type="checkbox" disabled={!ready} checked={s.sound} onChange={e=>s.setSound(e.target.checked)} aria-label="Enable quiet sound effect"/></label>
+    <label className="rh-setting"><span><strong>Gentle motion</strong><small>Optional small bloom when a match is found.</small></span><input type="checkbox" disabled={!ready} checked={s.motion} onChange={e=>s.setMotion(e.target.checked)} aria-label="Enable gentle motion"/></label>
+    <label className="rh-setting"><span><strong>High contrast</strong><small>Use darker labels and stronger borders.</small></span><input type="checkbox" disabled={!ready} checked={s.highContrast} onChange={e=>s.setHighContrast(e.target.checked)} aria-label="Enable high contrast"/></label>
     </section><div className="rh-actions"><Link className="rh-button" href="/little-explorers/rainbow-habitat">Back to Rainbow Habitat</Link><Link className="rh-button secondary" href="/little-explorers/playbook">Open the Playbook</Link><Link className="rh-button secondary" href="/little-explorers">Home</Link></div><p className="rh-disclosure">There is no narration in this activity. Instructions and feedback are shown as text. No setting creates an adult account or protects device-level controls.</p></main></Frame>;
 }
 export function GrownupPlaybook() {
