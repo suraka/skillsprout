@@ -112,6 +112,7 @@ Implemented means source functionality exists; verified scope is separately stat
 - [x] Add a short version 15 pretend-purse point-comparison draft with deterministic wrong-answer recovery.
 - [x] Record the user report that version 15, planned real-currency, and further MATH-05 prompt materials were reviewed.
 - [x] Add a small MATH-06 data-table reading draft using an explicitly made-up dataset.
+- [x] Verify version 16 in GitHub CI: [run 35911395609](https://github.com/suraka/skillsprout/actions/runs/35911395609), 44 runtime tests, 31 Chromium browser tests, TypeScript and production build passed.
 - [x] Verify version 15 in GitHub CI: [run 35909835744](https://github.com/suraka/skillsprout/actions/runs/35909835744), 43 runtime tests, 30 Chromium browser tests, TypeScript and production build passed.
 - [x] Add a draft sphere and unit-cube volume preview with runtime/browser coverage.
 - [x] Record the user report that the MATH-05 solid/volume prompts were reviewed.
