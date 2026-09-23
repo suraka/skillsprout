@@ -107,6 +107,7 @@ Implemented means source functionality exists; verified scope is separately stat
 - [x] Add a short MATH-05 mass-comparison draft using identical unit weights on a balance, with deterministic retry.
 - [x] Record the user report that the version 13 balance and unit-mass prompt was reviewed.
 - [x] Add a small version 14 pretend-token value prompt, explicitly separated from real currency.
+- [x] Verify version 14 in GitHub CI: [run 35908281758](https://github.com/suraka/skillsprout/actions/runs/35908281758), 42 runtime tests, 29 Chromium browser tests, TypeScript and production build passed.
 - [x] Add a draft sphere and unit-cube volume preview with runtime/browser coverage.
 - [x] Record the user report that the MATH-05 solid/volume prompts were reviewed.
 - [ ] Extend mass/time/money measures and 3D geometry, then build MATH-06 as a separate tested slice.
