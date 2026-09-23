@@ -1,0 +1,72 @@
+import { expect, test } from 'playwright/test';
+
+const route = '/learning/number-garden';
+
+test('EDU-MB00: Explore links to the clearly labeled Number Garden draft', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('link', { name: 'Number Garden · maths draft preview' }).click();
+  await expect(page.getByRole('heading', { name: 'Number Garden' })).toBeVisible();
+  await expect(page.getByText('EARLY MATHEMATICS · DRAFT · HUMAN REVIEW PENDING')).toBeVisible();
+});
+
+test('EDU-MB01: counting, comparison and change activities recover from wrong answers', async ({ page }) => {
+  await page.goto(route);
+  await page.getByRole('button', { name: 'Begin Number Garden' }).click();
+
+  const seeds = page.getByRole('group', { name: 'Five seeds to count' });
+  const firstSeed = seeds.getByRole('button', { name: 'Seed not counted' }).first();
+  await firstSeed.click();
+  await page.getByRole('button', { name: 'Seed counted' }).first().click();
+  await expect(page.getByRole('status')).toContainText('already counted');
+  for (let index = 1; index < 5; index += 1) {
+    await seeds.getByRole('button', { name: 'Seed not counted' }).first().click();
+  }
+  await expect(page.getByText('5 of 5 seeds touched once')).toBeVisible();
+  await page.getByRole('button', { name: '4 seeds' }).click();
+  await expect(page.getByRole('status')).toContainText('Count each seed once and try again');
+  await page.getByRole('button', { name: '5 seeds' }).click();
+
+  await page.getByRole('button', { name: 'Choose group of 3 seeds' }).click();
+  await expect(page.getByRole('status')).toContainText('count the seeds in each group');
+  await page.getByRole('button', { name: 'Choose group of 4 seeds' }).click();
+
+  await page.getByRole('button', { name: 'Add one seed' }).click();
+  await expect(page.getByRole('img', { name: 'Garden after adding one: 3 seeds' })).toBeVisible();
+  await page.getByRole('button', { name: '4 seeds' }).click();
+  await expect(page.getByRole('status')).toContainText('Count the visible seeds and try again');
+  await page.getByRole('button', { name: '3 seeds' }).click();
+
+  await page.getByRole('button', { name: 'Take one seed away' }).click();
+  await expect(page.getByRole('img', { name: 'Garden after taking one away: 3 seeds' })).toBeVisible();
+  await page.getByRole('button', { name: '2 seeds' }).click();
+  await expect(page.getByRole('status')).toContainText('Count the visible seeds and try again');
+  await page.getByRole('button', { name: '3 seeds' }).click();
+  await expect(page.getByRole('heading', { name: 'You explored four number ideas.' })).toBeVisible();
+  await expect(page.getByText('This describes practice in this visit. It is not a score or a measure of lasting math skill.')).toBeVisible();
+  await page.getByRole('button', { name: 'Finish and clear this visit' }).click();
+  await expect(page.getByRole('heading', { name: 'Count, compare, and notice a change.' })).toBeVisible();
+});
+
+test('EDU-MB02: guest math practice has no API, account, or browser-storage writes', async ({ page, context }) => {
+  await page.setViewportSize({ width: 360, height: 800 });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  const externalRequests: string[] = [];
+  page.on('request', (request) => {
+    const url = new URL(request.url());
+    if (url.pathname.startsWith('/api/') || !['localhost', '127.0.0.1'].includes(url.hostname)) {
+      externalRequests.push(request.url());
+    }
+  });
+
+  await page.goto(route);
+  await page.getByRole('button', { name: 'Begin Number Garden' }).click();
+  await page.getByRole('button', { name: 'Pause' }).click();
+  await expect(page.getByRole('heading', { name: 'Paused' })).toBeVisible();
+  await context.setOffline(true);
+  await page.getByRole('button', { name: 'Resume' }).click();
+  await page.getByRole('button', { name: 'Home' }).click();
+  await expect(page.getByRole('heading', { name: 'Count, compare, and notice a change.' })).toBeVisible();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
+  await expect(page.evaluate(() => ({ local: localStorage.length, session: sessionStorage.length, cookies: document.cookie }))).resolves.toEqual({ local: 0, session: 0, cookies: '' });
+  expect(externalRequests).toEqual([]);
+});

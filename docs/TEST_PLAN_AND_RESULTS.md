@@ -84,3 +84,17 @@ First GitHub Actions execution: [CI 35831757105](https://github.com/suraka/skill
 Verified rerun: [CI 35832187899](https://github.com/suraka/skillsprout/actions/runs/35832187899), PR #1, completed successfully for commit `41c6acdb625b8fe54b6c439c95560f135b70a891`. Frozen install, TypeScript, all 21 runtime tests, all 17 Chromium browser tests, and production build passed. The build includes `/learning/letters-and-sounds`. This is automated browser evidence only; manual human review remains pending.
 
 Release status remains PARTIAL / BLOCKED FOR RELEASE. No qualified literacy, locale/pronunciation, asset, accessibility, safety or family reviewer has approved these exact content versions. Native-speaker pronunciation, physical-device operation, screen-reader review, real contrast/zoom, low-end-device performance and consenting-family usability are NOT TESTED. Current task answer records are activity practice, not verified proficiency or durable learning.
+
+## EDU-M2 first mathematics draft — Number Garden
+
+Implementation adds `/learning/number-garden` as a guest-only draft with four fixed steps: count five stable seed objects once each, compare groups of three and four, add one to two, and take one away from four. Wrong answers give count-again/recovery prompts. Its local manifest explicitly blocks publication pending qualified review. No database, feature API, Firebase, cookie, localStorage or sessionStorage writes are added.
+
+Local verification after the change:
+
+- `pnpm test:runtime`: PASS, 26 total runtime tests including five Number Garden cases for one-to-one duplicate prevention, fixed count, comparison key, bounded changes and draft review blockers.
+- `pnpm exec tsc --noEmit`: PASS.
+- Focused ESLint for the new route, component, runtime and tests: PASS. Existing whole-site lint findings in the legacy Explore page are outside this focused result.
+- `pnpm build`: PASS; production route list includes `/learning/number-garden`.
+- `pnpm exec playwright test --grep EDU-MB`: BLOCKED before browser assertions; local Chromium executable is missing. Three cases `EDU-MB00…02` are authored, but this local run is not evidence they pass. Run them in GitHub Chromium CI before claiming browser behavior verified.
+
+Human review is NOT TESTED: qualified early-math content reviewer, English locale/numeral narration decision, safety/assets, accessibility/screen-reader, real-device and consenting family checks remain open. EDU-M2 is PARTIAL; this one draft is not the three reviewed units required by the blueprint. No proficiency claim or migration was made.
