@@ -162,3 +162,22 @@ test('EDU-MB06: MATH-04 compares fraction amounts on a number line', async ({ pa
   await expect(page.getByRole('heading', { name: 'You compared fractions on a number line.' })).toBeVisible();
   await expect(page.getByRole('status')).toContainText('Three quarters is farther right');
 });
+
+test('EDU-MB07: MATH-05 identifies a 2D shape and compares equal screen units', async ({ page }) => {
+  await page.goto(route);
+  await page.getByRole('button', { name: 'Explore shapes and screen units' }).click();
+
+  await expect(page.getByRole('heading', { name: 'Which shape has three straight sides?' })).toBeVisible();
+  await page.getByRole('button', { name: 'Square' }).click();
+  await expect(page.getByRole('status')).toContainText('Count only the straight sides');
+  await page.getByRole('button', { name: 'Triangle' }).click();
+
+  await expect(page.getByRole('heading', { name: 'Which strip is longer when each equal block is one screen unit?' })).toBeVisible();
+  await expect(page.getByRole('img', { name: 'First strip: 3 equal screen units' })).toBeVisible();
+  await expect(page.getByRole('img', { name: 'Second strip: 5 equal screen units' })).toBeVisible();
+  await page.getByRole('button', { name: 'Three screen units' }).click();
+  await expect(page.getByRole('status')).toContainText('Count the equal blocks');
+  await page.getByRole('button', { name: 'Five screen units' }).click();
+  await expect(page.getByRole('heading', { name: 'You found a triangle and compared measured lengths.' })).toBeVisible();
+  await expect(page.getByText('The strip model uses equal on-screen units. It is not a calibrated real-world measuring tool.')).toBeVisible();
+});

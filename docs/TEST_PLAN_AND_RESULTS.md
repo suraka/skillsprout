@@ -87,7 +87,7 @@ Release status remains PARTIAL / BLOCKED FOR RELEASE. No qualified literacy, loc
 
 ## EDU-M2 first mathematics draft — Number Garden
 
-Implementation adds `/learning/number-garden` as a guest-only draft. Version 9 retains the number-sense lessons and user-reviewed MATH-02, MATH-03 and MATH-04 prompts through decimals/percent. It adds a new fraction-comparison number-line preview; that prompt remains draft pending review. MATH-04 is still partial. No database, feature API, Firebase, cookie, localStorage or sessionStorage writes are added.
+Implementation adds `/learning/number-garden` as a guest-only draft. Version 10 retains user-reviewed MATH-02, MATH-03 and MATH-04 prompts, including decimals, percent and fraction number-line comparison. It adds an initial MATH-05 2D-shape and on-screen length-comparison preview; these new prompts remain draft pending review. No database, feature API, Firebase, cookie, localStorage or sessionStorage writes are added.
 
 Local verification after the change:
 
@@ -109,7 +109,7 @@ Verified version 3 grouping: [Frontend checks 35849147816](https://github.com/su
 
 Verified version 5 MATH-02 draft: [Frontend checks 35866977777](https://github.com/suraka/skillsprout/actions/runs/35866977777), commit `655b1a678bfd2655e80e8cb344b262d384d7566d`, passed frozen install, TypeScript, all 28 runtime tests, all 20 Chromium browser tests and production build. Browser coverage tested compose answer recovery, a valid split of five, existing add/take practice and guest privacy checks. Runtime coverage confirms both 1+4 and 2+3 are accepted and an invalid sum is rejected. The new MATH-02 prompts remain draft pending review.
 
-The user approved MATH-02 and reports reviewing MATH-03 and MATH-04 prompts through decimals/percent. The new version 9 fraction-number-line prompt remains draft until reviewed. This repository does not contain formal review records. EDU-M2 is PARTIAL; this activity is not the complete sequence required by the blueprint. No proficiency claim or migration was made.
+The user approved MATH-02 and reports reviewing MATH-03 and MATH-04 prompts, including fraction number-line comparison. New version 10 MATH-05 shape and screen-measure prompts remain draft until reviewed. This repository does not contain formal review records. EDU-M2 is PARTIAL; this activity is not the complete sequence required by the blueprint. No proficiency claim or migration was made.
 
 
 Verified version 6 MATH-03 draft: [Frontend checks 35871683522](https://github.com/suraka/skillsprout/actions/runs/35871683522), commit `7a60b53fab05ef3cab7c85376942c17b5bad3dbb`, passed frozen install, TypeScript, all 30 runtime tests, all 21 Chromium browser tests, and production build. Browser EDU-MB03 tested wrong-answer recovery and successful completion for equal groups, the 2×3 array, and sharing six seeds between two beds.
@@ -119,3 +119,5 @@ Verified version 7 MATH-04 draft: [Frontend checks 35874071554](https://github.c
 Verified version 8 MATH-04 decimal/percent extension: [Frontend checks 35884632920](https://github.com/suraka/skillsprout/actions/runs/35884632920), commit `c4c0f33afebddd89bbc8510597d488b24483adbb`, passed TypeScript, all 34 runtime tests, all 23 Chromium browser tests, and production build. The ten equal cells model five tenths; the number line marks 0.5 midway between zero and one; a second prompt connects five of ten parts to 50%. An earlier browser run failed because its test selected 40%, which was not one of the fixed answer choices; the test now uses the offered 20% wrong answer and passed.
 
 Verified version 9 MATH-04 number-line comparison: [Frontend checks 35886656831](https://github.com/suraka/skillsprout/actions/runs/35886656831), commit `b4f1f7d5ee95476d462789c6101816ddc106280f`, passed TypeScript, all 35 runtime tests, all 24 Chromium browser tests, and production build. The learner compares 1/4 and 3/4 on an equally spaced 0-to-1 line and retries after a wrong selection.
+
+Verified version 10 MATH-05 preview: results will be recorded after GitHub CI completes. Coverage identifies a triangle by three straight sides and compares fixed 3-unit/5-unit bars; the UI labels these as screen units and says they are not a calibrated ruler. This is a small slice only; 3D geometry and mass, volume, time and money measures remain unimplemented.

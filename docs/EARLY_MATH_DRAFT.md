@@ -1,13 +1,13 @@
 # Number Garden — early mathematics draft
 
 **Status: DRAFT / NOT APPROVED FOR PUBLICATION**  
-**Activity:** `math-number-garden-001`, version 9
+**Activity:** `math-number-garden-001`, version 10
 **Language:** English; completion of the English-locale review is reported by the product owner
 **Evidence:** guest practice held only in the current page visit; never treated as mastery
 
 ## Scope
 
-This draft is organized as three short number-sense lessons: count a group; notice zero and number order; compare groups. It uses fixed quantities from zero to five. Optional MATH-02 practice follows the path: join two groups, split five in more than one valid way, add one, and take one away. Version 5 added compose/decompose interactions, which the user has reviewed and approved. Version 6 added optional MATH-03 equal-groups, array, and equal-sharing previews. Version 7 added a small MATH-04 preview for tens/ones and fractions represented by equal parts; the user reports reviewing and approving the MATH-03 and initial MATH-04 prompts. Version 8 added a ten-part model connecting 5/10, 0.5, and 50%, which the user reports reviewing. Version 9 adds a fraction-comparison preview on a 0-to-1 number line; its new prompt needs review. MATH-04 remains partial. All work remains a draft and does not complete MATH-05…06.
+This draft is organized as three short number-sense lessons: count a group; notice zero and number order; compare groups. It uses fixed quantities from zero to five. Optional MATH-02 practice follows the path: join two groups, split five in more than one valid way, add one, and take one away. Version 5 added compose/decompose interactions, which the user has reviewed and approved. Version 6 added optional MATH-03 equal-groups, array, and equal-sharing previews. Version 7 added a small MATH-04 preview for tens/ones and fractions represented by equal parts; the user reports reviewing and approving the MATH-03 and initial MATH-04 prompts. Version 8 added a ten-part model connecting 5/10, 0.5, and 50%, which the user reports reviewing. Version 9 added a fraction-comparison preview on a 0-to-1 number line, which the user reports reviewing. Version 10 adds an initial MATH-05 2D-shape and on-screen-length preview; its prompts need review. 3D shapes and measurement of mass, volume, time, and money remain unbuilt. All work remains a draft and does not complete MATH-06.
 
 | Draft step | Intended practice | Fixed interaction |
 |---|---|---|
@@ -17,6 +17,8 @@ This draft is organized as three short number-sense lessons: count a group; noti
 | Compare | Identify which visible group has more. | Groups of three and four; fixed correct answer with count-again recovery. |
 | Compose | Join groups of two and three. | Count both fixed groups or count on; choose the total with retry feedback. |
 | Decompose | Split five into two groups. | Accepts both 1+4 and 2+3; rejects a pair that does not total five. |
+| 2D shape | Identify a triangle by its three straight sides. | Fixed triangle, square, and circle choices with retry. |
+| Length comparison | Compare two strips made of equal screen units. | Aligned bars of 3 and 5 units; explicitly not a real ruler. |
 | Fraction comparison | Compare one quarter and three quarters by position on a number line from zero to one. | Fixed quarter marks and retry feedback. |
 | Tenths and decimal | Match five shaded tenths to 0.5 and locate it midway from zero to one. | Ten equal cells and labeled number line; retry feedback. |
 | Percent | Match the same five of ten parts to 50%. | Reuses the same ten-cell bar; retry feedback. |
@@ -28,7 +30,7 @@ This draft is organized as three short number-sense lessons: count a group; noti
 | Add one | Observe the change from two objects to three. | One explicit Add button changes the visible set; choose the resulting amount. |
 | Take one away | Observe the change from four objects to three. | One explicit Take Away button changes the visible set; choose the amount left. |
 
-Every answer key and quantity is deterministic. The adult may read the exact on-screen question and numeral labels aloud. No supplied recording, built-in speech, external media, generated exercises, timer, score, streak, account or learner identifier is used. The compose/decompose prompts were approved by the user. The user reports approval of the MATH-03 and initial MATH-04 tens/ones and fraction prompts. The user reports reviewing the MATH-04 decimal and percent prompts. The new MATH-04 fraction number-line comparison prompt is optional draft practice and still needs review.
+Every answer key and quantity is deterministic. The adult may read the exact on-screen question and numeral labels aloud. No supplied recording, built-in speech, external media, generated exercises, timer, score, streak, account or learner identifier is used. The compose/decompose prompts were approved by the user. The user reports approval of the MATH-03 and initial MATH-04 tens/ones and fraction prompts. The user reports reviewing MATH-03 and MATH-04 prompts, including the fraction number-line comparison. The new MATH-05 shape and screen-measure prompts are optional draft practice and still need review.
 
 ## Guest privacy and function
 
@@ -45,4 +47,4 @@ This guest-only scope needs no Firebase authentication, backend endpoint or data
 - Test with consenting adults/families and real devices; record browser, device and observed results. Automated tests are not human review.
 - Add the remaining reviewed number-path units for MATH-01 through MATH-06 only as their own usable, tested slices. This draft does not complete EDU-M2.
 
-The product owner reports that all reviews of the prior Number Garden content are complete and satisfactory. The user approved the MATH-02 compose/decompose prompts. MATH-03 prompts in version 6 and MATH-04 prompts in version 9 were added afterward and remain draft pending review. Reviewer identities, findings, formal sign-off records, and real-device/family review notes were not provided for this repository, so the manifest remains draft. The recap says only that a learner practiced during this visit; it does not infer durable number knowledge.
+The product owner reports that all reviews of the prior Number Garden content are complete and satisfactory. The user approved the MATH-02 compose/decompose prompts. MATH-03 prompts in version 6 and MATH-04 prompts in version 10 were added afterward and remain draft pending review. Reviewer identities, findings, formal sign-off records, and real-device/family review notes were not provided for this repository, so the manifest remains draft. The recap says only that a learner practiced during this visit; it does not infer durable number knowledge.

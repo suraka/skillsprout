@@ -1,8 +1,8 @@
 export const numberGardenManifest = {
   activityId: 'math-number-garden-001',
-  version: 9,
+  version: 10,
   language: 'en',
-  localeVariant: 'en_v2_m02_m03_m04_reviewed_m04_numberline_draft',
+  localeVariant: 'en_v2_m02_m03_m04_reviewed_m05_draft',
   reviewStatus: 'draft',
   requiresAccount: false,
   requiresAi: false,
@@ -141,11 +141,23 @@ export function fartherRightFractionAnswerIsCorrect(
     : `${secondNumerator}/${secondDenominator}`);
 }
 
+export function shapeSidesAnswerIsCorrect(answer: string, expectedSides: number): boolean {
+  const sidesByShape: Record<string, number> = { triangle: 3, square: 4, circle: 0 };
+  return Number.isInteger(expectedSides) && Object.hasOwn(sidesByShape, answer)
+    && sidesByShape[answer] === expectedSides;
+}
+
+export function longerScreenMeasureAnswerIsCorrect(answer: 'left' | 'right', leftUnits: number, rightUnits: number): boolean {
+  return Number.isInteger(leftUnits) && Number.isInteger(rightUnits)
+    && leftUnits > 0 && rightUnits > 0 && leftUnits <= 10 && rightUnits <= 10
+    && leftUnits !== rightUnits
+    && answer === (leftUnits > rightUnits ? 'left' : 'right');
+}
+
 export function mathPublicationBlockers(): string[] {
   return [
-    'The new MATH-03 equal-groups, array, and sharing prompts were authored after the reported reviews and still need review.',
-    'The new MATH-04 fraction-number-line comparison prompt still needs review.',
-    'Review completion for version-2 and MATH-02 content is reported by the product owner; reviewer identities and findings are not attached to this draft.',
+    'The new MATH-05 shape and screen-measure prompts are a draft and still need review.',
+    'Review completion for version-2 and MATH-02 through MATH-04 prompts is reported by the user; reviewer identities and findings are not attached to this draft.',
     'The activity remains a draft and has not been separately authorized for publication or merge.',
     'EDU-M2 still requires the remaining MATH-04 through MATH-06 outcomes.',
   ];

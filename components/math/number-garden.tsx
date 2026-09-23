@@ -17,6 +17,8 @@ import {
   placeValueAnswerIsCorrect,
   percentOfEqualPartsAnswerIsCorrect,
   fartherRightFractionAnswerIsCorrect,
+  shapeSidesAnswerIsCorrect,
+  longerScreenMeasureAnswerIsCorrect,
   nextNumberAfterIsCorrect,
   seedSet,
   zeroAnswerIsCorrect,
@@ -64,6 +66,32 @@ function PercentChoices({ onChoose, disabled = false }: { onChoose: (answer: num
 function FractionCompareChoices({ onChoose }: { onChoose: (answer: string) => void }) {
   return <div className="ng-split-choices" role="group" aria-label="Choose the fraction farther right">
     {['1/4', '3/4'].map((value) => <button type="button" className="ng-button ng-split-choice" key={value} onClick={() => onChoose(value)}>{value}</button>)}
+  </div>;
+}
+
+function ShapeChoices({ onChoose, disabled = false }: { onChoose: (answer: string) => void; disabled?: boolean }) {
+  return <div className="ng-shape-choices" role="group" aria-label="Choose the shape with three straight sides">
+    {(['triangle', 'square', 'circle'] as const).map((shape) => <button type="button" className="ng-shape-choice" key={shape} disabled={disabled} onClick={() => onChoose(shape)} aria-label={shape[0].toUpperCase() + shape.slice(1)}>
+      <svg viewBox="0 0 80 80" aria-hidden="true" focusable="false">
+        {shape === 'triangle' && <polygon points="40,9 72,68 8,68"/>}
+        {shape === 'square' && <rect x="12" y="12" width="56" height="56"/>}
+        {shape === 'circle' && <circle cx="40" cy="40" r="28"/>}
+      </svg>
+      <span>{shape[0].toUpperCase() + shape.slice(1)}</span>
+    </button>)}
+  </div>;
+}
+
+function ScreenMeasureBar({ units, label }: { units: number; label: string }) {
+  return <div className="ng-measure-bar" role="img" aria-label={`${label}: ${units} equal screen units`}>
+    {Array.from({ length: units }, (_, index) => <span key={index} aria-hidden="true"/>)}
+  </div>;
+}
+
+function MeasureChoices({ onChoose, disabled = false }: { onChoose: (answer: 'left' | 'right') => void; disabled?: boolean }) {
+  return <div className="ng-compare-grid" role="group" aria-label="Choose the strip with more screen units">
+    <button type="button" className="ng-measure-choice" disabled={disabled} onClick={() => onChoose('left')} aria-label="Three screen units"><ScreenMeasureBar units={3} label="First strip"/><strong>First strip</strong></button>
+    <button type="button" className="ng-measure-choice" disabled={disabled} onClick={() => onChoose('right')} aria-label="Five screen units"><ScreenMeasureBar units={5} label="Second strip"/><strong>Second strip</strong></button>
   </div>;
 }
 
@@ -172,7 +200,7 @@ export function NumberGarden() {
       <p className="ng-intro">Count a group, notice zero and number order, then compare two small groups. Optional previews explore operations, groups, place value, and fractions.</p>
       <aside className="ng-review" aria-label="Draft content review status">
         <strong>Draft preview</strong>
-        <p>The user reports approving MATH-03 and MATH-04 prompts through the decimal and percent preview. This version adds a new fraction number-line prompt, which still needs review. A grown-up can read every prompt and number aloud. This visit does not measure lasting math ability.</p>
+        <p>The user reports reviewing MATH-03 and MATH-04 prompts. The new MATH-05 shape and screen-measure preview needs review. A grown-up can read every prompt aloud. This visit does not measure lasting math ability.</p>
       </aside>
 
       {step === 0 && <section className="ng-panel" aria-labelledby="ng-start-title">
@@ -188,12 +216,14 @@ export function NumberGarden() {
         <p className="ng-recap"><strong>Optional preview · MATH-04 place value and fractions</strong><br/>Build a two-digit number from tens and ones, then read a fraction made from equal parts. This new preview is still draft content.</p>
         <p className="ng-recap"><strong>Optional preview · MATH-04 tenths and percent</strong><br/>Connect five tenths, 0.5, and 50% using the same ten-part bar. This new preview is still draft content.</p>
         <p className="ng-recap"><strong>Optional preview · MATH-04 fractions on a number line</strong><br/>Compare one quarter and three quarters using their positions from zero to one.</p>
+        <p className="ng-recap"><strong>Optional preview · MATH-05 shapes and measurement</strong><br/>Find a three-sided shape and compare two strips using equal on-screen units. The display is a learning model, not a real ruler.</p>
         <div className="ng-actions">
           <button className="ng-button primary" disabled={!ready} onClick={() => { setStep(1); setFeedback('Tap each seed once, then choose how many there are.'); }}>Begin Number Garden</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(11); setFeedback('MATH-03 draft preview: look at the equal groups.'); }}>Explore equal groups and sharing</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(15); setFeedback('MATH-04 draft preview: look at the tens and ones.'); }}>Explore tens and fractions</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(18); setFeedback('MATH-04 draft preview: count the shaded tenths.'); }}>Explore tenths and percent</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(21); setFeedback('MATH-04 draft preview: compare the fraction positions.'); }}>Explore fractions on a number line</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(23); setFeedback('MATH-05 draft preview: look for a shape with three straight sides.'); }}>Explore shapes and screen units</button>
         </div>
       </section>}
 
@@ -485,6 +515,42 @@ export function NumberGarden() {
         <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
       </section>}
 
+      {step === 23 && <section className="ng-panel" aria-labelledby="ng-shape-title">
+        <p className="ng-step">OPTIONAL PREVIEW · MATH-05 · 2D SHAPES</p>
+        <h2 id="ng-shape-title">Which shape has three straight sides?</h2>
+        <ShapeChoices disabled={paused} onChoose={(shape) => {
+          if (paused) return;
+          if (!shapeSidesAnswerIsCorrect(shape, 3)) {
+            setFeedback('Count only the straight sides. Try another shape.');
+            return;
+          }
+          setStep(24);
+          setFeedback('A triangle has three straight sides. Now compare two measured strips.');
+        }} />
+      </section>}
+
+      {step === 24 && <section className="ng-panel" aria-labelledby="ng-measure-title">
+        <p className="ng-step">OPTIONAL PREVIEW · MATH-05 · MEASURING LENGTH</p>
+        <h2 id="ng-measure-title">Which strip is longer when each equal block is one screen unit?</h2>
+        <p>Both strips start at the same place. Count the equal blocks. These are screen units, not centimetres or inches.</p>
+        <MeasureChoices disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          if (!longerScreenMeasureAnswerIsCorrect(answer, 3, 5)) {
+            setFeedback('Count the equal blocks from the shared starting point. Try again.');
+            return;
+          }
+          setStep(25);
+          setFeedback('The second strip covers five screen units, so it is longer than the three-unit strip.');
+        }} />
+      </section>}
+
+      {step === 25 && <section className="ng-panel" aria-labelledby="ng-math05-finish-title">
+        <p className="ng-step">MATH-05 DRAFT PREVIEW COMPLETE · NO SCORE SAVED</p>
+        <h2 id="ng-math05-finish-title">You found a triangle and compared measured lengths.</h2>
+        <p>The strip model uses equal on-screen units. It is not a calibrated real-world measuring tool.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
       {step === 5 && <section className="ng-panel" aria-labelledby="ng-add-title">
         <p className="ng-step">OPTIONAL PRACTICE · MATH-02 · ADD ONE</p>
         <h2 id="ng-add-title">Two seeds are here. Add one more.</h2>
@@ -517,7 +583,7 @@ export function NumberGarden() {
 
       {step > 0 && <><p className="ng-feedback" role="status" aria-live="polite">{feedback}</p><nav className="ng-session-controls" aria-label="Activity controls">{!paused && <button className="ng-button" onClick={() => setPaused(true)}>Pause</button>}<button className="ng-button" onClick={home}>Home</button><button className="ng-button" onClick={home}>Restart</button></nav></>}
 
-      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. The user reports approval of MATH-03 and MATH-04 prompts through decimal and percent practice. The fraction number-line prompt was added in version 9 and remains draft pending review. No score, profile, or progress record is made.</p></details>
+      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. The user reports reviewing the MATH-03 and MATH-04 prompts. The MATH-05 triangle and on-screen length prompts are new and remain draft pending review. Screen units are a diagram only, not a real measuring instrument. No score, profile, or progress record is made.</p></details>
     </main>
     <footer className="ng-footer">Practice for this visit only · no account · no saved child data</footer>
   </div>;

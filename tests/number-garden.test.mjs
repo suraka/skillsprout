@@ -10,6 +10,8 @@ import {
   equalFractionAnswerIsCorrect,
   decimalTenthsAnswerIsCorrect,
   fartherRightFractionAnswerIsCorrect,
+  shapeSidesAnswerIsCorrect,
+  longerScreenMeasureAnswerIsCorrect,
   isValidDecomposition,
   markSeedCounted,
   mathPublicationBlockers,
@@ -124,14 +126,27 @@ test('EDU-M14: fraction number-line comparison uses equivalent cross-products', 
   assert.equal(fartherRightFractionAnswerIsCorrect('1/0', 1, 4, 3, 4), false);
 });
 
+test('EDU-M15: shape choice matches its authored straight-side count', () => {
+  assert.equal(shapeSidesAnswerIsCorrect('triangle', 3), true);
+  assert.equal(shapeSidesAnswerIsCorrect('square', 3), false);
+  assert.equal(shapeSidesAnswerIsCorrect('circle', 0), true);
+  assert.equal(shapeSidesAnswerIsCorrect('hexagon', 6), false);
+});
+
+test('EDU-M16: screen-length comparison checks bounded whole equal units', () => {
+  assert.equal(longerScreenMeasureAnswerIsCorrect('right', 3, 5), true);
+  assert.equal(longerScreenMeasureAnswerIsCorrect('left', 3, 5), false);
+  assert.equal(longerScreenMeasureAnswerIsCorrect('right', 3.5, 5), false);
+  assert.equal(longerScreenMeasureAnswerIsCorrect('right', 11, 5), false);
+});
+
 test('EDU-M05: this is a guest draft with publication review still blocked', () => {
   assert.equal(numberGardenManifest.reviewStatus, 'draft');
-  assert.equal(numberGardenManifest.version, 9);
+  assert.equal(numberGardenManifest.version, 10);
   assert.equal(numberGardenManifest.requiresAccount, false);
   assert.equal(numberGardenManifest.requiresAi, false);
   assert.equal(numberGardenManifest.requiresCameraOrMic, false);
   assert.equal(numberGardenManifest.savesLearnerData, false);
   assert.ok(mathPublicationBlockers().length >= 4);
-  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('new MATH-03 equal-groups')));
-  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('fraction-number-line')));
+  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('MATH-05 shape and screen-measure')));
 });
