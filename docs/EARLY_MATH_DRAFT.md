@@ -1,22 +1,24 @@
 # Number Garden — early mathematics draft
 
 **Status: DRAFT / NOT APPROVED FOR PUBLICATION**  
-**Activity:** `math-number-garden-001`, version 1  
+**Activity:** `math-number-garden-001`, version 2
 **Language:** English text; exact locale and number narration are pending qualified review  
 **Evidence:** guest practice held only in the current page visit; never treated as mastery
 
 ## Scope
 
-This first slice covers a short progression from one-to-one counting to comparing two visible amounts, then adding one and taking one away. It uses fixed quantities from zero to five. It is a working guest preview, not the three reviewed units required for EDU-M2.
+This draft covers a short progression through one-to-one counting, cardinality, zero, number order, quantity comparison, then adding one and taking one away. It uses fixed quantities from zero to five. Version 2 adds an empty-garden zero task and a number-order task after review of the first CI run; it is still a working guest preview, not the three reviewed units required for EDU-M2.
 
 | Draft step | Intended practice | Fixed interaction |
 |---|---|---|
 | Count | Touch each distinct illustrated seed once, then choose the numeral for the set. | Five stable objects; repeat taps do not increase the count; wrong numeral can be retried. |
+| Zero | Match an empty garden to zero. | Empty set with explicit zero choice and fixed distractors. |
+| Number order | Select the numeral after three. | Visible zero-to-five number path; choose the next numeral with retry feedback. |
 | Compare | Identify which visible group has more. | Groups of three and four; fixed correct answer with count-again recovery. |
 | Add one | Observe the change from two objects to three. | One explicit Add button changes the visible set; choose the resulting amount. |
 | Take one away | Observe the change from four objects to three. | One explicit Take Away button changes the visible set; choose the amount left. |
 
-Every answer key and quantity is deterministic. The adult may read the exact on-screen question and numeral labels aloud. No supplied recording, built-in speech, external media, generated exercises, timer, score, streak, account or learner identifier is used. The fixed text and visuals are not yet checked for a particular English locale.
+Every answer key and quantity is deterministic. The adult may read the exact on-screen question and numeral labels aloud. No supplied recording, built-in speech, external media, generated exercises, timer, score, streak, account or learner identifier is used. The fixed text and visuals are not yet checked for a particular English locale. The comparison, addition and subtraction challenges are additional draft practice; they do not make MATH-02 a reviewed course.
 
 ## Guest privacy and function
 

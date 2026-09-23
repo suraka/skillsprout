@@ -26,6 +26,16 @@ test('EDU-MB01: counting, comparison and change activities recover from wrong an
   await expect(page.getByRole('status')).toContainText('Count each seed once and try again');
   await page.getByRole('button', { name: '5 seeds' }).click();
 
+  await expect(page.getByRole('heading', { name: 'The garden is empty. How many seeds are here?' })).toBeVisible();
+  await page.getByRole('button', { name: '2 seeds' }).click();
+  await expect(page.getByRole('status')).toContainText('number for no seeds');
+  await page.getByRole('button', { name: '0 seeds' }).click();
+
+  await expect(page.getByRole('heading', { name: 'Which number comes after three?' })).toBeVisible();
+  await page.getByRole('button', { name: '3 seeds' }).click();
+  await expect(page.getByRole('status')).toContainText('one step after three');
+  await page.getByRole('button', { name: '4 seeds' }).click();
+
   await page.getByRole('button', { name: 'Choose group of 3 seeds' }).click();
   await expect(page.getByRole('status')).toContainText('count the seeds in each group');
   await page.getByRole('button', { name: 'Choose group of 4 seeds' }).click();
@@ -41,7 +51,7 @@ test('EDU-MB01: counting, comparison and change activities recover from wrong an
   await page.getByRole('button', { name: '2 seeds' }).click();
   await expect(page.getByRole('status')).toContainText('Count the visible seeds and try again');
   await page.getByRole('button', { name: '3 seeds' }).click();
-  await expect(page.getByRole('heading', { name: 'You explored four number ideas.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'You explored six number ideas.' })).toBeVisible();
   await expect(page.getByText('This describes practice in this visit. It is not a score or a measure of lasting math skill.')).toBeVisible();
   await page.getByRole('button', { name: 'Finish and clear this visit' }).click();
   await expect(page.getByRole('heading', { name: 'Count, compare, and notice a change.' })).toBeVisible();

@@ -87,7 +87,7 @@ Release status remains PARTIAL / BLOCKED FOR RELEASE. No qualified literacy, loc
 
 ## EDU-M2 first mathematics draft — Number Garden
 
-Implementation adds `/learning/number-garden` as a guest-only draft with four fixed steps: count five stable seed objects once each, compare groups of three and four, add one to two, and take one away from four. Wrong answers give count-again/recovery prompts. Its local manifest explicitly blocks publication pending qualified review. No database, feature API, Firebase, cookie, localStorage or sessionStorage writes are added.
+Implementation adds `/learning/number-garden` as a guest-only draft. Version 2 has six short challenges: count five stable seed objects once each, match an empty garden to zero, find the number after three, compare groups of three and four, add one to two, and take one away from four. Wrong answers give recovery prompts. Its local manifest explicitly blocks publication pending qualified review. No database, feature API, Firebase, cookie, localStorage or sessionStorage writes are added.
 
 Local verification after the change:
 
@@ -97,7 +97,7 @@ Local verification after the change:
 - `pnpm build`: PASS; production route list includes `/learning/number-garden`.
 - Local `pnpm exec playwright test --grep EDU-MB`: BLOCKED before browser assertions because this workspace lacks Playwright's Chromium executable. GitHub CI provides the browser execution evidence below.
 
-CI follow-up: the first full run exposed two real gaps. The server-rendered start button could receive a click before hydration attached its handler, and the root family provider made an unnecessary `/api/config` request on this guest route. The start control now remains disabled until client hydration is ready, and the route bypasses the account/catalog provider. CI also caught a duplicate Resume control in the paused state, which was removed.
+CI follow-up: the first full run exposed two real gaps. The server-rendered start button could receive a click before hydration attached its handler, and the root family provider made an unnecessary `/api/config` request on this guest route. The start control now remains disabled until client hydration is ready, and the route bypasses the account/catalog provider. CI also caught a duplicate Resume control in the paused state, which was removed. Follow-up CI passed all 20 browser tests. The next Number Garden revision adds zero and number-order challenges with fixed retry checks; its browser verification is pending CI.
 
 Verified final rerun: [Frontend checks 35841877262](https://github.com/suraka/skillsprout/actions/runs/35841877262), commit `56c5722000659e7c4d71fe44da1e0e4a25f8adc5`, passed frozen install, TypeScript, all 26 runtime tests, all 20 Chromium browser tests, and production build. Browser assertions confirmed the full activity/recovery flow, offline pause/resume, no API or external requests, no browser-storage writes, and mobile-width fit. Earlier failed runs exposed the issues above; they are resolved by this verified head.
 

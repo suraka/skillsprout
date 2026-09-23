@@ -9,7 +9,9 @@ import {
   countAnswerIsCorrect,
   countIsComplete,
   markSeedCounted,
+  nextNumberAfterIsCorrect,
   seedSet,
+  zeroAnswerIsCorrect,
 } from '@/lib/math/number-garden';
 import './number-garden.css';
 
@@ -23,9 +25,9 @@ function Seeds({ count, label }: { count: number; label: string }) {
   </div>;
 }
 
-function NumeralChoices({ onChoose, disabled = false }: { onChoose: (value: number) => void; disabled?: boolean }) {
+function NumeralChoices({ onChoose, disabled = false, values = [2, 3, 4, 5] }: { onChoose: (value: number) => void; disabled?: boolean; values?: number[] }) {
   return <div className="ng-numerals" role="group" aria-label="Choose a number">
-    {[2, 3, 4, 5].map((value) => <button type="button" className="ng-numeral" disabled={disabled} key={value} onClick={() => onChoose(value)} aria-label={`${value} seeds`}>
+    {values.map((value) => <button type="button" className="ng-numeral" disabled={disabled} key={value} onClick={() => onChoose(value)} aria-label={`${value} seeds`}>
       <span aria-hidden="true">{value}</span><small>{value === 1 ? 'seed' : 'seeds'}</small>
     </button>)}
   </div>;
@@ -75,7 +77,7 @@ export function NumberGarden() {
       return;
     }
     setStep(2);
-    setFeedback('You counted the group. Now compare two gardens.');
+    setFeedback('You counted the group. Next, notice what zero means.');
   }
 
   function chooseGroup(side: 'left' | 'right') {
@@ -84,7 +86,7 @@ export function NumberGarden() {
       setFeedback('Take another look. You can count the seeds in each group, one at a time.');
       return;
     }
-    setStep(3);
+    setStep(5);
     setFeedback('You found the group with more. Next, watch what changes when a seed is added.');
   }
 
@@ -94,11 +96,11 @@ export function NumberGarden() {
       setFeedback(`That number is not the amount after we ${label} yet. Count the visible seeds and try again.`);
       return;
     }
-    if (step === 3) {
-      setStep(4);
+    if (step === 5) {
+      setStep(6);
       setFeedback('You counted after adding one. Now see what happens when one is taken away.');
     } else {
-      setStep(5);
+      setStep(7);
       setFeedback('You counted the seeds after one was taken away. This was practice in this visit.');
     }
   }
@@ -140,19 +142,21 @@ export function NumberGarden() {
       </aside>
 
       {step === 0 && <section className="ng-panel" aria-labelledby="ng-start-title">
-        <p className="ng-step">FOUR SHORT GARDEN CHALLENGES · SMALL WHOLE NUMBERS</p>
+        <p className="ng-step">SIX SHORT GARDEN CHALLENGES · SMALL WHOLE NUMBERS</p>
         <h2 id="ng-start-title">Count, compare, and notice a change.</h2>
         <ol className="ng-lessons">
           <li><span>1</span><div><strong>Count the seeds</strong><small>Tap each illustrated seed once.</small></div></li>
-          <li><span>2</span><div><strong>Find the larger group</strong><small>Look closely or count together.</small></div></li>
-          <li><span>3</span><div><strong>Add one</strong><small>Watch the group change.</small></div></li>
-          <li><span>4</span><div><strong>Take one away</strong><small>Count how many remain.</small></div></li>
+          <li><span>2</span><div><strong>Notice zero</strong><small>What number tells us the garden is empty?</small></div></li>
+          <li><span>3</span><div><strong>Put numbers in order</strong><small>Find the number that comes after three.</small></div></li>
+          <li><span>4</span><div><strong>Find the larger group</strong><small>Look closely or count together.</small></div></li>
+          <li><span>5</span><div><strong>Add one</strong><small>Watch the group change.</small></div></li>
+          <li><span>6</span><div><strong>Take one away</strong><small>Count how many remain.</small></div></li>
         </ol>
         <div className="ng-actions"><button className="ng-button primary" disabled={!ready} onClick={() => { setStep(1); setFeedback('Tap each seed once, then choose how many there are.'); }}>Begin Number Garden</button></div>
       </section>}
 
       {step === 1 && <section className="ng-panel" aria-labelledby="ng-count-title">
-        <p className="ng-step">CHALLENGE 1 OF 4 · ONE-TO-ONE COUNTING</p>
+        <p className="ng-step">CHALLENGE 1 OF 6 · ONE-TO-ONE COUNTING</p>
         <h2 id="ng-count-title">Tap each seed once. How many are there?</h2>
         <p>Each seed stays in the same place. If you tap one twice, it still counts as just one seed.</p>
         <div className="ng-seed-row" role="group" aria-label="Five seeds to count">
@@ -164,8 +168,40 @@ export function NumberGarden() {
         <NumeralChoices onChoose={chooseCount} disabled={paused}/>
       </section>}
 
-      {step === 2 && <section className="ng-panel" aria-labelledby="ng-compare-title">
-        <p className="ng-step">CHALLENGE 2 OF 4 · COMPARE QUANTITIES</p>
+      {step === 2 && <section className="ng-panel" aria-labelledby="ng-zero-title">
+        <p className="ng-step">CHALLENGE 2 OF 6 · ZERO AND QUANTITY</p>
+        <h2 id="ng-zero-title">The garden is empty. How many seeds are here?</h2>
+        <Seeds count={0} label="Empty garden" />
+        <p>An empty group has no seeds. Choose the number that tells us there are none.</p>
+        <NumeralChoices values={[0, 2, 3, 4]} onChoose={(value) => {
+          if (paused) return;
+          if (!zeroAnswerIsCorrect(value)) {
+            setFeedback('Look at the empty garden. Choose the number for no seeds.');
+            return;
+          }
+          setStep(3);
+          setFeedback('That is zero. Now put the numbers in order.');
+        }} disabled={paused} />
+      </section>}
+
+      {step === 3 && <section className="ng-panel" aria-labelledby="ng-order-title">
+        <p className="ng-step">CHALLENGE 3 OF 6 · NUMBER ORDER</p>
+        <h2 id="ng-order-title">Which number comes after three?</h2>
+        <ol className="ng-number-line" aria-label="Numbers in order from zero to five">{[0, 1, 2, 3, 4, 5].map((number) => <li key={number}>{number}</li>)}</ol>
+        <p>Follow the numbers from left to right. Choose the next number after three.</p>
+        <NumeralChoices onChoose={(value) => {
+          if (paused) return;
+          if (!nextNumberAfterIsCorrect(3, value)) {
+            setFeedback('Follow the number path one step after three, then try again.');
+            return;
+          }
+          setStep(4);
+          setFeedback('Four comes after three. Now compare two gardens.');
+        }} disabled={paused} />
+      </section>}
+
+      {step === 4 && <section className="ng-panel" aria-labelledby="ng-compare-title">
+        <p className="ng-step">CHALLENGE 4 OF 6 · COMPARE QUANTITIES</p>
         <h2 id="ng-compare-title">Which group has more seeds?</h2>
         <p>A grown-up can read the question aloud. You can also count the visible seeds in each group.</p>
         <div className="ng-compare-grid">
@@ -178,8 +214,8 @@ export function NumberGarden() {
         </div>
       </section>}
 
-      {step === 3 && <section className="ng-panel" aria-labelledby="ng-add-title">
-        <p className="ng-step">CHALLENGE 3 OF 4 · ADD ONE</p>
+      {step === 5 && <section className="ng-panel" aria-labelledby="ng-add-title">
+        <p className="ng-step">CHALLENGE 5 OF 6 · ADD ONE</p>
         <h2 id="ng-add-title">Two seeds are here. Add one more.</h2>
         <Seeds count={added ? 3 : 2} label="Garden after adding one"/>
         <div className="ng-actions"><button className="ng-button" disabled={added || paused} onClick={addOne}>Add one seed</button></div>
@@ -187,8 +223,8 @@ export function NumberGarden() {
         <NumeralChoices onChoose={(value) => chooseChange(value, changeAmount(2, 1), 'added one')} disabled={!added || paused}/>
       </section>}
 
-      {step === 4 && <section className="ng-panel" aria-labelledby="ng-take-title">
-        <p className="ng-step">CHALLENGE 4 OF 4 · TAKE ONE AWAY</p>
+      {step === 6 && <section className="ng-panel" aria-labelledby="ng-take-title">
+        <p className="ng-step">CHALLENGE 6 OF 6 · TAKE ONE AWAY</p>
         <h2 id="ng-take-title">Four seeds are here. Take one away.</h2>
         <Seeds count={removed ? 3 : 4} label="Garden after taking one away"/>
         <div className="ng-actions"><button className="ng-button" disabled={removed || paused} onClick={takeOne}>Take one seed away</button></div>
@@ -196,10 +232,10 @@ export function NumberGarden() {
         <NumeralChoices onChoose={(value) => chooseChange(value, changeAmount(4, -1), 'took one away')} disabled={!removed || paused}/>
       </section>}
 
-      {step === 5 && <section className="ng-panel" aria-labelledby="ng-finish-title">
+      {step === 7 && <section className="ng-panel" aria-labelledby="ng-finish-title">
         <p className="ng-step">END OF THIS VISIT · NO SCORE SAVED</p>
-        <h2 id="ng-finish-title">You explored four number ideas.</h2>
-        <p>You practiced touching each object once, comparing two groups, adding one, and taking one away.</p>
+        <h2 id="ng-finish-title">You explored six number ideas.</h2>
+        <p>You practiced touching each object once, noticing zero, ordering numbers, comparing groups, adding one, and taking one away.</p>
         <Seeds count={3} label="Three seeds in the garden"/>
         <div className="ng-recap"><strong>Try it away from the screen</strong><p>With a grown-up, count a few safe household objects. Add one, take one away, and talk about what changed.</p></div>
         <p className="ng-disclaimer">This describes practice in this visit. It is not a score or a measure of lasting math skill.</p>

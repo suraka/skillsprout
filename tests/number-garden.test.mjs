@@ -9,7 +9,9 @@ import {
   markSeedCounted,
   mathPublicationBlockers,
   numberGardenManifest,
+  nextNumberAfterIsCorrect,
   seedSet,
+  zeroAnswerIsCorrect,
 } from '../.math-test-build/number-garden.js';
 
 test('EDU-M01: each stable seed is counted once, even with a rapid repeated tap', () => {
@@ -33,6 +35,16 @@ test('EDU-M03: comparison evaluator agrees with the stable visible quantities', 
   assert.equal(compareAnswerIsCorrect('left'), false);
 });
 
+test('EDU-M06: zero and number-order answer checks reject invalid values', () => {
+  assert.equal(zeroAnswerIsCorrect(0), true);
+  assert.equal(zeroAnswerIsCorrect(1), false);
+  assert.equal(zeroAnswerIsCorrect(0.5), false);
+  assert.equal(nextNumberAfterIsCorrect(3, 4), true);
+  assert.equal(nextNumberAfterIsCorrect(3, 3), false);
+  assert.equal(nextNumberAfterIsCorrect(5, 6), false);
+  assert.equal(nextNumberAfterIsCorrect(3.2, 4), false);
+});
+
 test('EDU-M04: adding and taking away use bounded, deterministic quantities', () => {
   assert.equal(changeAmount(2, 1), 3);
   assert.equal(changeAmount(4, -1), 3);
@@ -44,6 +56,7 @@ test('EDU-M04: adding and taking away use bounded, deterministic quantities', ()
 
 test('EDU-M05: this is a guest draft with publication review still blocked', () => {
   assert.equal(numberGardenManifest.reviewStatus, 'draft');
+  assert.equal(numberGardenManifest.version, 2);
   assert.equal(numberGardenManifest.requiresAccount, false);
   assert.equal(numberGardenManifest.requiresAi, false);
   assert.equal(numberGardenManifest.requiresCameraOrMic, false);

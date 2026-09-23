@@ -1,6 +1,6 @@
 export const numberGardenManifest = {
   activityId: 'math-number-garden-001',
-  version: 1,
+  version: 2,
   language: 'en',
   localeVariant: 'pending_qualified_review',
   reviewStatus: 'draft',
@@ -38,6 +38,15 @@ export function countIsComplete(counted: readonly string[]): boolean {
 
 export function countAnswerIsCorrect(answer: number): boolean {
   return Number.isInteger(answer) && answer === seedSet.length;
+}
+
+export function zeroAnswerIsCorrect(answer: number): boolean {
+  return Number.isInteger(answer) && answer === 0;
+}
+
+export function nextNumberAfterIsCorrect(current: number, answer: number): boolean {
+  return Number.isInteger(current) && Number.isInteger(answer)
+    && current >= 0 && current < 5 && answer === current + 1;
 }
 
 export function compareAnswerIsCorrect(selected: 'left' | 'right'): boolean {
