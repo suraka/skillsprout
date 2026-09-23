@@ -95,6 +95,7 @@ Implemented means source functionality exists; verified scope is separately stat
 - [x] Verify version 8 MATH-04 decimal/percent extension in GitHub CI: [run 35884632920](https://github.com/suraka/skillsprout/actions/runs/35884632920), 34 runtime tests, 23 Chromium browser tests, TypeScript and production build passed on `c4c0f33afebddd89bbc8510597d488b24483adbb`.
 - [x] Record the user report that the MATH-04 decimal/percent prompts were reviewed.
 - [x] Add a draft fraction comparison on a number line with runtime and browser recovery coverage.
+- [x] Verify version 9 MATH-04 number-line comparison in GitHub CI: [run 35886656831](https://github.com/suraka/skillsprout/actions/runs/35886656831), 35 runtime tests, 24 Chromium browser tests, TypeScript and production build passed on `b4f1f7d5ee95476d462789c6101816ddc106280f`.
 - [ ] Review the new fraction-number-line prompt; complete remaining MATH-04 objectives and build MATH-05…06 as separate tested slices.
 - [x] Verify version 6 MATH-03 draft in GitHub CI: [run 35871683522](https://github.com/suraka/skillsprout/actions/runs/35871683522), 30 runtime tests, 21 Chromium browser tests, TypeScript and production build passed on `7a60b53fab05ef3cab7c85376942c17b5bad3dbb`.
 - [x] Verify version 7 MATH-04 draft in GitHub CI: [run 35874071554](https://github.com/suraka/skillsprout/actions/runs/35874071554), 32 runtime tests, 22 Chromium browser tests, TypeScript and production build passed on `c114416345c796177a7bf09d3350f69bc897ded3`.
