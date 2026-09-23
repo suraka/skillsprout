@@ -1,8 +1,8 @@
 export const numberGardenManifest = {
   activityId: 'math-number-garden-001',
-  version: 15,
+  version: 16,
   language: 'en',
-  localeVariant: 'en_v2_m02_m03_m04_m05_token_comparison_draft',
+  localeVariant: 'en_v2_m02_m03_m04_m05_m06_data_draft',
   reviewStatus: 'draft',
   requiresAccount: false,
   requiresAi: false,
@@ -200,12 +200,26 @@ export function pretendTokenPurseWithMorePointsAnswerIsCorrect(
   return leftTotal !== rightTotal && answer === (leftTotal > rightTotal ? 'left' : 'right');
 }
 
+export function mostSproutsBedAnswerIsCorrect(
+  answer: string,
+  data: readonly { bed: string; sprouts: number }[],
+): boolean {
+  if (data.length < 2 || data.length > 8) return false;
+  const names = data.map((entry) => entry.bed);
+  if (names.some((name) => typeof name !== 'string' || name.trim().length === 0)
+    || new Set(names).size !== names.length
+    || data.some((entry) => !Number.isInteger(entry.sprouts) || entry.sprouts < 0 || entry.sprouts > 10)) return false;
+  const highest = Math.max(...data.map((entry) => entry.sprouts));
+  const winners = data.filter((entry) => entry.sprouts === highest);
+  return winners.length === 1 && answer === winners[0].bed;
+}
+
 export function mathPublicationBlockers(): string[] {
   return [
-    'The user reports reviewing the version-14 pretend-token amount prompt; the new MATH-05 purse-comparison prompt is a draft and needs review.',
+    'The user reports reviewing Number Garden prompts through version 15 and additional MATH-05 prompt materials; the new MATH-06 data-reading draft needs review.',
     'The user reports reviewing the MATH-05 solid-shape and unit-cube volume prompts; reviewer identities and findings are not attached to this draft.',
     'Review completion for version-2 and MATH-02 through MATH-05 prompts is reported by the user; reviewer identities and findings are not attached to this draft.',
     'The activity remains a draft and has not been separately authorized for publication or merge.',
-    'EDU-M2 still requires remaining MATH-05 measurement outcomes and MATH-06 outcomes.',
+    'EDU-M2 still requires remaining MATH-05 implementation outcomes and the complete MATH-06 sequence.',
   ];
 }

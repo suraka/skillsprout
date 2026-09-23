@@ -18,6 +18,7 @@ import {
   heavierBalanceSideAnswerIsCorrect,
   pretendTokenAmountAnswerIsCorrect,
   pretendTokenPurseWithMorePointsAnswerIsCorrect,
+  mostSproutsBedAnswerIsCorrect,
   isValidDecomposition,
   markSeedCounted,
   mathPublicationBlockers,
@@ -179,14 +180,14 @@ test('EDU-M20: balance answer matches the heavier bounded unit-mass side', () =>
 
 test('EDU-M05: this is a guest draft with publication review still blocked', () => {
   assert.equal(numberGardenManifest.reviewStatus, 'draft');
-  assert.equal(numberGardenManifest.version, 15);
+  assert.equal(numberGardenManifest.version, 16);
   assert.equal(numberGardenManifest.requiresAccount, false);
   assert.equal(numberGardenManifest.requiresAi, false);
   assert.equal(numberGardenManifest.requiresCameraOrMic, false);
   assert.equal(numberGardenManifest.savesLearnerData, false);
   assert.ok(mathPublicationBlockers().length >= 3);
   assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('reviewing the MATH-05 solid-shape and unit-cube volume')));
-  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('purse-comparison')));
+  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('MATH-06 data-reading')));
 });
 
 
@@ -206,4 +207,15 @@ test('EDU-M22: pretend-purse comparison totals bounded token points', () => {
   assert.equal(pretendTokenPurseWithMorePointsAnswerIsCorrect('left', [2], [1, 1]), false);
   assert.equal(pretendTokenPurseWithMorePointsAnswerIsCorrect('left', [2, 0], [1]), false);
   assert.equal(pretendTokenPurseWithMorePointsAnswerIsCorrect('left', [2, 1, 1, 1, 1, 1], [1]), false);
+});
+
+
+test('EDU-M23: synthetic sprout table has one bounded largest value', () => {
+  const data = [{ bed: 'Bean bed', sprouts: 4 }, { bed: 'Sunflower bed', sprouts: 2 }, { bed: 'Basil bed', sprouts: 3 }];
+  assert.equal(mostSproutsBedAnswerIsCorrect('Bean bed', data), true);
+  assert.equal(mostSproutsBedAnswerIsCorrect('Basil bed', data), false);
+  assert.equal(mostSproutsBedAnswerIsCorrect('Bean bed', [{ bed: 'A', sprouts: 4 }, { bed: 'B', sprouts: 4 }]), false);
+  assert.equal(mostSproutsBedAnswerIsCorrect('A', [{ bed: 'A', sprouts: -1 }, { bed: 'B', sprouts: 0 }]), false);
+  assert.equal(mostSproutsBedAnswerIsCorrect('A', [{ bed: 'A', sprouts: 2 }, { bed: 'A', sprouts: 1 }]), false);
+  assert.equal(mostSproutsBedAnswerIsCorrect('A', [{ bed: 'A', sprouts: 2 }]), false);
 });

@@ -25,6 +25,7 @@ import {
   heavierBalanceSideAnswerIsCorrect,
   pretendTokenAmountAnswerIsCorrect,
   pretendTokenPurseWithMorePointsAnswerIsCorrect,
+  mostSproutsBedAnswerIsCorrect,
   nextNumberAfterIsCorrect,
   seedSet,
   zeroAnswerIsCorrect,
@@ -55,9 +56,9 @@ function FractionChoices({ onChoose }: { onChoose: (answer: string) => void }) {
   </div>;
 }
 
-function TextChoices({ label, choices, onChoose }: { label: string; choices: string[]; onChoose: (answer: string) => void }) {
+function TextChoices({ label, choices, onChoose, disabled = false }: { label: string; choices: string[]; onChoose: (answer: string) => void; disabled?: boolean }) {
   return <div className="ng-split-choices" role="group" aria-label={label}>
-    {choices.map((choice) => <button type="button" className="ng-button ng-split-choice" key={choice} onClick={() => onChoose(choice)}>{choice}</button>)}
+    {choices.map((choice) => <button type="button" className="ng-button ng-split-choice" key={choice} disabled={disabled} onClick={() => onChoose(choice)}>{choice}</button>)}
   </div>;
 }
 
@@ -163,6 +164,20 @@ function BalanceModel() {
     {[0, 1, 2].map((index) => <rect key={`left-${index}`} x={22 + index * 11} y="94" width="9" height="13" rx="2" className="ng-balance-weight" />)}
     {[0, 1].map((index) => <rect key={`right-${index}`} x={150 + index * 11} y="65" width="9" height="13" rx="2" className="ng-balance-weight" />)}
   </svg>;
+}
+
+const sampleSproutData = [
+  { bed: 'Bean bed', sprouts: 4 },
+  { bed: 'Sunflower bed', sprouts: 2 },
+  { bed: 'Basil bed', sprouts: 3 },
+] as const;
+
+function SproutDataTable() {
+  return <table className="ng-data-table" aria-label="Made-up number of sprouts in three pretend garden beds">
+    <caption>Made-up practice data · sprouts in pretend beds</caption>
+    <thead><tr><th scope="col">Pretend bed</th><th scope="col">Sprouts</th></tr></thead>
+    <tbody>{sampleSproutData.map(({ bed, sprouts }) => <tr key={bed}><th scope="row">{bed}</th><td>{sprouts}</td></tr>)}</tbody>
+  </table>;
 }
 
 function TokenPurseModel({ values, label }: { values: number[]; label: string }) {
@@ -293,7 +308,7 @@ export function NumberGarden() {
       <p className="ng-intro">Count a group, notice zero and number order, then compare two small groups. Optional previews explore operations, groups, place value, and fractions.</p>
       <aside className="ng-review" aria-label="Draft content review status">
         <strong>Draft preview</strong>
-        <p>The user reports reviewing MATH-05 prompts through version 14, as well as MATH-03 and MATH-04. The new version 15 pretend-purse comparison needs review. A grown-up can read every prompt aloud. This visit does not measure lasting math ability.</p>
+        <p>The user reports reviewing MATH-05 prompts through version 15 and additional MATH-05 lesson material. The new version 16 MATH-06 data-reading preview needs review. A grown-up can read every prompt aloud. This visit does not measure lasting math ability.</p>
       </aside>
 
       {step === 0 && <section className="ng-panel" aria-labelledby="ng-start-title">
@@ -314,7 +329,8 @@ export function NumberGarden() {
         <p className="ng-recap"><strong>Optional preview · MATH-05 telling time</strong><br/>Read a clock when the minute hand points to 12. The user reports reviewing this prompt.</p>
         <p className="ng-recap"><strong>Optional preview · MATH-05 comparing mass</strong><br/>Compare identical unit weights on a balance; the user reports reviewing this prompt.</p>
         <p className="ng-recap"><strong>New preview · MATH-05 pretend tokens</strong><br/>Add make-believe token values; the user reports reviewing this prompt. These are not real money or local currency.</p>
-        <p className="ng-recap"><strong>New draft · MATH-05 comparing pretend points</strong><br/>Compare two make-believe purses with token points; this new prompt needs review. It does not use real currency.</p>
+        <p className="ng-recap"><strong>Preview · MATH-05 comparing pretend points</strong><br/>Compare two make-believe purses with token points; the user reports reviewing this prompt. It does not use real currency.</p>
+        <p className="ng-recap"><strong>New draft · MATH-06 data detective</strong><br/>Read a small made-up table and find which pretend garden bed has the most sprouts. This prompt needs review.</p>
         <div className="ng-actions">
           <button className="ng-button primary" disabled={!ready} onClick={() => { setStep(1); setFeedback('Tap each seed once, then choose how many there are.'); }}>Begin Number Garden</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(11); setFeedback('MATH-03 draft preview: look at the equal groups.'); }}>Explore equal groups and sharing</button>
@@ -326,7 +342,8 @@ export function NumberGarden() {
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(29); setFeedback('MATH-05 time draft: look at both clock hands.'); }}>Explore telling time</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(31); setFeedback('MATH-05 mass preview: compare the identical unit weights.'); }}>Explore comparing mass</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(33); setFeedback('MATH-05 pretend-token preview: add the point values.'); }}>Explore pretend tokens</button>
-          <button className="ng-button" disabled={!ready} onClick={() => { setStep(35); setFeedback('MATH-05 draft: compare the points in both pretend purses.'); }}>Compare pretend purses</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(35); setFeedback('MATH-05 preview: compare the points in both pretend purses.'); }}>Compare pretend purses</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(37); setFeedback('MATH-06 draft: read the made-up sprout data.'); }}>Explore sprout data</button>
         </div>
       </section>}
 
@@ -786,6 +803,29 @@ export function NumberGarden() {
         <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
       </section>}
 
+      {step === 37 && <section className="ng-panel" aria-labelledby="ng-data-title">
+        <p className="ng-step">NEW DRAFT PREVIEW · MATH-06 · READING A DATA TABLE</p>
+        <h2 id="ng-data-title">Which pretend bed has the most sprouts?</h2>
+        <p>This is a small made-up example. Read the number in each row and compare.</p>
+        <SproutDataTable />
+        <TextChoices label="Choose the pretend bed with the most sprouts" choices={sampleSproutData.map((entry) => entry.bed)} disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          if (!mostSproutsBedAnswerIsCorrect(answer, sampleSproutData)) {
+            setFeedback('Look at the three numbers and choose the largest one. Try again.');
+            return;
+          }
+          setStep(38);
+          setFeedback('Four is the greatest number in this made-up table, so the bean bed has the most sprouts.');
+        }} />
+      </section>}
+
+      {step === 38 && <section className="ng-panel" aria-labelledby="ng-data-finish-title">
+        <p className="ng-step">MATH-06 DATA DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-data-finish-title">The bean bed has the most sprouts in this example.</h2>
+        <p>The table uses made-up practice data. It does not describe a real garden or predict how plants grow.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
       {step === 5 && <section className="ng-panel" aria-labelledby="ng-add-title">
         <p className="ng-step">OPTIONAL PRACTICE · MATH-02 · ADD ONE</p>
         <h2 id="ng-add-title">Two seeds are here. Add one more.</h2>
@@ -818,7 +858,7 @@ export function NumberGarden() {
 
       {step > 0 && <><p className="ng-feedback" role="status" aria-live="polite">{feedback}</p><nav className="ng-session-controls" aria-label="Activity controls">{!paused && <button className="ng-button" onClick={() => setPaused(true)}>Pause</button>}<button className="ng-button" onClick={home}>Home</button><button className="ng-button" onClick={home}>Restart</button></nav></>}
 
-      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. The user reports reviewing MATH-05 prompts through version 12, and MATH-03/MATH-04 prompts. The new version 13 balance and unit-mass prompt needs review. On-screen units, cubes, clock, and balance are learning models. No score, profile, or progress record is made.</p></details>
+      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. The user reports reviewing MATH-05 prompts through version 15, including version 13 balance and version 14/15 pretend-token prompts, and additional planned real-currency/further MATH-05 materials. The new version 16 MATH-06 data-reading prompt needs review. On-screen units, cubes, clock, and balance are learning models. No score, profile, or progress record is made.</p></details>
     </main>
     <footer className="ng-footer">Practice for this visit only · no account · no saved child data</footer>
   </div>;

@@ -252,3 +252,17 @@ test('EDU-MB12: MATH-05 compares two pretend purses by their token points', asyn
   await expect(page.getByRole('heading', { name: 'The first purse has more pretend points.' })).toBeVisible();
   await expect(page.getByText('Three pretend points are more than two. This example does not teach real prices or currency.')).toBeVisible();
 });
+
+
+test('EDU-MB13: MATH-06 reads a made-up sprout table and retries after a wrong choice', async ({ page }) => {
+  await page.goto(route);
+  await page.getByRole('button', { name: 'Explore sprout data' }).click();
+  await expect(page.getByRole('heading', { name: 'Which pretend bed has the most sprouts?' })).toBeVisible();
+  await expect(page.getByRole('table', { name: 'Made-up number of sprouts in three pretend garden beds' })).toBeVisible();
+  await expect(page.getByRole('cell', { name: '4' })).toBeVisible();
+  await page.getByRole('button', { name: 'Basil bed' }).click();
+  await expect(page.getByRole('status')).toContainText('choose the largest one');
+  await page.getByRole('button', { name: 'Bean bed' }).click();
+  await expect(page.getByRole('heading', { name: 'The bean bed has the most sprouts in this example.' })).toBeVisible();
+  await expect(page.getByText('The table uses made-up practice data. It does not describe a real garden or predict how plants grow.')).toBeVisible();
+});
