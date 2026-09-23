@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import {
   amountAnswerIsCorrect,
@@ -12,6 +12,10 @@ import {
   seedSet,
 } from '@/lib/math/number-garden';
 import './number-garden.css';
+
+const subscribe = () => () => {};
+const clientReady = () => true;
+const serverReady = () => false;
 
 function Seeds({ count, label }: { count: number; label: string }) {
   return <div className="ng-seeds" role="img" aria-label={`${label}: ${count} seeds`}>
@@ -28,6 +32,9 @@ function NumeralChoices({ onChoose, disabled = false }: { onChoose: (value: numb
 }
 
 export function NumberGarden() {
+  // Keep the server-rendered start control inert until React has attached its
+  // event handlers. This prevents an early tap from being lost during hydration.
+  const ready = useSyncExternalStore(subscribe, clientReady, serverReady);
   const [step, setStep] = useState(0);
   const [counted, setCounted] = useState<string[]>([]);
   const [added, setAdded] = useState(false);
@@ -141,7 +148,7 @@ export function NumberGarden() {
           <li><span>3</span><div><strong>Add one</strong><small>Watch the group change.</small></div></li>
           <li><span>4</span><div><strong>Take one away</strong><small>Count how many remain.</small></div></li>
         </ol>
-        <div className="ng-actions"><button className="ng-button primary" onClick={() => { setStep(1); setFeedback('Tap each seed once, then choose how many there are.'); }}>Begin Number Garden</button></div>
+        <div className="ng-actions"><button className="ng-button primary" disabled={!ready} onClick={() => { setStep(1); setFeedback('Tap each seed once, then choose how many there are.'); }}>Begin Number Garden</button></div>
       </section>}
 
       {step === 1 && <section className="ng-panel" aria-labelledby="ng-count-title">
