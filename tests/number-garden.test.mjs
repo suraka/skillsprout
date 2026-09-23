@@ -19,6 +19,7 @@ import {
   pretendTokenAmountAnswerIsCorrect,
   pretendTokenPurseWithMorePointsAnswerIsCorrect,
   mostSproutsBedAnswerIsCorrect,
+  nextAlternatingShapeAnswerIsCorrect,
   isValidDecomposition,
   markSeedCounted,
   mathPublicationBlockers,
@@ -180,14 +181,14 @@ test('EDU-M20: balance answer matches the heavier bounded unit-mass side', () =>
 
 test('EDU-M05: this is a guest draft with publication review still blocked', () => {
   assert.equal(numberGardenManifest.reviewStatus, 'draft');
-  assert.equal(numberGardenManifest.version, 16);
+  assert.equal(numberGardenManifest.version, 17);
   assert.equal(numberGardenManifest.requiresAccount, false);
   assert.equal(numberGardenManifest.requiresAi, false);
   assert.equal(numberGardenManifest.requiresCameraOrMic, false);
   assert.equal(numberGardenManifest.savesLearnerData, false);
   assert.ok(mathPublicationBlockers().length >= 3);
   assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('reviewing the MATH-05 solid-shape and unit-cube volume')));
-  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('MATH-06 data-reading')));
+  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('through version 17')));
 });
 
 
@@ -218,4 +219,14 @@ test('EDU-M23: synthetic sprout table has one bounded largest value', () => {
   assert.equal(mostSproutsBedAnswerIsCorrect('A', [{ bed: 'A', sprouts: -1 }, { bed: 'B', sprouts: 0 }]), false);
   assert.equal(mostSproutsBedAnswerIsCorrect('A', [{ bed: 'A', sprouts: 2 }, { bed: 'A', sprouts: 1 }]), false);
   assert.equal(mostSproutsBedAnswerIsCorrect('A', [{ bed: 'A', sprouts: 2 }]), false);
+});
+
+
+test('EDU-M24: alternating shape sequence validates the next shape', () => {
+  assert.equal(nextAlternatingShapeAnswerIsCorrect('triangle', ['circle', 'triangle', 'circle', 'triangle', 'circle']), true);
+  assert.equal(nextAlternatingShapeAnswerIsCorrect('circle', ['circle', 'triangle', 'circle', 'triangle', 'circle']), false);
+  assert.equal(nextAlternatingShapeAnswerIsCorrect('circle', ['circle', 'circle', 'circle']), false);
+  assert.equal(nextAlternatingShapeAnswerIsCorrect('triangle', ['circle', 'triangle']), false);
+  assert.equal(nextAlternatingShapeAnswerIsCorrect('triangle', ['circle', 'triangle', 'square']), false);
+  assert.equal(nextAlternatingShapeAnswerIsCorrect('triangle', ['circle', 'triangle', 'circle', 'triangle', 'circle', 'triangle', 'circle', 'triangle', 'circle', 'triangle', 'circle']), false);
 });

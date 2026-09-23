@@ -1,8 +1,8 @@
 export const numberGardenManifest = {
   activityId: 'math-number-garden-001',
-  version: 16,
+  version: 17,
   language: 'en',
-  localeVariant: 'en_v2_m02_m03_m04_m05_m06_data_draft',
+  localeVariant: 'en_v2_m02_m03_m04_m05_m06_pattern_draft',
   reviewStatus: 'draft',
   requiresAccount: false,
   requiresAi: false,
@@ -214,9 +214,20 @@ export function mostSproutsBedAnswerIsCorrect(
   return winners.length === 1 && answer === winners[0].bed;
 }
 
+export function nextAlternatingShapeAnswerIsCorrect(answer: string, sequence: readonly string[]): boolean {
+  const allowed = new Set(['circle', 'triangle']);
+  if (sequence.length < 3 || sequence.length > 10 || sequence.some((shape) => !allowed.has(shape))) return false;
+  const first = sequence[0];
+  const second = sequence[1];
+  if (first === second) return false;
+  const followsAlternation = sequence.every((shape, index) => shape === (index % 2 === 0 ? first : second));
+  if (!followsAlternation) return false;
+  return answer === (sequence.length % 2 === 0 ? first : second);
+}
+
 export function mathPublicationBlockers(): string[] {
   return [
-    'The user reports reviewing Number Garden prompts through version 15 and additional MATH-05 prompt materials; the new MATH-06 data-reading draft needs review.',
+    'The user reports reviewing Number Garden prompts through version 17 and additional MATH-05 prompt materials; formal reviewer identities and findings are not attached to this draft.',
     'The user reports reviewing the MATH-05 solid-shape and unit-cube volume prompts; reviewer identities and findings are not attached to this draft.',
     'Review completion for version-2 and MATH-02 through MATH-05 prompts is reported by the user; reviewer identities and findings are not attached to this draft.',
     'The activity remains a draft and has not been separately authorized for publication or merge.',

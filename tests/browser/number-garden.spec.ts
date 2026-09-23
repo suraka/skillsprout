@@ -266,3 +266,15 @@ test('EDU-MB13: MATH-06 reads a made-up sprout table and retries after a wrong c
   await expect(page.getByRole('heading', { name: 'The bean bed has the most sprouts in this example.' })).toBeVisible();
   await expect(page.getByText('The table uses made-up practice data. It does not describe a real garden or predict how plants grow.')).toBeVisible();
 });
+
+
+test('EDU-MB14: MATH-06 completes a repeating shape pattern with retry feedback', async ({ page }) => {
+  await page.goto(route);
+  await page.getByRole('button', { name: 'Explore shape pattern' }).click();
+  await expect(page.getByRole('heading', { name: 'Which shape comes next?' })).toBeVisible();
+  await expect(page.getByRole('list', { name: 'Pattern sequence: circle, triangle, circle, triangle, circle, then a blank space' })).toBeVisible();
+  await page.getByRole('button', { name: 'Circle' }).click();
+  await expect(page.getByRole('status')).toContainText('Which one comes after the last circle?');
+  await page.getByRole('button', { name: 'Triangle' }).click();
+  await expect(page.getByRole('heading', { name: 'Triangle comes next in this repeating pattern.' })).toBeVisible();
+});

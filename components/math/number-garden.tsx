@@ -26,6 +26,7 @@ import {
   pretendTokenAmountAnswerIsCorrect,
   pretendTokenPurseWithMorePointsAnswerIsCorrect,
   mostSproutsBedAnswerIsCorrect,
+  nextAlternatingShapeAnswerIsCorrect,
   nextNumberAfterIsCorrect,
   seedSet,
   zeroAnswerIsCorrect,
@@ -308,7 +309,7 @@ export function NumberGarden() {
       <p className="ng-intro">Count a group, notice zero and number order, then compare two small groups. Optional previews explore operations, groups, place value, and fractions.</p>
       <aside className="ng-review" aria-label="Draft content review status">
         <strong>Draft preview</strong>
-        <p>The user reports reviewing MATH-05 prompts through version 15 and additional MATH-05 lesson material. The new version 16 MATH-06 data-reading preview needs review. A grown-up can read every prompt aloud. This visit does not measure lasting math ability.</p>
+        <p>The user reports reviewing Number Garden prompts through version 17 and additional MATH-05 lesson material. A grown-up can read every prompt aloud. This visit does not measure lasting math ability.</p>
       </aside>
 
       {step === 0 && <section className="ng-panel" aria-labelledby="ng-start-title">
@@ -330,7 +331,8 @@ export function NumberGarden() {
         <p className="ng-recap"><strong>Optional preview · MATH-05 comparing mass</strong><br/>Compare identical unit weights on a balance; the user reports reviewing this prompt.</p>
         <p className="ng-recap"><strong>New preview · MATH-05 pretend tokens</strong><br/>Add make-believe token values; the user reports reviewing this prompt. These are not real money or local currency.</p>
         <p className="ng-recap"><strong>Preview · MATH-05 comparing pretend points</strong><br/>Compare two make-believe purses with token points; the user reports reviewing this prompt. It does not use real currency.</p>
-        <p className="ng-recap"><strong>New draft · MATH-06 data detective</strong><br/>Read a small made-up table and find which pretend garden bed has the most sprouts. This prompt needs review.</p>
+        <p className="ng-recap"><strong>Draft preview · MATH-06 data detective</strong><br/>Read a small made-up table and find which pretend garden bed has the most sprouts; the user reports reviewing this prompt.</p>
+        <p className="ng-recap"><strong>New draft · MATH-06 shape pattern</strong><br/>Use a repeating circle-and-triangle pattern to choose what comes next; the user reports reviewing this prompt.</p>
         <div className="ng-actions">
           <button className="ng-button primary" disabled={!ready} onClick={() => { setStep(1); setFeedback('Tap each seed once, then choose how many there are.'); }}>Begin Number Garden</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(11); setFeedback('MATH-03 draft preview: look at the equal groups.'); }}>Explore equal groups and sharing</button>
@@ -344,6 +346,7 @@ export function NumberGarden() {
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(33); setFeedback('MATH-05 pretend-token preview: add the point values.'); }}>Explore pretend tokens</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(35); setFeedback('MATH-05 preview: compare the points in both pretend purses.'); }}>Compare pretend purses</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(37); setFeedback('MATH-06 draft: read the made-up sprout data.'); }}>Explore sprout data</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(39); setFeedback('MATH-06 draft: notice how the two shapes repeat.'); }}>Explore shape pattern</button>
         </div>
       </section>}
 
@@ -826,6 +829,35 @@ export function NumberGarden() {
         <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
       </section>}
 
+      {step === 39 && <section className="ng-panel" aria-labelledby="ng-pattern-title">
+        <p className="ng-step">NEW DRAFT PREVIEW · MATH-06 · REPEATING SHAPE PATTERN</p>
+        <h2 id="ng-pattern-title">Which shape comes next?</h2>
+        <p>Look at the shapes in order. Notice how the two-shape pattern repeats.</p>
+        <ol className="ng-shape-pattern" aria-label="Pattern sequence: circle, triangle, circle, triangle, circle, then a blank space">
+          {['circle', 'triangle', 'circle', 'triangle', 'circle'].map((shape, index) => <li key={`${shape}-${index}`}>
+            <span className={`ng-pattern-shape ng-pattern-${shape}`} aria-hidden="true">{shape === 'circle' ? '●' : '▲'}</span>
+            <span>{shape === 'circle' ? 'Circle' : 'Triangle'}</span>
+          </li>)}
+          <li><span className="ng-pattern-blank" aria-hidden="true">?</span><span>Next</span></li>
+        </ol>
+        <TextChoices label="Choose the next shape in the repeating pattern" choices={['Circle', 'Triangle', 'Square']} disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          if (!nextAlternatingShapeAnswerIsCorrect(answer.toLowerCase(), ['circle', 'triangle', 'circle', 'triangle', 'circle'])) {
+            setFeedback('The circle and triangle take turns. Which one comes after the last circle?');
+            return;
+          }
+          setStep(40);
+          setFeedback('The shapes take turns: circle, triangle, circle, triangle, circle, then triangle.');
+        }} />
+      </section>}
+
+      {step === 40 && <section className="ng-panel" aria-labelledby="ng-pattern-finish-title">
+        <p className="ng-step">MATH-06 PATTERN DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-pattern-finish-title">Triangle comes next in this repeating pattern.</h2>
+        <p>The two shapes take turns. This is a small pattern example, not a claim about every pattern.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
       {step === 5 && <section className="ng-panel" aria-labelledby="ng-add-title">
         <p className="ng-step">OPTIONAL PRACTICE · MATH-02 · ADD ONE</p>
         <h2 id="ng-add-title">Two seeds are here. Add one more.</h2>
@@ -858,7 +890,7 @@ export function NumberGarden() {
 
       {step > 0 && <><p className="ng-feedback" role="status" aria-live="polite">{feedback}</p><nav className="ng-session-controls" aria-label="Activity controls">{!paused && <button className="ng-button" onClick={() => setPaused(true)}>Pause</button>}<button className="ng-button" onClick={home}>Home</button><button className="ng-button" onClick={home}>Restart</button></nav></>}
 
-      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. The user reports reviewing MATH-05 prompts through version 15, including version 13 balance and version 14/15 pretend-token prompts, and additional planned real-currency/further MATH-05 materials. The new version 16 MATH-06 data-reading prompt needs review. On-screen units, cubes, clock, and balance are learning models. No score, profile, or progress record is made.</p></details>
+      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. The user reports reviewing Number Garden prompts through version 17 and additional planned real-currency/further MATH-05 materials. On-screen units, cubes, clock, and balance are learning models. No score, profile, or progress record is made.</p></details>
     </main>
     <footer className="ng-footer">Practice for this visit only · no account · no saved child data</footer>
   </div>;
