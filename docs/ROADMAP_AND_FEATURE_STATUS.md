@@ -90,6 +90,7 @@ Implemented means source functionality exists; verified scope is separately stat
 - [x] Record user approval of the MATH-02 prompts.
 - [x] Add draft MATH-03 equal-groups, array, and equal-sharing previews with runtime and browser coverage.
 - [ ] Review the new MATH-03 prompts; build MATH-04…06 as separate tested slices.
+- [x] Verify version 6 MATH-03 draft in GitHub CI: [run 35871683522](https://github.com/suraka/skillsprout/actions/runs/35871683522), 30 runtime tests, 21 Chromium browser tests, TypeScript and production build passed on `7a60b53fab05ef3cab7c85376942c17b5bad3dbb`.
 - [x] Extend Number Garden with zero and number-order draft challenges and deterministic answer checks; [CI 35844395876](https://github.com/suraka/skillsprout/actions/runs/35844395876) passed all 27 runtime tests, 20 Chromium browser tests, TypeScript and production build on `0936a51aacc62c35b8efe78a2f142996670d0255`.
 - [x] Group Number Garden into three number lessons with clearly optional number-change practice; [CI 35849147816](https://github.com/suraka/skillsprout/actions/runs/35849147816) passed all 27 runtime tests, 20 Chromium browser tests, TypeScript and production build on `8f6065b0f13f1db1329e3dbaa03b01a113a923bd`.
 
