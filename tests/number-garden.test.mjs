@@ -21,8 +21,8 @@ import {
   mostSproutsBedAnswerIsCorrect,
   nextAlternatingShapeAnswerIsCorrect,
   alternatingShapeRuleAnswerIsCorrect,
-  ghanaCoinValueAnswerIsCorrect,
-  ghanaCoinTotalAnswerIsCorrect,
+  usMoneyValueAnswerIsCorrect,
+  usMoneyTotalAnswerIsCorrect,
   unitCubeVolumeComparisonAnswerIsCorrect,
   quarterTurnDirectionAnswerIsCorrect,
   rectanglePerimeterAnswerIsCorrect,
@@ -196,14 +196,14 @@ test('EDU-M20: balance answer matches the heavier bounded unit-mass side', () =>
 
 test('EDU-M05: this is a guest draft with publication review still blocked', () => {
   assert.equal(numberGardenManifest.reviewStatus, 'draft');
-  assert.equal(numberGardenManifest.version, 19);
+  assert.equal(numberGardenManifest.version, 20);
   assert.equal(numberGardenManifest.requiresAccount, false);
   assert.equal(numberGardenManifest.requiresAi, false);
   assert.equal(numberGardenManifest.requiresCameraOrMic, false);
   assert.equal(numberGardenManifest.savesLearnerData, false);
   assert.ok(mathPublicationBlockers().length >= 3);
   assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('reviewing the MATH-05 solid-shape and unit-cube volume')));
-  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('through version 17')));
+  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('Version 20')));
 });
 
 
@@ -246,16 +246,16 @@ test('EDU-M24: alternating shape sequence validates the next shape', () => {
   assert.equal(nextAlternatingShapeAnswerIsCorrect('triangle', ['circle', 'triangle', 'circle', 'triangle', 'circle', 'triangle', 'circle', 'triangle', 'circle', 'triangle', 'circle']), false);
 });
 
-test('EDU-M25: Ghana coin values use whole pesewas and accepted denominations', () => {
-  assert.equal(ghanaCoinValueAnswerIsCorrect(200, 200), true);
-  assert.equal(ghanaCoinValueAnswerIsCorrect(100, 200), false);
-  assert.equal(ghanaCoinValueAnswerIsCorrect(150, 150), false);
-  assert.equal(ghanaCoinValueAnswerIsCorrect(200.5, 200), false);
-  assert.equal(ghanaCoinTotalAnswerIsCorrect(150, [100, 50]), true);
-  assert.equal(ghanaCoinTotalAnswerIsCorrect(150, [100, 20]), false);
-  assert.equal(ghanaCoinTotalAnswerIsCorrect(70, [50, 20]), true);
-  assert.equal(ghanaCoinTotalAnswerIsCorrect(70, [50, 20, 1.5]), false);
-  assert.equal(ghanaCoinTotalAnswerIsCorrect(70, [50]), false);
+test('EDU-M25: U.S. dollar and cent values use integer cents and valid denominations', () => {
+  assert.equal(usMoneyValueAnswerIsCorrect(100, 100), true);
+  assert.equal(usMoneyValueAnswerIsCorrect(25, 100), false);
+  assert.equal(usMoneyValueAnswerIsCorrect(100, 125), false);
+  assert.equal(usMoneyValueAnswerIsCorrect(100.5, 100), false);
+  assert.equal(usMoneyTotalAnswerIsCorrect(125, [100, 25]), true);
+  assert.equal(usMoneyTotalAnswerIsCorrect(105, [100, 25]), false);
+  assert.equal(usMoneyTotalAnswerIsCorrect(75, [50, 25]), true);
+  assert.equal(usMoneyTotalAnswerIsCorrect(75, [50, 20, 1.5]), false);
+  assert.equal(usMoneyTotalAnswerIsCorrect(50, [50]), false);
 });
 
 test('EDU-M26: unit-cube volume comparison uses bounded box dimensions', () => {
@@ -350,6 +350,6 @@ test('EDU-M37: addition function rule matches every bounded input-output fixture
 
 test('EDU-M06: newer lessons remain draft until the new review gates are documented', () => {
   assert.equal(numberGardenManifest.reviewStatus, 'draft');
-  assert.equal(numberGardenManifest.version, 19);
-  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('Version 19 geometry, measurement, chance, ratio, and algebra')));
+  assert.equal(numberGardenManifest.version, 20);
+  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('Version 20')));
 });

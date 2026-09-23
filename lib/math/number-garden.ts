@@ -1,8 +1,8 @@
 export const numberGardenManifest = {
   activityId: 'math-number-garden-001',
-  version: 19,
+  version: 20,
   language: 'en',
-  localeVariant: 'en_GH_v19_m05_geometry_measurement_m06_chance_ratio_algebra_draft',
+  localeVariant: 'en_US_v20_m05_geometry_measurement_usd_m06_chance_ratio_algebra_draft',
   reviewStatus: 'draft',
   requiresAccount: false,
   requiresAi: false,
@@ -225,20 +225,20 @@ export function nextAlternatingShapeAnswerIsCorrect(answer: string, sequence: re
   return answer === (sequence.length % 2 === 0 ? first : second);
 }
 
-const ghanaCoinDenominationsPesewas = [1, 5, 10, 20, 50, 100, 200] as const;
+const usCurrencyDenominationsCents = [1, 5, 10, 25, 50, 100, 200] as const;
 
-export function ghanaCoinValueAnswerIsCorrect(answerPesewas: number, expectedPesewas: number): boolean {
-  return Number.isInteger(answerPesewas)
-    && ghanaCoinDenominationsPesewas.includes(answerPesewas as (typeof ghanaCoinDenominationsPesewas)[number])
-    && answerPesewas === expectedPesewas;
+export function usMoneyValueAnswerIsCorrect(answerCents: number, expectedCents: number): boolean {
+  return Number.isInteger(answerCents)
+    && usCurrencyDenominationsCents.includes(expectedCents as (typeof usCurrencyDenominationsCents)[number])
+    && answerCents === expectedCents;
 }
 
-export function ghanaCoinTotalAnswerIsCorrect(answerPesewas: number, coinValuesPesewas: readonly number[]): boolean {
-  return Number.isInteger(answerPesewas)
-    && coinValuesPesewas.length >= 2 && coinValuesPesewas.length <= 4
-    && coinValuesPesewas.every((value) => Number.isInteger(value)
-      && ghanaCoinDenominationsPesewas.includes(value as (typeof ghanaCoinDenominationsPesewas)[number]))
-    && answerPesewas === coinValuesPesewas.reduce((sum, value) => sum + value, 0);
+export function usMoneyTotalAnswerIsCorrect(answerCents: number, valuesCents: readonly number[]): boolean {
+  return Number.isInteger(answerCents) && answerCents > 0 && answerCents <= 10000
+    && valuesCents.length >= 2 && valuesCents.length <= 4
+    && valuesCents.every((value) => Number.isInteger(value)
+      && usCurrencyDenominationsCents.includes(value as (typeof usCurrencyDenominationsCents)[number]))
+    && answerCents === valuesCents.reduce((sum, value) => sum + value, 0);
 }
 
 export function unitCubeVolumeComparisonAnswerIsCorrect(
@@ -270,10 +270,10 @@ export function rectanglePerimeterAnswerIsCorrect(answer: number, rows: number, 
     && answer === 2 * (rows + columns);
 }
 
-export function modelRulerLengthAnswerIsCorrect(answerCm: number, startMark: number, endMark: number): boolean {
-  return Number.isInteger(answerCm) && Number.isInteger(startMark) && Number.isInteger(endMark)
+export function modelRulerLengthAnswerIsCorrect(answerUnits: number, startMark: number, endMark: number): boolean {
+  return Number.isInteger(answerUnits) && Number.isInteger(startMark) && Number.isInteger(endMark)
     && startMark >= 0 && startMark <= 12 && endMark > startMark && endMark <= 12
-    && answerCm === endMark - startMark;
+    && answerUnits === endMark - startMark;
 }
 
 export function elapsedWholeHoursAnswerIsCorrect(answerHours: number, startHour: number, endHour: number): boolean {
@@ -354,11 +354,11 @@ export function alternatingShapeRuleAnswerIsCorrect(answer: string, sequence: re
 
 export function mathPublicationBlockers(): string[] {
   return [
-    'The user reports reviewing Number Garden prompts through version 17 and the source prompts for additional MATH-05 work; the version 18 visual implementation and formal review records are not separately documented.',
+    'Version 20 replaces the earlier currency sample with a U.S. dollar and cents lesson; new U.S. wording and screen rendering need recorded review.',
     'The user reports reviewing the MATH-05 solid-shape and unit-cube volume prompts; reviewer identities and findings are not attached to this draft.',
     'Review completion for version-2 and MATH-02 through MATH-05 prompts is reported by the user; reviewer identities and findings are not attached to this draft.',
     'The new MATH-06 chart-building, claim-checking, and pattern-rule wording needs review.',
-    'Version 19 geometry, measurement, chance, ratio, and algebra prompts need separate recorded content review.',
+    'Version 20 U.S. money/ruler wording and geometry, measurement, chance, ratio, and algebra prompts need separate recorded content review.',
     'The activity remains a draft and has not been separately authorized for publication or merge.',
     'EDU-M2 still requires broader MATH-05 outcomes and MATH-06 outcomes beyond this draft sequence; qualified and manual review gates remain open.',
   ];

@@ -279,20 +279,20 @@ test('EDU-MB14: MATH-06 completes a repeating shape pattern with retry feedback'
   await expect(page.getByRole('heading', { name: 'Triangle comes next in this repeating pattern.' })).toBeVisible();
 });
 
-test('EDU-MB15: MATH-05 Ghana coin lesson uses real values with recovery and no purchase prompt', async ({ page }) => {
+test('EDU-MB15: MATH-05 U.S. dollar lesson uses real values with recovery and no purchase prompt', async ({ page }) => {
   await page.goto(route);
-  await page.getByRole('button', { name: 'Explore Ghana cedi coins' }).click();
-  await expect(page.getByRole('heading', { name: 'A coin is worth GH¢2. How many pesewas is that?' })).toBeVisible();
-  await expect(page.getByText('100 pesewas make one cedi')).toBeVisible();
-  await page.getByRole('button', { name: '100 pesewas' }).click();
-  await expect(page.getByRole('status')).toContainText('Count two groups of 100');
-  await page.getByRole('button', { name: '200 pesewas' }).click();
-  await expect(page.getByRole('heading', { name: 'How much are one GH¢1 coin and one 50-pesewa coin together?' })).toBeVisible();
-  await page.getByRole('button', { name: 'GH¢1.05' }).click();
-  await expect(page.getByRole('status')).toContainText('Start with GH¢1, then add half a cedi');
-  await page.getByRole('button', { name: 'GH¢1.50' }).click();
-  await expect(page.getByRole('heading', { name: 'You read coin values and added an amount.' })).toBeVisible();
-  await expect(page.getByText(/No cash is needed|buy anything|not shopping advice/)).toBeVisible();
+  await page.getByRole('button', { name: 'Explore U.S. dollars and cents' }).click();
+  await expect(page.getByRole('heading', { name: 'A $1 bill is worth how many cents?' })).toBeVisible();
+  await expect(page.getByText('One U.S. dollar is 100 cents')).toBeVisible();
+  await page.getByRole('button', { name: '50 cents' }).click();
+  await expect(page.getByRole('status')).toContainText('One U.S. dollar is 100 cents');
+  await page.getByRole('button', { name: '100 cents' }).click();
+  await expect(page.getByRole('heading', { name: 'How much are a $1 bill and one 25-cent quarter together?' })).toBeVisible();
+  await page.getByRole('button', { name: '$1.05' }).click();
+  await expect(page.getByRole('status')).toContainText('Start with 100 cents, then add 25 cents');
+  await page.getByRole('button', { name: '$1.25' }).click();
+  await expect(page.getByRole('heading', { name: 'You matched a dollar to cents and added a quarter.' })).toBeVisible();
+  await expect(page.getByText(/No cash is needed|nothing is for sale/)).toBeVisible();
 });
 
 test('EDU-MB16: MATH-05 compares drawn unit-cube volumes with wrong-answer recovery', async ({ page }) => {
@@ -359,10 +359,10 @@ test('EDU-MB19: MATH-05 ruler, duration and mass illustrations explain their lim
   await page.getByRole('button', { name: 'Measure a length on a model ruler' }).click();
   await expect(page.getByRole('img', { name: 'Illustrated ruler and leaf' })).toBeVisible();
   await expect(page.getByText(/not a calibrated ruler/)).toBeVisible();
-  await page.getByRole('button', { name: '5 cm' }).click();
+  await page.getByRole('button', { name: '5 inches' }).click();
   await expect(page.getByRole('status')).toContainText('starts after zero');
-  await page.getByRole('button', { name: '4 cm' }).click();
-  await expect(page.getByRole('heading', { name: 'The drawn leaf is 4 cm long.' })).toBeVisible();
+  await page.getByRole('button', { name: '4 inches' }).click();
+  await expect(page.getByRole('heading', { name: 'The drawn leaf is 4 inches long.' })).toBeVisible();
   await page.getByRole('button', { name: 'Finish and clear this visit' }).click();
 
   await page.getByRole('button', { name: 'Measure elapsed time' }).click();

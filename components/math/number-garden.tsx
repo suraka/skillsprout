@@ -28,8 +28,8 @@ import {
   mostSproutsBedAnswerIsCorrect,
   nextAlternatingShapeAnswerIsCorrect,
   alternatingShapeRuleAnswerIsCorrect,
-  ghanaCoinValueAnswerIsCorrect,
-  ghanaCoinTotalAnswerIsCorrect,
+  usMoneyValueAnswerIsCorrect,
+  usMoneyTotalAnswerIsCorrect,
   unitCubeVolumeComparisonAnswerIsCorrect,
   quarterTurnDirectionAnswerIsCorrect,
   rectanglePerimeterAnswerIsCorrect,
@@ -196,27 +196,27 @@ function SproutDataTable() {
   </table>;
 }
 
-function GhanaCoinChoices({ onChoose, disabled = false }: { onChoose: (valuePesewas: number) => void; disabled?: boolean }) {
+function UsMoneyValueChoices({ onChoose, disabled = false }: { onChoose: (valueCents: number) => void; disabled?: boolean }) {
   const choices = [
-    { value: 200, label: '200 pesewas' },
-    { value: 100, label: '100 pesewas' },
-    { value: 50, label: '50 pesewas' },
+    { value: 100, label: '100 cents' },
+    { value: 50, label: '50 cents' },
+    { value: 25, label: '25 cents' },
   ];
-  return <div className="ng-split-choices" role="group" aria-label="Choose the coin value">
+  return <div className="ng-split-choices" role="group" aria-label="Choose the value in cents">
     {choices.map(({ value, label }) => <button type="button" className="ng-button ng-split-choice" key={value} disabled={disabled} onClick={() => onChoose(value)}>{label}</button>)}
   </div>;
 }
 
-function GhanaTotalChoices({ onChoose, disabled = false }: { onChoose: (valuePesewas: number) => void; disabled?: boolean }) {
+function UsMoneyTotalChoices({ onChoose, disabled = false }: { onChoose: (valueCents: number) => void; disabled?: boolean }) {
   return <div className="ng-split-choices" role="group" aria-label="Choose the total amount">
-    {[150, 105, 50].map((value) => <button type="button" className="ng-button ng-split-choice" key={value} disabled={disabled} onClick={() => onChoose(value)}>{`GH¢${(value / 100).toFixed(2)}`}</button>)}
+    {[150, 105, 125].map((value) => <button type="button" className="ng-button ng-split-choice" key={value} disabled={disabled} onClick={() => onChoose(value)}>{`$${(value / 100).toFixed(2)}`}</button>)}
   </div>;
 }
 
-function GhanaCoinDisplay({ coins, label }: { coins: readonly { value: string; spokenValue: string }[]; label: string }) {
+function UsMoneyDisplay({ money, label }: { money: readonly { value: string; spokenValue: string; kind: 'bill' | 'coin' }[]; label: string }) {
   return <ul className="ng-coin-row" aria-label={label}>
-    {coins.map(({ value, spokenValue }, index) => <li className="ng-coin" key={`${value}-${index}`} aria-label={`${spokenValue} coin`}>
-      <strong>{value}</strong><span>coin</span>
+    {money.map(({ value, spokenValue, kind }, index) => <li className="ng-coin" key={`${value}-${index}`} aria-label={`${spokenValue} ${kind}`}>
+      <strong>{value}</strong><span>{kind}</span>
     </li>)}
   </ul>;
 }
@@ -379,7 +379,7 @@ export function NumberGarden() {
         <p className="ng-intro">Count a group, notice zero and number order, then compare two small groups. Optional previews explore operations, geometry, measurement, data, and patterns.</p>
       <aside className="ng-review" aria-label="Draft content review status">
         <strong>Draft preview</strong>
-        <p>The user reports reviewing Number Garden prompts through version 17, plus source material for further MATH-05 lessons. Versions 18 and 19 add draft practice for geometry, measurement, and MATH-06 data, chance, ratio, and algebra. A grown-up can read every prompt aloud. This visit does not measure lasting math ability.</p>
+        <p>The user reports reviewing Number Garden prompts through version 17, plus source material for further MATH-05 lessons. Version 20 uses U.S. dollars and cents; geometry, measurement, and MATH-06 reasoning remain draft practice. A grown-up can read every prompt aloud. This visit does not measure lasting math ability.</p>
       </aside>
 
       {step === 0 && <section className="ng-panel" aria-labelledby="ng-start-title">
@@ -399,14 +399,14 @@ export function NumberGarden() {
         <p className="ng-recap"><strong>Optional preview · MATH-05 solids and volume</strong><br/>Recognize a sphere and count unit cubes across two layers.</p>
         <p className="ng-recap"><strong>Optional preview · MATH-05 telling time</strong><br/>Read a clock when the minute hand points to 12. The user reports reviewing this prompt.</p>
         <p className="ng-recap"><strong>Optional preview · MATH-05 comparing mass</strong><br/>Compare identical unit weights on a balance; the user reports reviewing this prompt.</p>
-        <p className="ng-recap"><strong>Reviewed prompt material · MATH-05 Ghana cedi</strong><br/>Recognize GH¢1, GH¢2, and 50-pesewa coin values and add two coin values. This Ghana English example does not ask anyone to handle or spend cash.</p>
+        <p className="ng-recap"><strong>U.S. money example · MATH-05</strong><br/>Match a $1 bill to 100 cents, then add a quarter (25 cents) to one dollar. No cash handling or purchase is involved.</p>
         <p className="ng-recap"><strong>Further preview · MATH-05 volume</strong><br/>Compare two boxes made from drawn unit cubes. The drawings are models, not physical measurements.</p>
         <p className="ng-recap"><strong>New preview · MATH-05 pretend tokens</strong><br/>Add make-believe token values; the user reports reviewing this prompt. These are not real money or local currency.</p>
         <p className="ng-recap"><strong>Preview · MATH-05 comparing pretend points</strong><br/>Compare two make-believe purses with token points; the user reports reviewing this prompt. It does not use real currency.</p>
         <p className="ng-recap"><strong>Draft preview · MATH-06 data detective</strong><br/>Read a small made-up table and find which pretend garden bed has the most sprouts; the user reports reviewing this prompt.</p>
         <p className="ng-recap"><strong>New draft · MATH-06 shape pattern</strong><br/>Use a repeating circle-and-triangle pattern to choose what comes next; the user reports reviewing this prompt.</p>
         <p className="ng-recap"><strong>Draft sequence · MATH-06 data and patterns</strong><br/>Build a chart from the made-up table, check a claim against it, then describe the repeating shape rule.</p>
-        <p className="ng-recap"><strong>Draft preview · MATH-05 geometry and measurement</strong><br/>Turn an arrow, find a rectangle&apos;s perimeter, read a drawn metric ruler, compare whole-hour duration, and measure mass using equal model units.</p>
+        <p className="ng-recap"><strong>Draft preview · MATH-05 geometry and measurement</strong><br/>Turn an arrow, find a rectangle&apos;s perimeter, read a drawn inch ruler, compare whole-hour duration, and measure mass using equal model units.</p>
         <p className="ng-recap"><strong>Older-learner drafts · MATH-06 reasoning</strong><br/>Compare which made-up outcome is more likely, find an equivalent ratio, and identify an add-three function rule.</p>
         <div className="ng-actions">
           <button className="ng-button primary" disabled={!ready} onClick={() => { setStep(1); setFeedback('Tap each seed once, then choose how many there are.'); }}>Begin Number Garden</button>
@@ -418,7 +418,7 @@ export function NumberGarden() {
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(26); setFeedback('MATH-05 draft preview: look for the solid with no flat faces.'); }}>Explore solids and volume</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(29); setFeedback('MATH-05 time draft: look at both clock hands.'); }}>Explore telling time</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(31); setFeedback('MATH-05 mass preview: compare the identical unit weights.'); }}>Explore comparing mass</button>
-          <button className="ng-button" disabled={!ready} onClick={() => { setStep(41); setFeedback('MATH-05 Ghana cedi example: read the coin value. No cash is needed.'); }}>Explore Ghana cedi coins</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(41); setFeedback('MATH-05 U.S. money example: match the dollar value to cents. No cash is needed.'); }}>Explore U.S. dollars and cents</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(44); setFeedback('MATH-05 volume preview: compare the unit-cube boxes.'); }}>Compare unit-cube volume</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(33); setFeedback('MATH-05 pretend-token preview: add the point values.'); }}>Explore pretend tokens</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(35); setFeedback('MATH-05 preview: compare the points in both pretend purses.'); }}>Compare pretend purses</button>
@@ -739,7 +739,7 @@ export function NumberGarden() {
       {step === 24 && <section className="ng-panel" aria-labelledby="ng-measure-title">
         <p className="ng-step">OPTIONAL PREVIEW · MATH-05 · MEASURING LENGTH</p>
         <h2 id="ng-measure-title">Which strip is longer when each equal block is one screen unit?</h2>
-        <p>Both strips start at the same place. Count the equal blocks. These are screen units, not centimetres or inches.</p>
+        <p>Both strips start at the same place. Count the equal blocks. These are screen units, not real-world measurement units.</p>
         <MeasureChoices disabled={paused} onChoose={(answer) => {
           if (paused) return;
           if (!longerScreenMeasureAnswerIsCorrect(answer, 3, 5)) {
@@ -942,44 +942,44 @@ export function NumberGarden() {
         <div className="ng-actions"><button className="ng-button primary" onClick={() => { setStep(50); setFeedback('Choose the rule that describes the whole repeating pattern.'); }}>Continue to choose the rule</button><button className="ng-button" onClick={home}>Finish and clear this visit</button></div>
       </section>}
 
-      {step === 41 && <section className="ng-panel" aria-labelledby="ng-ghana-coin-title">
-        <p className="ng-step">REVIEWED PROMPT MATERIAL · MATH-05 · GHANA CEDI EXAMPLE</p>
-        <h2 id="ng-ghana-coin-title">A coin is worth GH¢2. How many pesewas is that?</h2>
-        <GhanaCoinDisplay coins={[{ value: 'GH¢2', spokenValue: 'two cedi' }]} label="One Ghana cedi coin labelled GH¢2" />
-        <p>In this Ghana example, 100 pesewas make one cedi. Read the coin value, then choose the matching amount.</p>
-        <GhanaCoinChoices disabled={paused} onChoose={(answer) => {
+      {step === 41 && <section className="ng-panel" aria-labelledby="ng-us-money-title">
+        <p className="ng-step">MATH-05 · U.S. DOLLAR AND CENTS EXAMPLE</p>
+        <h2 id="ng-us-money-title">A $1 bill is worth how many cents?</h2>
+        <UsMoneyDisplay money={[{ value: '$1', spokenValue: 'one U.S. dollar', kind: 'bill' }]} label="One U.S. one-dollar bill" />
+        <p>One U.S. dollar is 100 cents. Read the bill value, then choose the matching amount in cents.</p>
+        <UsMoneyValueChoices disabled={paused} onChoose={(answer) => {
           if (paused) return;
-          if (!ghanaCoinValueAnswerIsCorrect(answer, 200)) {
-            setFeedback('One cedi is 100 pesewas. Count two groups of 100 and try again.');
+          if (!usMoneyValueAnswerIsCorrect(answer, 100)) {
+            setFeedback('One U.S. dollar is 100 cents. Try again.');
             return;
           }
           setStep(42);
-          setFeedback('GH¢2 equals 200 pesewas. Next, add the values of two coins.');
+          setFeedback('One U.S. dollar equals 100 cents. Next, add a dollar and a quarter.');
         }} />
-        <p className="ng-disclaimer">A text-only Ghana currency example for learning. No cash is needed; this does not ask you to buy anything.</p>
+        <p className="ng-disclaimer">This U.S. money example uses text labels only. No cash is needed and nothing is for sale.</p>
       </section>}
 
-      {step === 42 && <section className="ng-panel" aria-labelledby="ng-ghana-total-title">
-        <p className="ng-step">MATH-05 · ADDING GHANA COIN VALUES</p>
-        <h2 id="ng-ghana-total-title">How much are one GH¢1 coin and one 50-pesewa coin together?</h2>
-        <GhanaCoinDisplay coins={[{ value: 'GH¢1', spokenValue: 'one cedi' }, { value: '50 pesewas', spokenValue: 'fifty pesewas' }]} label="Two Ghana coins: GH¢1 and 50 pesewas" />
-        <p>Use the coin values shown. Choose the total in cedis.</p>
-        <GhanaTotalChoices disabled={paused} onChoose={(answer) => {
+      {step === 42 && <section className="ng-panel" aria-labelledby="ng-us-money-total-title">
+        <p className="ng-step">MATH-05 · ADDING U.S. MONEY VALUES</p>
+        <h2 id="ng-us-money-total-title">How much are a $1 bill and one 25-cent quarter together?</h2>
+        <UsMoneyDisplay money={[{ value: '$1', spokenValue: 'one U.S. dollar', kind: 'bill' }, { value: '25¢', spokenValue: 'twenty-five cents', kind: 'coin' }]} label="One U.S. one-dollar bill and one 25-cent quarter" />
+        <p>One dollar is 100 cents. Add the quarter&apos;s 25 cents, then choose the total in dollars.</p>
+        <UsMoneyTotalChoices disabled={paused} onChoose={(answer) => {
           if (paused) return;
-          if (!ghanaCoinTotalAnswerIsCorrect(answer, [100, 50])) {
-            setFeedback('Start with GH¢1, then add half a cedi. Try again.');
+          if (!usMoneyTotalAnswerIsCorrect(answer, [100, 25])) {
+            setFeedback('Start with 100 cents, then add 25 cents. Try again.');
             return;
           }
           setStep(43);
-          setFeedback('GH¢1 plus 50 pesewas is GH¢1.50.');
+          setFeedback('100 cents plus 25 cents is 125 cents, or $1.25.');
         }} />
-        <p className="ng-disclaimer">Denomination values are for a Ghana English example only. Currency and available coins vary by place.</p>
+        <p className="ng-disclaimer">This example uses U.S. dollar values and a U.S. quarter. It does not use exchange rates.</p>
       </section>}
 
-      {step === 43 && <section className="ng-panel" aria-labelledby="ng-ghana-finish-title">
-        <p className="ng-step">MATH-05 GHANA CURRENCY DRAFT · NO SCORE SAVED</p>
-        <h2 id="ng-ghana-finish-title">You read coin values and added an amount.</h2>
-        <p>This practice uses GH¢1, GH¢2, and 50-pesewa coin values. It is not shopping advice and does not use exchange rates.</p>
+      {step === 43 && <section className="ng-panel" aria-labelledby="ng-us-money-finish-title">
+        <p className="ng-step">MATH-05 U.S. MONEY DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-us-money-finish-title">You matched a dollar to cents and added a quarter.</h2>
+        <p>One dollar plus 25 cents is $1.25. This is a math example, not shopping advice; no money is needed.</p>
         <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
       </section>}
 
@@ -1128,18 +1128,19 @@ export function NumberGarden() {
       </section>}
 
       {step === 56 && <section className="ng-panel" aria-labelledby="ng-ruler-title">
-        <p className="ng-step">MATH-05 MEASUREMENT · METRIC MODEL</p>
-        <h2 id="ng-ruler-title">The drawn leaf begins at 1 cm and ends at 5 cm. How long is it?</h2>
+        <p className="ng-step">MATH-05 MEASUREMENT · U.S. CUSTOMARY MODEL</p>
+        <h2 id="ng-ruler-title">The drawn leaf begins at 1 inch and ends at 5 inches. How long is it?</h2>
         <svg className="ng-ruler" viewBox="0 0 360 100" role="img" aria-labelledby="ng-ruler-svg-title ng-ruler-svg-desc">
           <title id="ng-ruler-svg-title">Illustrated ruler and leaf</title>
-          <desc id="ng-ruler-svg-desc">The leaf starts at the one centimetre mark and ends at the five centimetre mark. Each interval is one centimetre.</desc>
+          <desc id="ng-ruler-svg-desc">The leaf starts at the one inch mark and ends at the five inch mark. Each interval is one inch.</desc>
           <path d="M48 54H318" stroke="#526c55" strokeWidth="3" />
           {Array.from({ length: 7 }, (_, i) => <g key={i}><path d={`M${48 + i * 45} 54v${i % 2 === 0 ? 22 : 14}`} stroke="#526c55" strokeWidth="2" /><text x={48 + i * 45} y="94" textAnchor="middle">{i}</text></g>)}
+          <text x="338" y="94" textAnchor="end">in.</text>
           <path d="M93 37c32-22 103-22 180 0-77 23-148 23-180 0Z" fill="#8dbb82" stroke="#315842" strokeWidth="2" />
           <path d="M93 37l180 0" stroke="#315842" strokeWidth="2" />
         </svg>
         <p>This is an illustration. The on-screen drawing is not a calibrated ruler; use the labeled marks in this question.</p>
-        <TextChoices label="Choose the leaf length" choices={['3 cm', '4 cm', '5 cm']} disabled={paused} onChoose={(answer) => {
+        <TextChoices label="Choose the leaf length" choices={['3 inches', '4 inches', '5 inches']} disabled={paused} onChoose={(answer) => {
           if (paused) return;
           const n = Number(answer.match(/^\d+/)?.[0]);
           if (!modelRulerLengthAnswerIsCorrect(n, 1, 5)) {
@@ -1147,14 +1148,14 @@ export function NumberGarden() {
             return;
           }
           setStep(57);
-          setFeedback('Five minus one is four, so the drawn leaf is four centimetres long.');
+          setFeedback('Five minus one is four, so the drawn leaf is four inches long.');
         }} />
       </section>}
 
       {step === 57 && <section className="ng-panel" aria-labelledby="ng-ruler-finish-title">
         <p className="ng-step">MATH-05 MEASUREMENT DRAFT · NO SCORE SAVED</p>
-        <h2 id="ng-ruler-finish-title">The drawn leaf is 4 cm long.</h2>
-        <p>Read the start and end marks: 5 cm − 1 cm = 4 cm. A real ruler must be used for a real object&apos;s length.</p>
+        <h2 id="ng-ruler-finish-title">The drawn leaf is 4 inches long.</h2>
+        <p>Read the start and end marks: 5 inches − 1 inch = 4 inches. A real ruler must be used for a real object&apos;s length.</p>
         <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
       </section>}
 
@@ -1312,7 +1313,7 @@ export function NumberGarden() {
 
       {step > 0 && <><p className="ng-feedback" role="status" aria-live="polite">{feedback}</p><nav className="ng-session-controls" aria-label="Activity controls">{!paused && <button className="ng-button" onClick={() => setPaused(true)}>Pause</button>}<button className="ng-button" onClick={home}>Home</button><button className="ng-button" onClick={home}>Restart</button></nav></>}
 
-      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. The user reports reviewing the source material for the Ghana-currency and further MATH-05 lessons. The Ghana example uses text-only GH¢ coin values; no cash or purchase is involved. Version 18 MATH-06 chart, claim-check, and pattern-rule wording needs review. On-screen units, cubes, clock, and balance are learning models. No score, profile, or progress record is made.</p></details>
+      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. Version 20 uses U.S. dollars and cents and U.S. customary inches in its illustrated ruler example. No cash handling or purchase is involved. New money wording and rendering still need recorded content review. On-screen units, cubes, clock, and balance are learning models. No score, profile, or progress record is made.</p></details>
     </main>
     <footer className="ng-footer">Practice for this visit only · no account · no saved child data</footer>
   </div>;
