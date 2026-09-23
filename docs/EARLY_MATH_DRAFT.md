@@ -53,3 +53,5 @@ The product owner reports that Number Garden prompts through version 14 have bee
 Version 14 MATH-05 adds a fixed 2-point plus 1-point make-believe token example. It is explicitly not real money, prices or local currency. This is a simple value-total exercise, not a complete money curriculum.
 
 Version 15 adds two accessible pretend purses. One contains 2+1 points and the other 1+1 points; the learner chooses the purse with more. The example uses fixed make-believe points, not money, prices or local currency. The new comparison needs user review.
+
+Version 15 passed TypeScript, 43 runtime tests, 30 Chromium browser tests and production build in GitHub CI run 35909835744. This automated verification does not count as a content review; the prompt still needs user review.

@@ -110,6 +110,7 @@ Implemented means source functionality exists; verified scope is separately stat
 - [x] Verify version 14 in GitHub CI: [run 35908281758](https://github.com/suraka/skillsprout/actions/runs/35908281758), 42 runtime tests, 29 Chromium browser tests, TypeScript and production build passed.
 - [x] Record the user report that the version 14 pretend-token prompt was reviewed.
 - [x] Add a short version 15 pretend-purse point-comparison draft with deterministic wrong-answer recovery.
+- [x] Verify version 15 in GitHub CI: [run 35909835744](https://github.com/suraka/skillsprout/actions/runs/35909835744), 43 runtime tests, 30 Chromium browser tests, TypeScript and production build passed.
 - [x] Add a draft sphere and unit-cube volume preview with runtime/browser coverage.
 - [x] Record the user report that the MATH-05 solid/volume prompts were reviewed.
 - [ ] Extend mass/time/money measures and 3D geometry, then build MATH-06 as a separate tested slice.
