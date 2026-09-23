@@ -47,5 +47,6 @@ next-env.d.ts
 !.env.example
 *.tsbuildinfo
 /.test-build/
+/.rainbow-test-build/
 /test-results/
 /playwright-report/

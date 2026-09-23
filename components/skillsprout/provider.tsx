@@ -10,7 +10,7 @@ const Context=createContext<State|null>(null);
 export function AcademyProvider({children}:{children:React.ReactNode}){
  const pathname=usePathname();
  // Guest play never initializes account/catalog requests or family state.
- if(pathname==='/demo/sorting-garden')return <>{children}</>;
+ if(pathname==='/demo/sorting-garden'||pathname?.startsWith('/little-explorers'))return <>{children}</>;
  return <ConnectedAcademyProvider>{children}</ConnectedAcademyProvider>;
 }
 function ConnectedAcademyProvider({children}:{children:React.ReactNode}){

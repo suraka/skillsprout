@@ -1,0 +1,1 @@
+{"compilerOptions":{"target":"ES2022","module":"NodeNext","moduleResolution":"NodeNext","strict":true,"skipLibCheck":true,"types":[],"outDir":".rainbow-test-build","rootDir":"lib/little-explorers"},"include":["lib/little-explorers/rainbow.ts"]}

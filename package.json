@@ -12,7 +12,7 @@
     "start": "node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js dev --config dist/server/wrangler.json --local --persist-to .wrangler/state --ip 127.0.0.1 --inspector-port 0",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate",
-    "test:runtime": "tsc -p tsconfig.runtime-tests.json && node --test tests/sorting-garden.test.mjs",
+    "test:runtime": "tsc -p tsconfig.runtime-tests.json && node --test tests/sorting-garden.test.mjs && tsc -p tsconfig.rainbow-tests.json && node --test tests/rainbow-habitat.test.mjs",
     "test:browser": "playwright test"
   },
   "dependencies": {
