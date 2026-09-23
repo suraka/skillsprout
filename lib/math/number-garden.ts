@@ -1,8 +1,8 @@
 export const numberGardenManifest = {
   activityId: 'math-number-garden-001',
-  version: 11,
+  version: 12,
   language: 'en',
-  localeVariant: 'en_v2_m02_m03_m04_m05_user_reviewed',
+  localeVariant: 'en_v2_m02_m03_m04_m05_time_draft',
   reviewStatus: 'draft',
   requiresAccount: false,
   requiresAi: false,
@@ -164,8 +164,15 @@ export function unitCubeVolumeAnswerIsCorrect(answer: number, rows: number, colu
     && rows * columns * layers <= 32 && answer === rows * columns * layers;
 }
 
+export function wholeHourAnswerIsCorrect(answer: number, expectedHour: number): boolean {
+  return Number.isInteger(answer) && Number.isInteger(expectedHour)
+    && answer >= 1 && answer <= 12 && expectedHour >= 1 && expectedHour <= 12
+    && answer === expectedHour;
+}
+
 export function mathPublicationBlockers(): string[] {
   return [
+    'The new MATH-05 whole-hour time prompt is a draft and needs review.',
     'The user reports reviewing the MATH-05 solid-shape and unit-cube volume prompts; reviewer identities and findings are not attached to this draft.',
     'Review completion for version-2 and MATH-02 through MATH-05 prompts is reported by the user; reviewer identities and findings are not attached to this draft.',
     'The activity remains a draft and has not been separately authorized for publication or merge.',

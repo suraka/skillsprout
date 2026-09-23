@@ -21,6 +21,7 @@ import {
   longerScreenMeasureAnswerIsCorrect,
   solidWithoutFlatFacesAnswerIsCorrect,
   unitCubeVolumeAnswerIsCorrect,
+  wholeHourAnswerIsCorrect,
   nextNumberAfterIsCorrect,
   seedSet,
   zeroAnswerIsCorrect,
@@ -123,6 +124,27 @@ function UnitCubeChoices({ onChoose, disabled = false }: { onChoose: (answer: nu
   return <div className="ng-numerals" role="group" aria-label="Choose the number of unit cubes">
     {[6, 8, 10, 12].map((value) => <button type="button" className="ng-numeral" disabled={disabled} key={value} onClick={() => onChoose(value)} aria-label={`${value} unit cubes`}>
       <span>{value}</span><small>unit cubes</small>
+    </button>)}
+  </div>;
+}
+
+function ClockFace() {
+  return <svg className="ng-clock-face" viewBox="0 0 160 160" role="img" aria-label="Clock showing three o’clock">
+    <circle cx="80" cy="80" r="68" />
+    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((hour) => {
+      const angle = (hour * 30 - 90) * Math.PI / 180;
+      return <text key={hour} x={80 + Math.cos(angle) * 51} y={80 + Math.sin(angle) * 51 + 6} textAnchor="middle">{hour}</text>;
+    })}
+    <line x1="80" y1="80" x2="80" y2="28" className="ng-clock-minute" />
+    <line x1="80" y1="80" x2="125" y2="80" className="ng-clock-hour" />
+    <circle cx="80" cy="80" r="4" className="ng-clock-pin" />
+  </svg>;
+}
+
+function TimeChoices({ onChoose, disabled = false }: { onChoose: (hour: number) => void; disabled?: boolean }) {
+  return <div className="ng-numerals" role="group" aria-label="Choose the time shown">
+    {[2, 3, 6].map((hour) => <button type="button" className="ng-numeral" disabled={disabled} key={hour} onClick={() => onChoose(hour)} aria-label={`${hour} o’clock`}>
+      <span>{hour}:00</span><small>o’clock</small>
     </button>)}
   </div>;
 }
@@ -250,6 +272,7 @@ export function NumberGarden() {
         <p className="ng-recap"><strong>Optional preview · MATH-04 fractions on a number line</strong><br/>Compare one quarter and three quarters using their positions from zero to one.</p>
         <p className="ng-recap"><strong>Optional preview · MATH-05 shapes and measurement</strong><br/>Find a three-sided shape and compare two strips using equal on-screen units. The display is a learning model, not a real ruler.</p>
         <p className="ng-recap"><strong>Optional preview · MATH-05 solids and volume</strong><br/>Recognize a sphere and count unit cubes across two layers.</p>
+        <p className="ng-recap"><strong>Optional draft · MATH-05 telling time</strong><br/>Read a clock when the minute hand points to 12. This new prompt needs review.</p>
         <div className="ng-actions">
           <button className="ng-button primary" disabled={!ready} onClick={() => { setStep(1); setFeedback('Tap each seed once, then choose how many there are.'); }}>Begin Number Garden</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(11); setFeedback('MATH-03 draft preview: look at the equal groups.'); }}>Explore equal groups and sharing</button>
@@ -258,6 +281,7 @@ export function NumberGarden() {
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(21); setFeedback('MATH-04 draft preview: compare the fraction positions.'); }}>Explore fractions on a number line</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(23); setFeedback('MATH-05 draft preview: look for a shape with three straight sides.'); }}>Explore shapes and screen units</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(26); setFeedback('MATH-05 draft preview: look for the solid with no flat faces.'); }}>Explore solids and volume</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(29); setFeedback('MATH-05 time draft: look at both clock hands.'); }}>Explore telling time</button>
         </div>
       </section>}
 
@@ -622,6 +646,29 @@ export function NumberGarden() {
         <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
       </section>}
 
+      {step === 29 && <section className="ng-panel" aria-labelledby="ng-time-title">
+        <p className="ng-step">NEW DRAFT PREVIEW · MATH-05 · TELLING TIME</p>
+        <h2 id="ng-time-title">The garden break starts at the time shown. What time is it?</h2>
+        <ClockFace />
+        <p>The long hand points to 12, so it is an exact hour. Look where the short hand points.</p>
+        <TimeChoices disabled={paused} onChoose={(hour) => {
+          if (paused) return;
+          if (!wholeHourAnswerIsCorrect(hour, 3)) {
+            setFeedback('The long hand points to 12. Read the number where the short hand points, then try again.');
+            return;
+          }
+          setStep(30);
+          setFeedback('The short hand points to 3 and the long hand points to 12, so the clock shows three o’clock.');
+        }} />
+      </section>}
+
+      {step === 30 && <section className="ng-panel" aria-labelledby="ng-math05-time-finish-title">
+        <p className="ng-step">MATH-05 TIME DRAFT PREVIEW · NO SCORE SAVED</p>
+        <h2 id="ng-math05-time-finish-title">You read an exact hour on a clock.</h2>
+        <p>This is one short time-reading example. Other time and measurement topics need separate lessons.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
       {step === 5 && <section className="ng-panel" aria-labelledby="ng-add-title">
         <p className="ng-step">OPTIONAL PRACTICE · MATH-02 · ADD ONE</p>
         <h2 id="ng-add-title">Two seeds are here. Add one more.</h2>
@@ -654,7 +701,7 @@ export function NumberGarden() {
 
       {step > 0 && <><p className="ng-feedback" role="status" aria-live="polite">{feedback}</p><nav className="ng-session-controls" aria-label="Activity controls">{!paused && <button className="ng-button" onClick={() => setPaused(true)}>Pause</button>}<button className="ng-button" onClick={home}>Home</button><button className="ng-button" onClick={home}>Restart</button></nav></>}
 
-      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. The user reports reviewing the MATH-05 triangle/length and sphere/volume prompts, and MATH-03/MATH-04 prompts. On-screen units and cubes are learning models, not real instruments. No score, profile, or progress record is made.</p></details>
+      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. The user reports reviewing MATH-05 prompts through version 11 and MATH-03/MATH-04 prompts. The new version 12 time prompt needs review. On-screen units, cubes, and clock are learning models. No score, profile, or progress record is made.</p></details>
     </main>
     <footer className="ng-footer">Practice for this visit only · no account · no saved child data</footer>
   </div>;

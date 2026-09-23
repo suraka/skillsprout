@@ -199,3 +199,16 @@ test('EDU-MB08: MATH-05 identifies a sphere and counts unit cubes by layer', asy
   await expect(page.getByRole('heading', { name: 'You explored a sphere and volume with unit cubes.' })).toBeVisible();
   await expect(page.getByText('The cube drawing is a learning model. Other 3D shapes and measurement topics need more lessons.')).toBeVisible();
 });
+
+test('EDU-MB09: MATH-05 reads an exact hour and recovers from a wrong time', async ({ page }) => {
+  await page.goto(route);
+  await page.getByRole('button', { name: 'Explore telling time' }).click();
+
+  await expect(page.getByRole('heading', { name: 'The garden break starts at the time shown. What time is it?' })).toBeVisible();
+  await expect(page.getByRole('img', { name: 'Clock showing three o’clock' })).toBeVisible();
+  await page.getByRole('button', { name: '2 o’clock' }).click();
+  await expect(page.getByRole('status')).toContainText('Read the number where the short hand points');
+  await page.getByRole('button', { name: '3 o’clock' }).click();
+  await expect(page.getByRole('heading', { name: 'You read an exact hour on a clock.' })).toBeVisible();
+  await expect(page.getByText('This is one short time-reading example. Other time and measurement topics need separate lessons.')).toBeVisible();
+});
