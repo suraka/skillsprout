@@ -61,3 +61,22 @@ The app shows original inline SVG shapes/patterns, large semantic buttons with t
 Verified on `5d04ecf79589ce678ca83789a1ac662b9dc11fb1`: [CI 35827629569](https://github.com/suraka/skillsprout/actions/runs/35827629569) passed TypeScript, all 14 runtime tests, all 11 browser tests and production build. The local build also passed after the Pause/Home adjustment; targeted ESLint passed before that final JSX-only adjustment. Local Chromium installation is unavailable; CI is the browser execution environment.
 
 Still NOT TESTED: physical toddler-targeted touch, device performance, assistive technology/screen readers, actual contrast measurements, qualified early-years scope/usability, and consenting adult-assisted family use. Automated semantic/keyboard checks do not replace these reviews. Guest ages 2–4 are an adult-assisted proposal, not an approved suitability claim.
+
+## Phase 1C — Foundational literacy draft
+
+The English-language guest preview at /learning/letters-and-sounds contains three sequenced activities: identify a shared initial sound (LIT-01), connect the first sound in moon/apple/top to m/a/t (LIT-02/03), and arrange those taught letters to build mat (LIT-04). The outcome graph and the draft activity manifest publication gate are in lib/literacy/foundation.ts. An optional local device voice is used only when the browser reports an installed local English voice; otherwise an adult can say the words. The voice is not a reviewed recording. Original inline SVG choices have text labels.
+
+Guest practice state and the grown-up recap exist only in page memory and clear on exit/reset. The activity makes no API request and writes no cookies, localStorage or sessionStorage. No lesson content, child identity or evidence is sent to the backend. Therefore this no-account preview needs no auth, backend endpoint or database migration; those become necessary only for a later authorized saved-learning feature.
+
+New tests: EDU-L01…07 runtime tests check unique deterministic answers, fixed grapheme keys, exact decoding, prerequisite ordering, transient non-mastery evidence, graph validity and draft publication blockers. EDU-B00…05 browser tests cover the Explore link, no API/storage from the activity, retry/recovery, all three lessons, word construction, pause/Home, keyboard and narrow/offline use. Results for the current draft branch are **NOT RUN until its CI completes**; do not infer success from test definitions.
+
+Local verification on the literacy draft worktree:
+
+- pnpm install --frozen-lockfile: PASS; lockfile was unchanged.
+- pnpm test:runtime: PASS, 21 tests total (10 Sorting Garden, 4 Rainbow Habitat, 7 literacy).
+- pnpm exec tsc --noEmit: PASS.
+- Targeted ESLint for literacy UI, route, runtime and browser tests: PASS.
+- pnpm build: PASS; route /learning/letters-and-sounds is present in production build output.
+- pnpm test:browser: BLOCKED before application assertions because this workspace does not have Playwright's Chromium executable. Trace error reports missing chromium_headless_shell; this does not count as a browser-test failure or pass. The current CI run must execute EDU-B00…05.
+
+Release status remains PARTIAL / BLOCKED FOR RELEASE. No qualified literacy, locale/pronunciation, asset, accessibility, safety or family reviewer has approved these exact content versions. Native-speaker pronunciation, physical-device operation, screen-reader review, real contrast/zoom, low-end-device performance and consenting-family usability are NOT TESTED. Current task answer records are activity practice, not verified proficiency or durable learning.
