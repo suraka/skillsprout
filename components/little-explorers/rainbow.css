@@ -38,6 +38,7 @@
 .rh-button.secondary { background: #f2f2e9; }
 .rh-coming { font-weight: 700; color: #3c5541; border: 2px solid #9da996; border-radius: 18px; padding: 10px 16px; margin-top: auto; }
 .rh-text-link { font-weight: 700; }
+.rh-playbook-link { font: inherit; color: var(--rh-ink); font-weight: 700; border: 0; background: transparent; text-decoration: underline; text-underline-offset: 4px; cursor: pointer; min-height: 56px; padding: 8px 0; }
 .rh-disclosure { font-size: 16px; margin-top: 24px !important; }
 .rh-game { max-width: 980px; }
 .rh-round, .rh-pause, .rh-finish, .rh-settings, .rh-playbook { padding: clamp(18px, 4vw, 34px); background: #fff; border: 2px solid #9eae98; border-radius: 26px; margin: 28px 0; }

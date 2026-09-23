@@ -47,8 +47,8 @@ test('LE-B03: adult-selected level, sensory options, pause, home, and reset stay
   await page.getByRole('button',{name:'Pause'}).click();
   await expect(page.getByRole('heading',{name:'Paused'})).toBeVisible();
   await page.getByRole('button',{name:'Continue'}).click();
-  await page.getByRole('link',{name:'Home',exact:true}).click();
-  await page.getByRole('link',{name:'Explore together'}).click();
+  await page.getByRole('button',{name:'Home',exact:true}).click();
+  await page.getByRole('button',{name:'Explore together'}).click();
   await expect(page.locator('.rh-home')).toHaveCount(4);
   await page.locator('.rh-home').nth(0).click();
   await expect(page.getByRole('status')).toContainText('That home fits');
@@ -65,7 +65,12 @@ test('LE-B04: mobile layout works after load when offline with reduced motion', 
   await context.setOffline(true);
   await page.getByRole('button',{name:'Pause'}).click();
   await expect(page.getByRole('heading',{name:'Paused'})).toBeVisible();
-  await page.getByRole('link',{name:'Home',exact:true}).click();
+  await page.getByRole('button',{name:'Home',exact:true}).click();
   await expect(page.getByRole('heading',{name:'Little Explorers'})).toBeVisible();
+  await page.getByRole('button',{name:'Open the Grownup Playbook'}).click();
+  await expect(page.getByRole('heading',{name:'Grow the conversation'})).toBeVisible();
+  await page.getByRole('button',{name:'Back to Little Explorers'}).click();
+  await page.getByRole('button',{name:'Explore together'}).click();
+  await expect(page.getByRole('heading',{name:'Rainbow Habitat'})).toBeVisible();
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
 });
