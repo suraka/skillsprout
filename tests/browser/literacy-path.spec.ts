@@ -85,7 +85,9 @@ test('EDU-B05: pause, finish, keyboard use, offline use and mobile width are saf
   await page.setViewportSize({ width: 360, height: 800 });
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto(route);
-  await page.getByRole('button', { name: 'Begin Sound Safari' }).focus();
+  const begin = page.getByRole('button', { name: 'Begin Sound Safari' });
+  await expect(begin).toBeEnabled();
+  await begin.focus();
   await page.keyboard.press('Enter');
   await expect(page.getByRole('heading', { name: 'Which picture begins like “moon”?' })).toBeVisible();
   await context.setOffline(true);
