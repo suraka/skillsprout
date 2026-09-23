@@ -7,10 +7,12 @@ import {
   countAnswerIsCorrect,
   countIsComplete,
   equalShareAnswerIsCorrect,
+  equalFractionAnswerIsCorrect,
   isValidDecomposition,
   markSeedCounted,
   mathPublicationBlockers,
   multiplicationAnswerIsCorrect,
+  placeValueAnswerIsCorrect,
   numberGardenManifest,
   nextNumberAfterIsCorrect,
   seedSet,
@@ -80,13 +82,30 @@ test('EDU-M09: fair-sharing answer requires equal whole-number shares', () => {
   assert.equal(equalShareAnswerIsCorrect(2.5, 5, 2), false);
 });
 
+test('EDU-M10: place value combines whole tens and ones without accepting invalid parts', () => {
+  assert.equal(placeValueAnswerIsCorrect(14, 1, 4), true);
+  assert.equal(placeValueAnswerIsCorrect(15, 1, 4), false);
+  assert.equal(placeValueAnswerIsCorrect(14.5, 1, 4), false);
+  assert.equal(placeValueAnswerIsCorrect(101, 10, 1), false);
+});
+
+test('EDU-M11: fraction answer key matches the count of equal shaded parts', () => {
+  assert.equal(equalFractionAnswerIsCorrect('2/4', 2, 4), true);
+  assert.equal(equalFractionAnswerIsCorrect('1/2', 2, 4), true);
+  assert.equal(equalFractionAnswerIsCorrect('3/4', 2, 4), false);
+  assert.equal(equalFractionAnswerIsCorrect('1/2', 1, 2), true);
+  assert.equal(equalFractionAnswerIsCorrect('2/5', 2, 5), true);
+  assert.equal(equalFractionAnswerIsCorrect('2/4junk', 2, 4), false);
+});
+
 test('EDU-M05: this is a guest draft with publication review still blocked', () => {
   assert.equal(numberGardenManifest.reviewStatus, 'draft');
-  assert.equal(numberGardenManifest.version, 6);
+  assert.equal(numberGardenManifest.version, 7);
   assert.equal(numberGardenManifest.requiresAccount, false);
   assert.equal(numberGardenManifest.requiresAi, false);
   assert.equal(numberGardenManifest.requiresCameraOrMic, false);
   assert.equal(numberGardenManifest.savesLearnerData, false);
   assert.ok(mathPublicationBlockers().length >= 4);
   assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('new MATH-03 equal-groups')));
+  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('MATH-04 place-value')));
 });

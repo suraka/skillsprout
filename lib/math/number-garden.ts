@@ -1,8 +1,8 @@
 export const numberGardenManifest = {
   activityId: 'math-number-garden-001',
-  version: 6,
+  version: 7,
   language: 'en',
-  localeVariant: 'en_v2_m02_reviewed_m03_draft',
+  localeVariant: 'en_v2_m02_reviewed_m03_m04_draft',
   reviewStatus: 'draft',
   requiresAccount: false,
   requiresAi: false,
@@ -86,9 +86,28 @@ export function equalShareAnswerIsCorrect(perGroup: number, total: number, group
     && total % groups === 0 && perGroup === total / groups;
 }
 
+export function placeValueAnswerIsCorrect(answer: number, tens: number, ones: number): boolean {
+  return Number.isInteger(answer) && Number.isInteger(tens) && Number.isInteger(ones)
+    && tens >= 0 && tens <= 9 && ones >= 0 && ones <= 9
+    && answer === tens * 10 + ones;
+}
+
+export function equalFractionAnswerIsCorrect(answer: string, shadedParts: number, totalParts: number): boolean {
+  if (!Number.isInteger(shadedParts) || !Number.isInteger(totalParts)
+    || totalParts <= 0 || shadedParts <= 0 || shadedParts > totalParts || totalParts > 12) return false;
+  const match = /^(\d+)\/(\d+)$/.exec(answer);
+  if (!match) return false;
+  const numerator = Number(match[1]);
+  const denominator = Number(match[2]);
+  return Number.isInteger(numerator) && Number.isInteger(denominator)
+    && numerator > 0 && denominator > 0 && denominator <= 12
+    && numerator * totalParts === shadedParts * denominator;
+}
+
 export function mathPublicationBlockers(): string[] {
   return [
     'The new MATH-03 equal-groups, array, and sharing prompts were authored after the reported reviews and still need review.',
+    'The new MATH-04 place-value and equal-fraction prompts are a draft and still need review.',
     'Review completion for version-2 and MATH-02 content is reported by the product owner; reviewer identities and findings are not attached to this draft.',
     'The activity remains a draft and has not been separately authorized for publication or merge.',
     'EDU-M2 still requires the remaining MATH-04 through MATH-06 outcomes.',

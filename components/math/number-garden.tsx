@@ -9,9 +9,11 @@ import {
   countAnswerIsCorrect,
   countIsComplete,
   equalShareAnswerIsCorrect,
+  equalFractionAnswerIsCorrect,
   isValidDecomposition,
   markSeedCounted,
   multiplicationAnswerIsCorrect,
+  placeValueAnswerIsCorrect,
   nextNumberAfterIsCorrect,
   seedSet,
   zeroAnswerIsCorrect,
@@ -33,6 +35,12 @@ function NumeralChoices({ onChoose, disabled = false, values = [2, 3, 4, 5] }: {
     {values.map((value) => <button type="button" className="ng-numeral" disabled={disabled} key={value} onClick={() => onChoose(value)} aria-label={`${value} seeds`}>
       <span aria-hidden="true">{value}</span><small>{value === 1 ? 'seed' : 'seeds'}</small>
     </button>)}
+  </div>;
+}
+
+function FractionChoices({ onChoose }: { onChoose: (answer: string) => void }) {
+  return <div className="ng-split-choices" role="group" aria-label="Choose the fraction">
+    {['1/4', '1/2', '3/4'].map((value) => <button type="button" className="ng-button ng-split-choice" key={value} onClick={() => onChoose(value)}>{value}</button>)}
   </div>;
 }
 
@@ -138,10 +146,10 @@ export function NumberGarden() {
     <main className="ng-main">
       <p className="ng-kicker">EARLY MATHEMATICS · DRAFT · REVIEW STATUS IN NOTES</p>
       <h1>Number Garden</h1>
-      <p className="ng-intro">Count a group, notice zero and number order, then compare two small groups.</p>
+      <p className="ng-intro">Count a group, notice zero and number order, then compare two small groups. Optional previews explore operations, groups, place value, and fractions.</p>
       <aside className="ng-review" aria-label="Draft content review status">
         <strong>Draft preview</strong>
-        <p>The product owner reports that version-2 reviews are complete; the product owner also approved the new MATH-02 compose and split prompts. The MATH-03 equal-groups, array, and sharing prompts are a new draft and need review. A grown-up can read every prompt and number aloud. This visit does not measure lasting math ability.</p>
+        <p>The product owner reports that version-2 reviews are complete; the product owner also approved the new MATH-02 compose and split prompts. MATH-03 groups/sharing and MATH-04 place-value/fraction prompts are new draft previews and need review. A grown-up can read every prompt and number aloud. This visit does not measure lasting math ability.</p>
       </aside>
 
       {step === 0 && <section className="ng-panel" aria-labelledby="ng-start-title">
@@ -154,9 +162,11 @@ export function NumberGarden() {
         </ol>
         <p className="ng-recap"><strong>Optional practice · MATH-02 operations</strong><br/>Bring groups together, split a group in different ways, add one, and take one away.</p>
         <p className="ng-recap"><strong>Optional preview · MATH-03 groups and sharing</strong><br/>Explore equal groups, rows, and fair sharing. This new preview is still draft content.</p>
+        <p className="ng-recap"><strong>Optional preview · MATH-04 place value and fractions</strong><br/>Build a two-digit number from tens and ones, then read a fraction made from equal parts. This new preview is still draft content.</p>
         <div className="ng-actions">
           <button className="ng-button primary" disabled={!ready} onClick={() => { setStep(1); setFeedback('Tap each seed once, then choose how many there are.'); }}>Begin Number Garden</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(11); setFeedback('MATH-03 draft preview: look at the equal groups.'); }}>Explore equal groups and sharing</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(15); setFeedback('MATH-04 draft preview: look at the tens and ones.'); }}>Explore tens and fractions</button>
         </div>
       </section>}
 
@@ -331,6 +341,51 @@ export function NumberGarden() {
         <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
       </section>}
 
+      {step === 15 && <section className="ng-panel" aria-labelledby="ng-place-value-title">
+        <p className="ng-step">OPTIONAL PREVIEW · MATH-04 · PLACE VALUE</p>
+        <h2 id="ng-place-value-title">There is 1 ten and 4 ones. What number do they make?</h2>
+        <div className="ng-place-value" role="group" aria-label="One bundle of ten and four single seeds">
+          <div className="ng-ten-bundle" role="img" aria-label="One bundle of ten seeds"><strong>1 ten</strong><span aria-hidden="true">|||||<br/>|||||</span></div>
+          <span className="ng-operation-sign" aria-hidden="true">+</span>
+          <div className="ng-ones" role="img" aria-label="Four single seeds">{Array.from({ length: 4 }, (_, index) => <span key={index} aria-hidden="true">✿</span>)}<strong>4 ones</strong></div>
+        </div>
+        <p>One ten means ten ones. Count ten, then four more.</p>
+        <NumeralChoices values={[13, 14, 15, 24]} onChoose={(value) => {
+          if (paused) return;
+          if (!placeValueAnswerIsCorrect(value, 1, 4)) {
+            setFeedback('A ten is ten ones. Add the four single seeds and try again.');
+            return;
+          }
+          setStep(16);
+          setFeedback('One ten and four ones make fourteen. Now look at four equal parts.');
+        }} disabled={paused} />
+      </section>}
+
+      {step === 16 && <section className="ng-panel" aria-labelledby="ng-fraction-title">
+        <p className="ng-step">OPTIONAL PREVIEW · MATH-04 · FRACTIONS AS EQUAL PARTS</p>
+        <h2 id="ng-fraction-title">Two of these four equal parts are shaded. What fraction is shaded?</h2>
+        <div className="ng-fraction-shape" role="img" aria-label="A shape split into four equal parts, with two parts shaded">
+          {[true, true, false, false].map((shaded, index) => <span className={shaded ? 'shaded' : ''} key={index} aria-hidden="true" />)}
+        </div>
+        <p>The shape is split into four same-size parts. Two parts are shaded.</p>
+        <FractionChoices onChoose={(answer) => {
+          if (paused) return;
+          if (!equalFractionAnswerIsCorrect(answer, 2, 4)) {
+            setFeedback('Count the shaded parts and all the equal parts, then try again.');
+            return;
+          }
+          setStep(17);
+          setFeedback('Two of four equal parts are shaded. This fraction can also be written as one half.');
+        }} />
+      </section>}
+
+      {step === 17 && <section className="ng-panel" aria-labelledby="ng-math04-finish-title">
+        <p className="ng-step">MATH-04 DRAFT PREVIEW COMPLETE · NO SCORE SAVED</p>
+        <h2 id="ng-math04-finish-title">You explored tens, ones, and equal parts.</h2>
+        <p>This describes practice in this visit. It is not a score or a measure of lasting math skill.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
       {step === 5 && <section className="ng-panel" aria-labelledby="ng-add-title">
         <p className="ng-step">OPTIONAL PRACTICE · MATH-02 · ADD ONE</p>
         <h2 id="ng-add-title">Two seeds are here. Add one more.</h2>
@@ -363,7 +418,7 @@ export function NumberGarden() {
 
       {step > 0 && <><p className="ng-feedback" role="status" aria-live="polite">{feedback}</p><nav className="ng-session-controls" aria-label="Activity controls">{!paused && <button className="ng-button" onClick={() => setPaused(true)}>Pause</button>}<button className="ng-button" onClick={home}>Home</button><button className="ng-button" onClick={home}>Restart</button></nav></>}
 
-      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. The product owner reports version-2 reviews complete and approved the MATH-02 compose/decompose prompts. The new MATH-03 equal-groups, array, and sharing prompts were added afterward and remain draft. No score, profile, or progress record is made.</p></details>
+      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. The product owner reports version-2 reviews complete and approved the MATH-02 compose/decompose prompts. The MATH-03 equal-groups/array/sharing and MATH-04 place-value/equal-fraction prompts are new previews and remain draft pending review. No score, profile, or progress record is made.</p></details>
     </main>
     <footer className="ng-footer">Practice for this visit only · no account · no saved child data</footer>
   </div>;

@@ -115,3 +115,21 @@ test('EDU-MB03: MATH-03 equal groups, arrays, and fair sharing recover from wron
   await expect(page.getByRole('heading', { name: 'You explored equal groups, rows, and fair sharing.' })).toBeVisible();
   await expect(page.getByText('This describes practice in this visit. It is not a score or a measure of lasting math skill.')).toBeVisible();
 });
+
+test('EDU-MB04: MATH-04 place value and equal fractions recover from wrong answers', async ({ page }) => {
+  await page.goto(route);
+  await page.getByRole('button', { name: 'Explore tens and fractions' }).click();
+
+  await expect(page.getByRole('heading', { name: 'There is 1 ten and 4 ones. What number do they make?' })).toBeVisible();
+  await page.getByRole('button', { name: '15 seeds' }).click();
+  await expect(page.getByRole('status')).toContainText('Add the four single seeds');
+  await page.getByRole('button', { name: '14 seeds' }).click();
+
+  await expect(page.getByRole('heading', { name: 'Two of these four equal parts are shaded. What fraction is shaded?' })).toBeVisible();
+  await page.getByRole('button', { name: '3/4' }).click();
+  await expect(page.getByRole('status')).toContainText('Count the shaded parts');
+  await page.getByRole('button', { name: '1/2' }).click();
+  await expect(page.getByRole('heading', { name: 'You explored tens, ones, and equal parts.' })).toBeVisible();
+  await page.getByRole('button', { name: 'Finish and clear this visit' }).click();
+  await expect(page.getByRole('heading', { name: 'Count, notice zero, and compare groups.' })).toBeVisible();
+});

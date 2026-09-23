@@ -87,7 +87,7 @@ Release status remains PARTIAL / BLOCKED FOR RELEASE. No qualified literacy, loc
 
 ## EDU-M2 first mathematics draft — Number Garden
 
-Implementation adds `/learning/number-garden` as a guest-only draft. Version 6 retains the three number-sense lessons, MATH-02 compose/decompose practice and add/take practice. The user approved the MATH-02 prompts. It adds optional MATH-03 equal-groups, array, and equal-sharing previews with fixed quantities and retry feedback; these new prompts remain draft pending review. No database, feature API, Firebase, cookie, localStorage or sessionStorage writes are added.
+Implementation adds `/learning/number-garden` as a guest-only draft. Version 7 retains the number-sense lessons, approved MATH-02 compose/decompose prompts, and MATH-03 groups/arrays/sharing draft. It adds a small MATH-04 preview for place value and fractions as equal parts. The MATH-03 and MATH-04 prompts remain draft pending review; decimals, percent, and the wider MATH-04 objectives remain unimplemented. No database, feature API, Firebase, cookie, localStorage or sessionStorage writes are added.
 
 Local verification after the change:
 
@@ -109,7 +109,9 @@ Verified version 3 grouping: [Frontend checks 35849147816](https://github.com/su
 
 Verified version 5 MATH-02 draft: [Frontend checks 35866977777](https://github.com/suraka/skillsprout/actions/runs/35866977777), commit `655b1a678bfd2655e80e8cb344b262d384d7566d`, passed frozen install, TypeScript, all 28 runtime tests, all 20 Chromium browser tests and production build. Browser coverage tested compose answer recovery, a valid split of five, existing add/take practice and guest privacy checks. Runtime coverage confirms both 1+4 and 2+3 are accepted and an invalid sum is rejected. The new MATH-02 prompts remain draft pending review.
 
-The user approved the MATH-02 prompts. New MATH-03 prompts in version 6 remain draft until reviewed. This repository does not contain reviewer identities, findings or formal sign-off records. EDU-M2 is PARTIAL; this activity is not the complete sequence required by the blueprint. No proficiency claim or migration was made.
+The user approved the MATH-02 prompts. New MATH-03 prompts in version 6 and MATH-04 prompts in version 7 remain draft until reviewed. This repository does not contain formal review records. EDU-M2 is PARTIAL; this activity is not the complete sequence required by the blueprint. No proficiency claim or migration was made.
 
 
 Verified version 6 MATH-03 draft: [Frontend checks 35871683522](https://github.com/suraka/skillsprout/actions/runs/35871683522), commit `7a60b53fab05ef3cab7c85376942c17b5bad3dbb`, passed frozen install, TypeScript, all 30 runtime tests, all 21 Chromium browser tests, and production build. Browser EDU-MB03 tested wrong-answer recovery and successful completion for equal groups, the 2×3 array, and sharing six seeds between two beds.
+
+Verified version 7 MATH-04 draft: place-value and fraction runtime/browser results will be recorded after CI completes. The place-value example forms 14 from one ten and four ones; the fraction visual is divided into four equal-size parts and accepts both 2/4 and 1/2. This is a partial MATH-04 preview; decimals and percent are outside this slice.
