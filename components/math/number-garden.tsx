@@ -16,6 +16,7 @@ import {
   multiplicationAnswerIsCorrect,
   placeValueAnswerIsCorrect,
   percentOfEqualPartsAnswerIsCorrect,
+  fartherRightFractionAnswerIsCorrect,
   nextNumberAfterIsCorrect,
   seedSet,
   zeroAnswerIsCorrect,
@@ -57,6 +58,12 @@ function PercentChoices({ onChoose, disabled = false }: { onChoose: (answer: num
     {[20, 50, 80].map((value) => <button type="button" className="ng-numeral" disabled={disabled} key={value} onClick={() => onChoose(value)}>
       <span>{value}%</span>
     </button>)}
+  </div>;
+}
+
+function FractionCompareChoices({ onChoose }: { onChoose: (answer: string) => void }) {
+  return <div className="ng-split-choices" role="group" aria-label="Choose the fraction farther right">
+    {['1/4', '3/4'].map((value) => <button type="button" className="ng-button ng-split-choice" key={value} onClick={() => onChoose(value)}>{value}</button>)}
   </div>;
 }
 
@@ -165,7 +172,7 @@ export function NumberGarden() {
       <p className="ng-intro">Count a group, notice zero and number order, then compare two small groups. Optional previews explore operations, groups, place value, and fractions.</p>
       <aside className="ng-review" aria-label="Draft content review status">
         <strong>Draft preview</strong>
-        <p>The user reports approving MATH-03 and the first MATH-04 prompts. This version adds new MATH-04 decimal and percent prompts, which still need review. A grown-up can read every prompt and number aloud. This visit does not measure lasting math ability.</p>
+        <p>The user reports approving MATH-03 and MATH-04 prompts through the decimal and percent preview. This version adds a new fraction number-line prompt, which still needs review. A grown-up can read every prompt and number aloud. This visit does not measure lasting math ability.</p>
       </aside>
 
       {step === 0 && <section className="ng-panel" aria-labelledby="ng-start-title">
@@ -180,11 +187,13 @@ export function NumberGarden() {
         <p className="ng-recap"><strong>Optional preview · MATH-03 groups and sharing</strong><br/>Explore equal groups, rows, and fair sharing. This new preview is still draft content.</p>
         <p className="ng-recap"><strong>Optional preview · MATH-04 place value and fractions</strong><br/>Build a two-digit number from tens and ones, then read a fraction made from equal parts. This new preview is still draft content.</p>
         <p className="ng-recap"><strong>Optional preview · MATH-04 tenths and percent</strong><br/>Connect five tenths, 0.5, and 50% using the same ten-part bar. This new preview is still draft content.</p>
+        <p className="ng-recap"><strong>Optional preview · MATH-04 fractions on a number line</strong><br/>Compare one quarter and three quarters using their positions from zero to one.</p>
         <div className="ng-actions">
           <button className="ng-button primary" disabled={!ready} onClick={() => { setStep(1); setFeedback('Tap each seed once, then choose how many there are.'); }}>Begin Number Garden</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(11); setFeedback('MATH-03 draft preview: look at the equal groups.'); }}>Explore equal groups and sharing</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(15); setFeedback('MATH-04 draft preview: look at the tens and ones.'); }}>Explore tens and fractions</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(18); setFeedback('MATH-04 draft preview: count the shaded tenths.'); }}>Explore tenths and percent</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(21); setFeedback('MATH-04 draft preview: compare the fraction positions.'); }}>Explore fractions on a number line</button>
         </div>
       </section>}
 
@@ -450,6 +459,32 @@ export function NumberGarden() {
         <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
       </section>}
 
+      {step === 21 && <section className="ng-panel" aria-labelledby="ng-fraction-line-title">
+        <p className="ng-step">OPTIONAL PREVIEW · MATH-04 · FRACTIONS ON A NUMBER LINE</p>
+        <h2 id="ng-fraction-line-title">Which fraction is farther right: one quarter or three quarters?</h2>
+        <div className="ng-fraction-number-line" role="img" aria-label="Number line from zero to one, marked at one quarter, one half, and three quarters">
+          <div className="ng-fraction-line-track" aria-hidden="true"><i/><i/><i/><i/><i/></div>
+          <div className="ng-fraction-line-labels"><span>0</span><span>1/4</span><span>1/2</span><span>3/4</span><span>1</span></div>
+        </div>
+        <p>Fractions farther to the right name greater amounts on this number line.</p>
+        <FractionCompareChoices onChoose={(answer) => {
+          if (paused) return;
+          if (!fartherRightFractionAnswerIsCorrect(answer, 1, 4, 3, 4)) {
+            setFeedback('Look for the fraction farther along the line from zero, then try again.');
+            return;
+          }
+          setStep(22);
+          setFeedback('Three quarters is farther right than one quarter, so it is the greater amount.');
+        }} />
+      </section>}
+
+      {step === 22 && <section className="ng-panel" aria-labelledby="ng-math04-numberline-finish-title">
+        <p className="ng-step">MATH-04 DRAFT PREVIEW COMPLETE · NO SCORE SAVED</p>
+        <h2 id="ng-math04-numberline-finish-title">You compared fractions on a number line.</h2>
+        <p>This describes practice in this visit. It is not a score or a measure of lasting math skill.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
       {step === 5 && <section className="ng-panel" aria-labelledby="ng-add-title">
         <p className="ng-step">OPTIONAL PRACTICE · MATH-02 · ADD ONE</p>
         <h2 id="ng-add-title">Two seeds are here. Add one more.</h2>
@@ -482,7 +517,7 @@ export function NumberGarden() {
 
       {step > 0 && <><p className="ng-feedback" role="status" aria-live="polite">{feedback}</p><nav className="ng-session-controls" aria-label="Activity controls">{!paused && <button className="ng-button" onClick={() => setPaused(true)}>Pause</button>}<button className="ng-button" onClick={home}>Home</button><button className="ng-button" onClick={home}>Restart</button></nav></>}
 
-      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. The user reports approval of MATH-03 and the first MATH-04 place-value/fraction prompts. New MATH-04 decimal and percent prompts were added in version 8 and need review. No score, profile, or progress record is made.</p></details>
+      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. The user reports approval of MATH-03 and MATH-04 prompts through decimal and percent practice. The fraction number-line prompt was added in version 9 and remains draft pending review. No score, profile, or progress record is made.</p></details>
     </main>
     <footer className="ng-footer">Practice for this visit only · no account · no saved child data</footer>
   </div>;

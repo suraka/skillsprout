@@ -1,8 +1,8 @@
 export const numberGardenManifest = {
   activityId: 'math-number-garden-001',
-  version: 8,
+  version: 9,
   language: 'en',
-  localeVariant: 'en_v2_m02_m03_m04_reviewed_m04_expansion_draft',
+  localeVariant: 'en_v2_m02_m03_m04_reviewed_m04_numberline_draft',
   reviewStatus: 'draft',
   requiresAccount: false,
   requiresAi: false,
@@ -123,10 +123,28 @@ export function percentOfEqualPartsAnswerIsCorrect(answer: number, shadedParts: 
     && answer >= 0 && answer <= 100 && answer * totalParts === shadedParts * 100;
 }
 
+export function fartherRightFractionAnswerIsCorrect(
+  answer: string,
+  firstNumerator: number,
+  firstDenominator: number,
+  secondNumerator: number,
+  secondDenominator: number,
+): boolean {
+  const valid = (numerator: number, denominator: number) => Number.isInteger(numerator)
+    && Number.isInteger(denominator) && denominator > 0 && denominator <= 100
+    && numerator >= 0 && numerator <= denominator;
+  if (!valid(firstNumerator, firstDenominator) || !valid(secondNumerator, secondDenominator)) return false;
+  const comparison = firstNumerator * secondDenominator - secondNumerator * firstDenominator;
+  if (comparison === 0) return false;
+  return answer === (comparison > 0
+    ? `${firstNumerator}/${firstDenominator}`
+    : `${secondNumerator}/${secondDenominator}`);
+}
+
 export function mathPublicationBlockers(): string[] {
   return [
     'The new MATH-03 equal-groups, array, and sharing prompts were authored after the reported reviews and still need review.',
-    'The MATH-04 decimal and percent extension prompts are new and still need review.',
+    'The new MATH-04 fraction-number-line comparison prompt still needs review.',
     'Review completion for version-2 and MATH-02 content is reported by the product owner; reviewer identities and findings are not attached to this draft.',
     'The activity remains a draft and has not been separately authorized for publication or merge.',
     'EDU-M2 still requires the remaining MATH-04 through MATH-06 outcomes.',

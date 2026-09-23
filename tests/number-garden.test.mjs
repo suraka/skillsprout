@@ -9,6 +9,7 @@ import {
   equalShareAnswerIsCorrect,
   equalFractionAnswerIsCorrect,
   decimalTenthsAnswerIsCorrect,
+  fartherRightFractionAnswerIsCorrect,
   isValidDecomposition,
   markSeedCounted,
   mathPublicationBlockers,
@@ -115,14 +116,22 @@ test('EDU-M13: percent answer uses the same proportion of equal parts', () => {
   assert.equal(percentOfEqualPartsAnswerIsCorrect(50, 5, 0), false);
 });
 
+test('EDU-M14: fraction number-line comparison uses equivalent cross-products', () => {
+  assert.equal(fartherRightFractionAnswerIsCorrect('3/4', 1, 4, 3, 4), true);
+  assert.equal(fartherRightFractionAnswerIsCorrect('1/4', 1, 4, 3, 4), false);
+  assert.equal(fartherRightFractionAnswerIsCorrect('2/8', 1, 4, 3, 4), false);
+  assert.equal(fartherRightFractionAnswerIsCorrect('3/4', 2, 8, 1, 4), false);
+  assert.equal(fartherRightFractionAnswerIsCorrect('1/0', 1, 4, 3, 4), false);
+});
+
 test('EDU-M05: this is a guest draft with publication review still blocked', () => {
   assert.equal(numberGardenManifest.reviewStatus, 'draft');
-  assert.equal(numberGardenManifest.version, 8);
+  assert.equal(numberGardenManifest.version, 9);
   assert.equal(numberGardenManifest.requiresAccount, false);
   assert.equal(numberGardenManifest.requiresAi, false);
   assert.equal(numberGardenManifest.requiresCameraOrMic, false);
   assert.equal(numberGardenManifest.savesLearnerData, false);
   assert.ok(mathPublicationBlockers().length >= 4);
   assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('new MATH-03 equal-groups')));
-  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('MATH-04 decimal and percent')));
+  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('fraction-number-line')));
 });

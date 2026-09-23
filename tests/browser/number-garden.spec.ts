@@ -151,3 +151,14 @@ test('EDU-MB05: MATH-04 connects tenths, decimals, and percent', async ({ page }
   await expect(page.getByText('Five tenths, 0.5, and 50% describe the same amount.')).toBeVisible();
 });
 
+test('EDU-MB06: MATH-04 compares fraction amounts on a number line', async ({ page }) => {
+  await page.goto(route);
+  await page.getByRole('button', { name: 'Explore fractions on a number line' }).click();
+
+  await expect(page.getByRole('heading', { name: 'Which fraction is farther right: one quarter or three quarters?' })).toBeVisible();
+  await page.getByRole('button', { name: '1/4' }).click();
+  await expect(page.getByRole('status')).toContainText('farther along the line from zero');
+  await page.getByRole('button', { name: '3/4' }).click();
+  await expect(page.getByRole('heading', { name: 'You compared fractions on a number line.' })).toBeVisible();
+  await expect(page.getByRole('status')).toContainText('Three quarters is farther right');
+});
