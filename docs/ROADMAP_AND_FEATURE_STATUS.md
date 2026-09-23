@@ -125,6 +125,7 @@ Implemented means source functionality exists; verified scope is separately stat
 - [x] Add a draft sphere and unit-cube volume preview with runtime/browser coverage.
 - [x] Record the user report that the MATH-05 solid/volume prompts were reviewed.
 - [x] Add bounded MATH-05 geometry, perimeter, metric model-ruler, elapsed-time, and equal-unit mass previews, plus MATH-06 chance, equivalent-ratio, and function-rule previews with deterministic/runtime/browser coverage.
+- [x] Verify v19 in GitHub CI: [run 35926350295](https://github.com/suraka/skillsprout/actions/runs/35926350295), all 59 runtime tests, 38 Chromium browser tests, TypeScript and production build passed on `ca1ea8a5a322e3a66e597f234acc0be2ec10394a`.
 - [ ] Continue broader MATH-05 and MATH-06 outcomes and complete new v19 human review gates.
 - [x] Verify version 6 MATH-03 draft in GitHub CI: [run 35871683522](https://github.com/suraka/skillsprout/actions/runs/35871683522), 30 runtime tests, 21 Chromium browser tests, TypeScript and production build passed on `7a60b53fab05ef3cab7c85376942c17b5bad3dbb`.
 - [x] Verify version 7 MATH-04 draft in GitHub CI: [run 35874071554](https://github.com/suraka/skillsprout/actions/runs/35874071554), 32 runtime tests, 22 Chromium browser tests, TypeScript and production build passed on `c114416345c796177a7bf09d3350f69bc897ded3`.
