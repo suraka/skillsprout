@@ -86,8 +86,8 @@ export function NumberGarden() {
       setFeedback('Take another look. You can count the seeds in each group, one at a time.');
       return;
     }
-    setStep(5);
-    setFeedback('You found the group with more. Next, watch what changes when a seed is added.');
+    setStep(8);
+    setFeedback('You completed the three number lessons. Optional garden changes are next.');
   }
 
   function chooseChange(value: number, expected: number, label: string) {
@@ -135,28 +135,26 @@ export function NumberGarden() {
     <main className="ng-main">
       <p className="ng-kicker">EARLY MATHEMATICS · DRAFT · HUMAN REVIEW PENDING</p>
       <h1>Number Garden</h1>
-      <p className="ng-intro">Count one seed at a time, compare two small groups, then explore what changes when a seed joins or leaves.</p>
+      <p className="ng-intro">Count a group, notice zero and number order, then compare two small groups.</p>
       <aside className="ng-review" aria-label="Draft content review status">
         <strong>Draft preview</strong>
-        <p>This is an early draft, not a reviewed maths course. A grown-up can read every prompt and number aloud. A qualified reviewer still needs to check the exact English locale, number wording, narration, and accessible alternatives. This visit does not measure lasting math ability.</p>
+        <p>The product owner reports being satisfied with the prompts, number choices, English locale, age and ability fit, accessibility, and safety. Qualified specialist review and real family and device testing are still pending. A grown-up can read every prompt and number aloud. This visit does not measure lasting math ability.</p>
       </aside>
 
       {step === 0 && <section className="ng-panel" aria-labelledby="ng-start-title">
-        <p className="ng-step">SIX SHORT GARDEN CHALLENGES · SMALL WHOLE NUMBERS</p>
-        <h2 id="ng-start-title">Count, compare, and notice a change.</h2>
+        <p className="ng-step">THREE SHORT NUMBER LESSONS · OPTIONAL GARDEN CHANGES</p>
+        <h2 id="ng-start-title">Count, notice zero, and compare groups.</h2>
         <ol className="ng-lessons">
-          <li><span>1</span><div><strong>Count the seeds</strong><small>Tap each illustrated seed once.</small></div></li>
-          <li><span>2</span><div><strong>Notice zero</strong><small>What number tells us the garden is empty?</small></div></li>
-          <li><span>3</span><div><strong>Put numbers in order</strong><small>Find the number that comes after three.</small></div></li>
-          <li><span>4</span><div><strong>Find the larger group</strong><small>Look closely or count together.</small></div></li>
-          <li><span>5</span><div><strong>Add one</strong><small>Watch the group change.</small></div></li>
-          <li><span>6</span><div><strong>Take one away</strong><small>Count how many remain.</small></div></li>
+          <li><span>1</span><div><strong>Count a group</strong><small>Tap each illustrated seed once and choose how many.</small></div></li>
+          <li><span>2</span><div><strong>Notice zero and number order</strong><small>Match an empty garden to zero; find what comes after three.</small></div></li>
+          <li><span>3</span><div><strong>Compare groups</strong><small>Look closely or count together to find which has more.</small></div></li>
         </ol>
+        <p className="ng-recap"><strong>Optional practice · Math changes</strong><br/>Add one seed and take one away.</p>
         <div className="ng-actions"><button className="ng-button primary" disabled={!ready} onClick={() => { setStep(1); setFeedback('Tap each seed once, then choose how many there are.'); }}>Begin Number Garden</button></div>
       </section>}
 
       {step === 1 && <section className="ng-panel" aria-labelledby="ng-count-title">
-        <p className="ng-step">CHALLENGE 1 OF 6 · ONE-TO-ONE COUNTING</p>
+        <p className="ng-step">LESSON 1 OF 3 · ONE-TO-ONE COUNTING</p>
         <h2 id="ng-count-title">Tap each seed once. How many are there?</h2>
         <p>Each seed stays in the same place. If you tap one twice, it still counts as just one seed.</p>
         <div className="ng-seed-row" role="group" aria-label="Five seeds to count">
@@ -169,7 +167,7 @@ export function NumberGarden() {
       </section>}
 
       {step === 2 && <section className="ng-panel" aria-labelledby="ng-zero-title">
-        <p className="ng-step">CHALLENGE 2 OF 6 · ZERO AND QUANTITY</p>
+        <p className="ng-step">LESSON 2 OF 3 · ZERO AND QUANTITY</p>
         <h2 id="ng-zero-title">The garden is empty. How many seeds are here?</h2>
         <Seeds count={0} label="Empty garden" />
         <p>An empty group has no seeds. Choose the number that tells us there are none.</p>
@@ -185,7 +183,7 @@ export function NumberGarden() {
       </section>}
 
       {step === 3 && <section className="ng-panel" aria-labelledby="ng-order-title">
-        <p className="ng-step">CHALLENGE 3 OF 6 · NUMBER ORDER</p>
+        <p className="ng-step">LESSON 2 OF 3 · NUMBER ORDER</p>
         <h2 id="ng-order-title">Which number comes after three?</h2>
         <ol className="ng-number-line" aria-label="Numbers in order from zero to five">{[0, 1, 2, 3, 4, 5].map((number) => <li key={number}>{number}</li>)}</ol>
         <p>Follow the numbers from left to right. Choose the next number after three.</p>
@@ -201,7 +199,7 @@ export function NumberGarden() {
       </section>}
 
       {step === 4 && <section className="ng-panel" aria-labelledby="ng-compare-title">
-        <p className="ng-step">CHALLENGE 4 OF 6 · COMPARE QUANTITIES</p>
+        <p className="ng-step">LESSON 3 OF 3 · COMPARE QUANTITIES</p>
         <h2 id="ng-compare-title">Which group has more seeds?</h2>
         <p>A grown-up can read the question aloud. You can also count the visible seeds in each group.</p>
         <div className="ng-compare-grid">
@@ -214,8 +212,18 @@ export function NumberGarden() {
         </div>
       </section>}
 
+      {step === 8 && <section className="ng-panel" aria-labelledby="ng-path-finish-title">
+        <p className="ng-step">THREE NUMBER LESSONS COMPLETE · NO SCORE SAVED</p>
+        <h2 id="ng-path-finish-title">You counted, noticed zero, and compared groups.</h2>
+        <p>This describes practice in this visit. It is not a score or a measure of lasting math skill.</p>
+        <div className="ng-actions">
+          <button className="ng-button primary" onClick={home}>Finish these number lessons</button>
+          <button className="ng-button" onClick={() => { setStep(5); setFeedback('Optional practice: add one seed, then choose how many.'); }}>Try optional number changes</button>
+        </div>
+      </section>}
+
       {step === 5 && <section className="ng-panel" aria-labelledby="ng-add-title">
-        <p className="ng-step">CHALLENGE 5 OF 6 · ADD ONE</p>
+        <p className="ng-step">OPTIONAL PRACTICE · MATH-02 · ADD ONE</p>
         <h2 id="ng-add-title">Two seeds are here. Add one more.</h2>
         <Seeds count={added ? 3 : 2} label="Garden after adding one"/>
         <div className="ng-actions"><button className="ng-button" disabled={added || paused} onClick={addOne}>Add one seed</button></div>
@@ -224,7 +232,7 @@ export function NumberGarden() {
       </section>}
 
       {step === 6 && <section className="ng-panel" aria-labelledby="ng-take-title">
-        <p className="ng-step">CHALLENGE 6 OF 6 · TAKE ONE AWAY</p>
+        <p className="ng-step">OPTIONAL PRACTICE · MATH-02 · TAKE ONE AWAY</p>
         <h2 id="ng-take-title">Four seeds are here. Take one away.</h2>
         <Seeds count={removed ? 3 : 4} label="Garden after taking one away"/>
         <div className="ng-actions"><button className="ng-button" disabled={removed || paused} onClick={takeOne}>Take one seed away</button></div>
@@ -233,7 +241,7 @@ export function NumberGarden() {
       </section>}
 
       {step === 7 && <section className="ng-panel" aria-labelledby="ng-finish-title">
-        <p className="ng-step">END OF THIS VISIT · NO SCORE SAVED</p>
+        <p className="ng-step">OPTIONAL PRACTICE COMPLETE · NO SCORE SAVED</p>
         <h2 id="ng-finish-title">You explored six number ideas.</h2>
         <p>You practiced touching each object once, noticing zero, ordering numbers, comparing groups, adding one, and taking one away.</p>
         <Seeds count={3} label="Three seeds in the garden"/>
@@ -246,7 +254,7 @@ export function NumberGarden() {
 
       {step > 0 && <><p className="ng-feedback" role="status" aria-live="polite">{feedback}</p><nav className="ng-session-controls" aria-label="Activity controls">{!paused && <button className="ng-button" onClick={() => setPaused(true)}>Pause</button>}<button className="ng-button" onClick={home}>Home</button><button className="ng-button" onClick={home}>Restart</button></nav></>}
 
-      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. Qualified early-math, locale, safety, accessibility and family review has not happened. No score, profile, or progress record is made.</p></details>
+      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. Product-owner review is satisfied for the prompts, number choices, English locale, age and ability fit, accessibility, and safety. Qualified specialist review and family and device testing remain pending. No score, profile, or progress record is made.</p></details>
     </main>
     <footer className="ng-footer">Practice for this visit only · no account · no saved child data</footer>
   </div>;

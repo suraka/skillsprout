@@ -87,7 +87,7 @@ Release status remains PARTIAL / BLOCKED FOR RELEASE. No qualified literacy, loc
 
 ## EDU-M2 first mathematics draft — Number Garden
 
-Implementation adds `/learning/number-garden` as a guest-only draft. Version 2 has six short challenges: count five stable seed objects once each, match an empty garden to zero, find the number after three, compare groups of three and four, add one to two, and take one away from four. Wrong answers give recovery prompts. Its local manifest explicitly blocks publication pending qualified review. No database, feature API, Firebase, cookie, localStorage or sessionStorage writes are added.
+Implementation adds `/learning/number-garden` as a guest-only draft. Version 3 organizes the existing version-2 prompts into three short lessons: count a group; notice zero and number order; compare groups. Adding one and taking one away follow as optional Math-02 practice. Wrong answers give recovery prompts. Its local manifest explicitly blocks publication pending qualified review. No database, feature API, Firebase, cookie, localStorage or sessionStorage writes are added.
 
 Local verification after the change:
 
@@ -102,5 +102,7 @@ CI follow-up: the first full run exposed two real gaps. The server-rendered star
 Verified version 2: [Frontend checks 35844395876](https://github.com/suraka/skillsprout/actions/runs/35844395876), commit `0936a51aacc62c35b8efe78a2f142996670d0255`, passed frozen install, TypeScript, all 27 runtime tests, all 20 Chromium browser tests, and production build. The expanded browser test follows counting/cardinality through zero, number order, comparison, addition and subtraction, including wrong-answer recovery. Guest-only network and storage assertions still pass. All content remains explicitly draft pending qualified review.
 
 Verified final rerun: [Frontend checks 35841877262](https://github.com/suraka/skillsprout/actions/runs/35841877262), commit `56c5722000659e7c4d71fe44da1e0e4a25f8adc5`, passed frozen install, TypeScript, all 26 runtime tests, all 20 Chromium browser tests, and production build. Browser assertions confirmed the full activity/recovery flow, offline pause/resume, no API or external requests, no browser-storage writes, and mobile-width fit. Earlier failed runs exposed the issues above; they are resolved by this verified head.
+
+The product owner states they are satisfied with the version-2 prompts, number choices, English locale, age and ability fit, accessibility and safety. Version 3 changes lesson grouping and remains a draft. This is not qualified specialist sign-off. New local checks and GitHub CI results for version 3 will be recorded below before this PR is considered ready for specialist and family/device review.
 
 Human review is NOT TESTED: qualified early-math content reviewer, English locale/numeral narration decision, safety/assets, accessibility/screen-reader, real-device and consenting family checks remain open. EDU-M2 is PARTIAL; this one draft is not the three reviewed units required by the blueprint. No proficiency claim or migration was made.

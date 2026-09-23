@@ -40,6 +40,9 @@ test('EDU-MB01: counting, comparison and change activities recover from wrong an
   await expect(page.getByRole('status')).toContainText('count the seeds in each group');
   await page.getByRole('button', { name: 'Choose group of 4 seeds' }).click();
 
+  await expect(page.getByRole('heading', { name: 'You counted, noticed zero, and compared groups.' })).toBeVisible();
+  await page.getByRole('button', { name: 'Try optional number changes' }).click();
+
   await page.getByRole('button', { name: 'Add one seed' }).click();
   await expect(page.getByRole('img', { name: 'Garden after adding one: 3 seeds' })).toBeVisible();
   await page.getByRole('button', { name: '4 seeds' }).click();
@@ -54,7 +57,7 @@ test('EDU-MB01: counting, comparison and change activities recover from wrong an
   await expect(page.getByRole('heading', { name: 'You explored six number ideas.' })).toBeVisible();
   await expect(page.getByText('This describes practice in this visit. It is not a score or a measure of lasting math skill.')).toBeVisible();
   await page.getByRole('button', { name: 'Finish and clear this visit' }).click();
-  await expect(page.getByRole('heading', { name: 'Count, compare, and notice a change.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Count, notice zero, and compare groups.' })).toBeVisible();
 });
 
 test('EDU-MB02: guest math practice has no API, account, or browser-storage writes', async ({ page, context }) => {
@@ -75,7 +78,7 @@ test('EDU-MB02: guest math practice has no API, account, or browser-storage writ
   await context.setOffline(true);
   await page.getByRole('button', { name: 'Resume' }).click();
   await page.getByRole('button', { name: 'Home' }).click();
-  await expect(page.getByRole('heading', { name: 'Count, compare, and notice a change.' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Count, notice zero, and compare groups.' })).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   await expect(page.evaluate(() => ({ local: localStorage.length, session: sessionStorage.length, cookies: document.cookie }))).resolves.toEqual({ local: 0, session: 0, cookies: '' });
   expect(externalRequests).toEqual([]);

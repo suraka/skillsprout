@@ -1,8 +1,8 @@
 export const numberGardenManifest = {
   activityId: 'math-number-garden-001',
-  version: 2,
+  version: 3,
   language: 'en',
-  localeVariant: 'pending_qualified_review',
+  localeVariant: 'en_product_owner_reviewed_specialist_pending',
   reviewStatus: 'draft',
   requiresAccount: false,
   requiresAi: false,
@@ -71,7 +71,7 @@ export function amountAnswerIsCorrect(answer: number, expected: number): boolean
 export function mathPublicationBlockers(): string[] {
   return [
     'Qualified early-mathematics content review is pending.',
-    'The English locale and numeral narration decision are pending review.',
+    'The English locale has product-owner review; qualified locale and numeral narration confirmation are pending.',
     'Accessibility, safety, and original-asset review are pending.',
     'Physical-device, screen-reader, and family testing are not complete.',
   ];

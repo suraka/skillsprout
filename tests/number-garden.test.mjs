@@ -56,7 +56,7 @@ test('EDU-M04: adding and taking away use bounded, deterministic quantities', ()
 
 test('EDU-M05: this is a guest draft with publication review still blocked', () => {
   assert.equal(numberGardenManifest.reviewStatus, 'draft');
-  assert.equal(numberGardenManifest.version, 2);
+  assert.equal(numberGardenManifest.version, 3);
   assert.equal(numberGardenManifest.requiresAccount, false);
   assert.equal(numberGardenManifest.requiresAi, false);
   assert.equal(numberGardenManifest.requiresCameraOrMic, false);
