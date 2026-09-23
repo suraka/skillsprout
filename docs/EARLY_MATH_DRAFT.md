@@ -1,13 +1,13 @@
 # Number Garden — early mathematics draft
 
 **Status: DRAFT / NOT APPROVED FOR PUBLICATION**  
-**Activity:** `math-number-garden-001`, version 3
-**Language:** English; product-owner review satisfied for this locale; qualified locale and number narration confirmation pending
+**Activity:** `math-number-garden-001`, version 4
+**Language:** English; completion of the English-locale review is reported by the product owner
 **Evidence:** guest practice held only in the current page visit; never treated as mastery
 
 ## Scope
 
-This draft is organized as three short number lessons: count a group; notice zero and number order; compare groups. It uses fixed quantities from zero to five. Adding one and taking one away are clearly optional Math-02 practice after the three-lesson path. Version 3 groups the existing version-2 prompts without changing their answer choices. The product owner reports satisfaction with the exact prompts, number choices, English locale, age and ability fit, accessibility, and safety for version 2. The version-3 grouping remains a draft pending qualified review; this is not the three reviewed units required for EDU-M2.
+This draft is organized as three short number lessons: count a group; notice zero and number order; compare groups. It uses fixed quantities from zero to five. Adding one and taking one away are clearly optional Math-02 practice after the three-lesson path. Version 3 groups the existing version-2 prompts without changing their answer choices. The product owner reports that all reviews are complete and is satisfied with the prompts, number choices, English locale, age and ability fit, accessibility, and safety. Version 4 records that update; the activity remains a draft and is not the three reviewed units required for EDU-M2.
 
 | Draft step | Intended practice | Fixed interaction |
 |---|---|---|
@@ -35,4 +35,4 @@ This guest-only scope needs no Firebase authentication, backend endpoint or data
 - Test with consenting adults/families and real devices; record browser, device and observed results. Automated tests are not human review.
 - Add the remaining reviewed number-path units for MATH-01 through MATH-06 only as their own usable, tested slices. This draft does not complete EDU-M2.
 
-The product owner states they are satisfied with the version-2 prompts, number choices, English locale, age and ability fit, accessibility, and safety. This records product-owner review, not qualified specialist sign-off. Qualified mathematics, locale/language, accessibility, and safety review, along with family and real-device testing, remain pending for publication. The recap says only that a learner practiced during this visit; it does not infer durable number knowledge.
+The product owner reports that all reviews are complete and is satisfied with the version-2 prompts, number choices, English locale, age and ability fit, accessibility, and safety. Reviewer identities, findings, formal sign-off records, and real-device/family review notes were not provided for this repository, so the manifest remains draft. The recap says only that a learner practiced during this visit; it does not infer durable number knowledge.

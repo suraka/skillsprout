@@ -138,7 +138,7 @@ export function NumberGarden() {
       <p className="ng-intro">Count a group, notice zero and number order, then compare two small groups.</p>
       <aside className="ng-review" aria-label="Draft content review status">
         <strong>Draft preview</strong>
-        <p>The product owner reports being satisfied with the prompts, number choices, English locale, age and ability fit, accessibility, and safety. Qualified specialist review and real family and device testing are still pending. A grown-up can read every prompt and number aloud. This visit does not measure lasting math ability.</p>
+        <p>The product owner reports that all reviews are complete and is satisfied with the prompts, number choices, English locale, age and ability fit, accessibility, and safety. This remains a draft; review records are not included here. A grown-up can read every prompt and number aloud. This visit does not measure lasting math ability.</p>
       </aside>
 
       {step === 0 && <section className="ng-panel" aria-labelledby="ng-start-title">
@@ -254,7 +254,7 @@ export function NumberGarden() {
 
       {step > 0 && <><p className="ng-feedback" role="status" aria-live="polite">{feedback}</p><nav className="ng-session-controls" aria-label="Activity controls">{!paused && <button className="ng-button" onClick={() => setPaused(true)}>Pause</button>}<button className="ng-button" onClick={home}>Home</button><button className="ng-button" onClick={home}>Restart</button></nav></>}
 
-      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. Product-owner review is satisfied for the prompts, number choices, English locale, age and ability fit, accessibility, and safety. Qualified specialist review and family and device testing remain pending. No score, profile, or progress record is made.</p></details>
+      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. The product owner reports that all reviews are complete and is satisfied with the prompts, number choices, English locale, age and ability fit, accessibility, and safety. Review records are not included here. No score, profile, or progress record is made.</p></details>
     </main>
     <footer className="ng-footer">Practice for this visit only · no account · no saved child data</footer>
   </div>;

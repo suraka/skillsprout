@@ -56,10 +56,11 @@ test('EDU-M04: adding and taking away use bounded, deterministic quantities', ()
 
 test('EDU-M05: this is a guest draft with publication review still blocked', () => {
   assert.equal(numberGardenManifest.reviewStatus, 'draft');
-  assert.equal(numberGardenManifest.version, 3);
+  assert.equal(numberGardenManifest.version, 4);
   assert.equal(numberGardenManifest.requiresAccount, false);
   assert.equal(numberGardenManifest.requiresAi, false);
   assert.equal(numberGardenManifest.requiresCameraOrMic, false);
   assert.equal(numberGardenManifest.savesLearnerData, false);
   assert.ok(mathPublicationBlockers().length >= 4);
+  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('Review completion is reported by the product owner')));
 });

@@ -1,8 +1,8 @@
 export const numberGardenManifest = {
   activityId: 'math-number-garden-001',
-  version: 3,
+  version: 4,
   language: 'en',
-  localeVariant: 'en_product_owner_reviewed_specialist_pending',
+  localeVariant: 'en_review_completion_reported',
   reviewStatus: 'draft',
   requiresAccount: false,
   requiresAi: false,
@@ -70,9 +70,9 @@ export function amountAnswerIsCorrect(answer: number, expected: number): boolean
 
 export function mathPublicationBlockers(): string[] {
   return [
-    'Qualified early-mathematics content review is pending.',
-    'The English locale has product-owner review; qualified locale and numeral narration confirmation are pending.',
-    'Accessibility, safety, and original-asset review are pending.',
-    'Physical-device, screen-reader, and family testing are not complete.',
+    'Review completion is reported by the product owner; reviewer identities, findings, and sign-off records are not attached to this draft.',
+    'Real-device, screen-reader, and family review outcomes are not documented in this repository.',
+    'The activity remains a draft and has not been separately authorized for publication or merge.',
+    'EDU-M2 still requires the remaining reviewed number-path units.',
   ];
 }
