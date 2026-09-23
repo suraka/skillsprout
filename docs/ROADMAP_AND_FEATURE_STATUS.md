@@ -92,6 +92,7 @@ Implemented means source functionality exists; verified scope is separately stat
 - [x] Add a small draft MATH-04 preview for place value and equal fractions; runtime and browser coverage added.
 - [x] Record the user report that MATH-03 and initial MATH-04 prompts were reviewed.
 - [x] Add a draft MATH-04 ten-parts preview connecting 5/10, 0.5, and 50%, with runtime and browser recovery tests.
+- [x] Verify version 8 MATH-04 decimal/percent extension in GitHub CI: [run 35884632920](https://github.com/suraka/skillsprout/actions/runs/35884632920), 34 runtime tests, 23 Chromium browser tests, TypeScript and production build passed on `c4c0f33afebddd89bbc8510597d488b24483adbb`.
 - [ ] Review the new decimal/percent prompts; complete remaining MATH-04 objectives and build MATH-05…06 as separate tested slices.
 - [x] Verify version 6 MATH-03 draft in GitHub CI: [run 35871683522](https://github.com/suraka/skillsprout/actions/runs/35871683522), 30 runtime tests, 21 Chromium browser tests, TypeScript and production build passed on `7a60b53fab05ef3cab7c85376942c17b5bad3dbb`.
 - [x] Verify version 7 MATH-04 draft in GitHub CI: [run 35874071554](https://github.com/suraka/skillsprout/actions/runs/35874071554), 32 runtime tests, 22 Chromium browser tests, TypeScript and production build passed on `c114416345c796177a7bf09d3350f69bc897ded3`.
