@@ -133,3 +133,20 @@ test('EDU-MB04: MATH-04 place value and equal fractions recover from wrong answe
   await page.getByRole('button', { name: 'Finish and clear this visit' }).click();
   await expect(page.getByRole('heading', { name: 'Count, notice zero, and compare groups.' })).toBeVisible();
 });
+
+test('EDU-MB05: MATH-04 connects tenths, decimals, and percent', async ({ page }) => {
+  await page.goto(route);
+  await page.getByRole('button', { name: 'Explore tenths and percent' }).click();
+
+  await expect(page.getByRole('heading', { name: 'Five of ten equal parts are shaded. Which decimal shows five tenths?' })).toBeVisible();
+  await page.getByRole('button', { name: '0.8' }).click();
+  await expect(page.getByRole('status')).toContainText('Count five shaded parts');
+  await page.getByRole('button', { name: '0.5' }).click();
+
+  await expect(page.getByRole('heading', { name: 'Five of ten equal parts are shaded. What percent is shaded?' })).toBeVisible();
+  await page.getByRole('button', { name: '40%' }).click();
+  await expect(page.getByRole('status')).toContainText('one half of the bar');
+  await page.getByRole('button', { name: '50%' }).click();
+  await expect(page.getByRole('heading', { name: 'You connected equal parts, decimals, and percent.' })).toBeVisible();
+  await expect(page.getByText('Five tenths, 0.5, and 50% describe the same amount.')).toBeVisible();
+});

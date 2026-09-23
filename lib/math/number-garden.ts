@@ -1,8 +1,8 @@
 export const numberGardenManifest = {
   activityId: 'math-number-garden-001',
-  version: 7,
+  version: 8,
   language: 'en',
-  localeVariant: 'en_v2_m02_reviewed_m03_m04_draft',
+  localeVariant: 'en_v2_m02_m03_m04_reviewed_m04_expansion_draft',
   reviewStatus: 'draft',
   requiresAccount: false,
   requiresAi: false,
@@ -104,10 +104,29 @@ export function equalFractionAnswerIsCorrect(answer: string, shadedParts: number
     && numerator * totalParts === shadedParts * denominator;
 }
 
+export function decimalTenthsAnswerIsCorrect(answer: string, shadedParts: number, totalParts: number): boolean {
+  if (!Number.isInteger(shadedParts) || !Number.isInteger(totalParts)
+    || totalParts <= 0 || shadedParts < 0 || shadedParts > totalParts || totalParts > 10) return false;
+  const match = /^(\d+)\.(\d+)$/.exec(answer);
+  if (!match) return false;
+  const whole = Number(match[1]);
+  const decimalDigits = match[2];
+  const fraction = Number(decimalDigits);
+  const scale = 10 ** decimalDigits.length;
+  return Number.isSafeInteger(whole) && Number.isSafeInteger(fraction)
+    && scale <= 1000 && whole * scale * totalParts + fraction * totalParts === shadedParts * scale;
+}
+
+export function percentOfEqualPartsAnswerIsCorrect(answer: number, shadedParts: number, totalParts: number): boolean {
+  return Number.isInteger(answer) && Number.isInteger(shadedParts) && Number.isInteger(totalParts)
+    && totalParts > 0 && totalParts <= 100 && shadedParts >= 0 && shadedParts <= totalParts
+    && answer >= 0 && answer <= 100 && answer * totalParts === shadedParts * 100;
+}
+
 export function mathPublicationBlockers(): string[] {
   return [
     'The new MATH-03 equal-groups, array, and sharing prompts were authored after the reported reviews and still need review.',
-    'The new MATH-04 place-value and equal-fraction prompts are a draft and still need review.',
+    'The MATH-04 decimal and percent extension prompts are new and still need review.',
     'Review completion for version-2 and MATH-02 content is reported by the product owner; reviewer identities and findings are not attached to this draft.',
     'The activity remains a draft and has not been separately authorized for publication or merge.',
     'EDU-M2 still requires the remaining MATH-04 through MATH-06 outcomes.',

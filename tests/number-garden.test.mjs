@@ -8,11 +8,13 @@ import {
   countIsComplete,
   equalShareAnswerIsCorrect,
   equalFractionAnswerIsCorrect,
+  decimalTenthsAnswerIsCorrect,
   isValidDecomposition,
   markSeedCounted,
   mathPublicationBlockers,
   multiplicationAnswerIsCorrect,
   placeValueAnswerIsCorrect,
+  percentOfEqualPartsAnswerIsCorrect,
   numberGardenManifest,
   nextNumberAfterIsCorrect,
   seedSet,
@@ -98,14 +100,29 @@ test('EDU-M11: fraction answer key matches the count of equal shaded parts', () 
   assert.equal(equalFractionAnswerIsCorrect('2/4junk', 2, 4), false);
 });
 
+test('EDU-M12: tenths map to an exact decimal value', () => {
+  assert.equal(decimalTenthsAnswerIsCorrect('0.5', 5, 10), true);
+  assert.equal(decimalTenthsAnswerIsCorrect('0.50', 5, 10), true);
+  assert.equal(decimalTenthsAnswerIsCorrect('0.8', 5, 10), false);
+  assert.equal(decimalTenthsAnswerIsCorrect('0.55', 5, 10), false);
+  assert.equal(decimalTenthsAnswerIsCorrect('five tenths', 5, 10), false);
+});
+
+test('EDU-M13: percent answer uses the same proportion of equal parts', () => {
+  assert.equal(percentOfEqualPartsAnswerIsCorrect(50, 5, 10), true);
+  assert.equal(percentOfEqualPartsAnswerIsCorrect(40, 5, 10), false);
+  assert.equal(percentOfEqualPartsAnswerIsCorrect(50.5, 5, 10), false);
+  assert.equal(percentOfEqualPartsAnswerIsCorrect(50, 5, 0), false);
+});
+
 test('EDU-M05: this is a guest draft with publication review still blocked', () => {
   assert.equal(numberGardenManifest.reviewStatus, 'draft');
-  assert.equal(numberGardenManifest.version, 7);
+  assert.equal(numberGardenManifest.version, 8);
   assert.equal(numberGardenManifest.requiresAccount, false);
   assert.equal(numberGardenManifest.requiresAi, false);
   assert.equal(numberGardenManifest.requiresCameraOrMic, false);
   assert.equal(numberGardenManifest.savesLearnerData, false);
   assert.ok(mathPublicationBlockers().length >= 4);
   assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('new MATH-03 equal-groups')));
-  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('MATH-04 place-value')));
+  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('MATH-04 decimal and percent')));
 });
