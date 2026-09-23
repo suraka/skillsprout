@@ -225,3 +225,16 @@ test('EDU-MB10: MATH-05 compares identical unit weights on a balance', async ({ 
   await expect(page.getByRole('heading', { name: 'You compared mass using identical unit weights.' })).toBeVisible();
   await expect(page.getByText('This balance drawing is a learning model, not a calibrated measuring instrument.')).toBeVisible();
 });
+
+
+test('EDU-MB11: MATH-05 adds pretend token values with retry and no real-currency claim', async ({ page }) => {
+  await page.goto(route);
+  await page.getByRole('button', { name: 'Explore pretend tokens' }).click();
+  await expect(page.getByRole('heading', { name: 'These are make-believe shop tokens. How many points are in this purse?' })).toBeVisible();
+  await expect(page.getByRole('img', { name: 'Make-believe purse with one token worth 2 points and one token worth 1 point' })).toBeVisible();
+  await expect(page.getByText('These learning tokens are not real money, prices, or local currency.')).toBeVisible();
+  await page.getByRole('button', { name: '2' }).click();
+  await expect(page.getByRole('status')).toContainText('Count the points shown on both tokens');
+  await page.getByRole('button', { name: '3' }).click();
+  await expect(page.getByRole('heading', { name: 'Two points and one point make three pretend points.' })).toBeVisible();
+});

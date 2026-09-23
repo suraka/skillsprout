@@ -1,8 +1,8 @@
 export const numberGardenManifest = {
   activityId: 'math-number-garden-001',
-  version: 13,
+  version: 14,
   language: 'en',
-  localeVariant: 'en_v2_m02_m03_m04_m05_mass_draft',
+  localeVariant: 'en_v2_m02_m03_m04_m05_money_draft',
   reviewStatus: 'draft',
   requiresAccount: false,
   requiresAi: false,
@@ -181,9 +181,15 @@ export function heavierBalanceSideAnswerIsCorrect(
     && answer === (leftUnits > rightUnits ? 'left' : 'right');
 }
 
+export function pretendTokenAmountAnswerIsCorrect(answer: number, tokenValues: readonly number[]): boolean {
+  return Number.isInteger(answer) && tokenValues.length > 0 && tokenValues.length <= 5
+    && tokenValues.every((value) => Number.isInteger(value) && value >= 1 && value <= 5)
+    && answer === tokenValues.reduce((total, value) => total + value, 0);
+}
+
 export function mathPublicationBlockers(): string[] {
   return [
-    'The new MATH-05 balance and unit-mass prompt is a draft and needs review.',
+    'The user reports reviewing the MATH-05 balance and unit-mass prompt; the new pretend-token amount prompt is a draft and needs review.',
     'The user reports reviewing the MATH-05 solid-shape and unit-cube volume prompts; reviewer identities and findings are not attached to this draft.',
     'Review completion for version-2 and MATH-02 through MATH-05 prompts is reported by the user; reviewer identities and findings are not attached to this draft.',
     'The activity remains a draft and has not been separately authorized for publication or merge.',

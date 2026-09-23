@@ -23,6 +23,7 @@ import {
   unitCubeVolumeAnswerIsCorrect,
   wholeHourAnswerIsCorrect,
   heavierBalanceSideAnswerIsCorrect,
+  pretendTokenAmountAnswerIsCorrect,
   nextNumberAfterIsCorrect,
   seedSet,
   zeroAnswerIsCorrect,
@@ -293,7 +294,8 @@ export function NumberGarden() {
         <p className="ng-recap"><strong>Optional preview · MATH-05 shapes and measurement</strong><br/>Find a three-sided shape and compare two strips using equal on-screen units. The display is a learning model, not a real ruler.</p>
         <p className="ng-recap"><strong>Optional preview · MATH-05 solids and volume</strong><br/>Recognize a sphere and count unit cubes across two layers.</p>
         <p className="ng-recap"><strong>Optional preview · MATH-05 telling time</strong><br/>Read a clock when the minute hand points to 12. The user reports reviewing this prompt.</p>
-        <p className="ng-recap"><strong>Optional draft · MATH-05 comparing mass</strong><br/>Compare identical unit weights on a balance. This new prompt needs review.</p>
+        <p className="ng-recap"><strong>Optional preview · MATH-05 comparing mass</strong><br/>Compare identical unit weights on a balance; the user reports reviewing this prompt.</p>
+        <p className="ng-recap"><strong>New draft · MATH-05 pretend tokens</strong><br/>Count make-believe token values. These are learning tokens, not real money or local currency; this new prompt needs review.</p>
         <div className="ng-actions">
           <button className="ng-button primary" disabled={!ready} onClick={() => { setStep(1); setFeedback('Tap each seed once, then choose how many there are.'); }}>Begin Number Garden</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(11); setFeedback('MATH-03 draft preview: look at the equal groups.'); }}>Explore equal groups and sharing</button>
@@ -303,7 +305,8 @@ export function NumberGarden() {
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(23); setFeedback('MATH-05 draft preview: look for a shape with three straight sides.'); }}>Explore shapes and screen units</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(26); setFeedback('MATH-05 draft preview: look for the solid with no flat faces.'); }}>Explore solids and volume</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(29); setFeedback('MATH-05 time draft: look at both clock hands.'); }}>Explore telling time</button>
-          <button className="ng-button" disabled={!ready} onClick={() => { setStep(31); setFeedback('MATH-05 mass draft: compare the identical unit weights.'); }}>Explore comparing mass</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(31); setFeedback('MATH-05 mass preview: compare the identical unit weights.'); }}>Explore comparing mass</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(33); setFeedback('MATH-05 money draft: count the pretend token values.'); }}>Explore pretend tokens</button>
         </div>
       </section>}
 
@@ -711,6 +714,32 @@ export function NumberGarden() {
         <p className="ng-step">MATH-05 MASS DRAFT PREVIEW · NO SCORE SAVED</p>
         <h2 id="ng-math05-mass-finish-title">You compared mass using identical unit weights.</h2>
         <p>This balance drawing is a learning model, not a calibrated measuring instrument.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 33 && <section className="ng-panel" aria-labelledby="ng-money-title">
+        <p className="ng-step">NEW DRAFT PREVIEW · MATH-05 · PRETEND TOKEN VALUES</p>
+        <h2 id="ng-money-title">These are make-believe shop tokens. How many points are in this purse?</h2>
+        <p>Each token shows its point value. Add the two values: 2 points and 1 point.</p>
+        <div className="ng-token-purse" role="img" aria-label="Make-believe purse with one token worth 2 points and one token worth 1 point">
+          <span className="ng-token">2 points</span><span className="ng-token">1 point</span>
+        </div>
+        <p>These learning tokens are not real money, prices, or local currency.</p>
+        <NumeralChoices values={[2, 3, 4, 5]} disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          if (!pretendTokenAmountAnswerIsCorrect(answer, [2, 1])) {
+            setFeedback('Count the points shown on both tokens, then try again.');
+            return;
+          }
+          setStep(34);
+          setFeedback('Two points and one point make three pretend points.');
+        }} />
+      </section>}
+
+      {step === 34 && <section className="ng-panel" aria-labelledby="ng-money-finish-title">
+        <p className="ng-step">MATH-05 PRETEND TOKEN DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-money-finish-title">Two points and one point make three pretend points.</h2>
+        <p>This is a make-believe counting example, not a lesson about real prices or currency.</p>
         <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
       </section>}
 

@@ -16,6 +16,7 @@ import {
   unitCubeVolumeAnswerIsCorrect,
   wholeHourAnswerIsCorrect,
   heavierBalanceSideAnswerIsCorrect,
+  pretendTokenAmountAnswerIsCorrect,
   isValidDecomposition,
   markSeedCounted,
   mathPublicationBlockers,
@@ -177,12 +178,21 @@ test('EDU-M20: balance answer matches the heavier bounded unit-mass side', () =>
 
 test('EDU-M05: this is a guest draft with publication review still blocked', () => {
   assert.equal(numberGardenManifest.reviewStatus, 'draft');
-  assert.equal(numberGardenManifest.version, 13);
+  assert.equal(numberGardenManifest.version, 14);
   assert.equal(numberGardenManifest.requiresAccount, false);
   assert.equal(numberGardenManifest.requiresAi, false);
   assert.equal(numberGardenManifest.requiresCameraOrMic, false);
   assert.equal(numberGardenManifest.savesLearnerData, false);
   assert.ok(mathPublicationBlockers().length >= 3);
   assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('reviewing the MATH-05 solid-shape and unit-cube volume')));
-  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('MATH-05 balance and unit-mass')));
+  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('pretend-token amount')));
+});
+
+
+test('EDU-M21: pretend token totals are deterministic and bounded', () => {
+  assert.equal(pretendTokenAmountAnswerIsCorrect(3, [2, 1]), true);
+  assert.equal(pretendTokenAmountAnswerIsCorrect(2, [2, 1]), false);
+  assert.equal(pretendTokenAmountAnswerIsCorrect(3, [2, 1.5]), false);
+  assert.equal(pretendTokenAmountAnswerIsCorrect(3, []), false);
+  assert.equal(pretendTokenAmountAnswerIsCorrect(3, [2, 1, 0]), false);
 });

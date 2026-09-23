@@ -129,3 +129,8 @@ The user reports reviewing the version 11 prompts. This is recorded as user-repo
 Verified version 12 MATH-05 time preview: [Frontend checks 35902117313](https://github.com/suraka/skillsprout/actions/runs/35902117313), commit `7f91ae1c639f360cd2a4d97ea5dfbc95d0f296ee`, passed frozen install, TypeScript, all 40 runtime tests, all 27 Chromium browser tests, and production build. Browser EDU-MB09 confirms the accessible 3:00 clock, wrong-answer retry, and completion state. The user reports reviewing the exact-hour prompt; it covers one narrow time-reading example only.
 
 Version 13 adds a balance model comparing three identical unit weights with two. Its new mass prompt remains draft pending review.
+
+
+Verified version 13 MATH-05 balance/mass preview: [Frontend checks 35906762256](https://github.com/suraka/skillsprout/actions/runs/35906762256), commit `56c2319a7416dff8c83081857958f1c244df3e74`, passed TypeScript, all 41 runtime tests, all 28 Chromium browser tests, and production build. Browser EDU-MB10 checks the accessible balance description, wrong-answer recovery, and correct completion. The user reports reviewing this prompt.
+
+Version 14 adds one make-believe 2-point plus 1-point token example. The label states these are learning tokens, not real money, prices, or local currency. Runtime and browser tests cover the total, wrong-answer recovery, and that disclaimer. This new prompt needs user review; it is not a complete money curriculum.
