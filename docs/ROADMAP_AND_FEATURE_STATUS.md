@@ -102,6 +102,7 @@ Implemented means source functionality exists; verified scope is separately stat
 - [x] Record the user report that the MATH-05 2D-shape and screen-length prompts were reviewed.
 - [x] Record the user report that the MATH-05 solid-shape and unit-cube volume prompts were reviewed.
 - [x] Add a short draft MATH-05 time-reading prompt with bounded exact-hour choices and wrong-answer recovery.
+- [x] Verify version 12 MATH-05 time preview in GitHub CI: [run 35902117313](https://github.com/suraka/skillsprout/actions/runs/35902117313), 40 runtime tests, 27 Chromium browser tests, TypeScript and production build passed.
 - [ ] Review the version 12 exact-hour clock prompt.
 - [x] Add a draft sphere and unit-cube volume preview with runtime/browser coverage.
 - [x] Record the user report that the MATH-05 solid/volume prompts were reviewed.
