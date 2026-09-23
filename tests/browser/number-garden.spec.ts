@@ -299,11 +299,11 @@ test('EDU-MB16: MATH-05 compares drawn unit-cube volumes with wrong-answer recov
   await page.goto(route);
   await page.getByRole('button', { name: 'Compare unit-cube volume' }).click();
   await expect(page.getByRole('heading', { name: 'Which box holds more unit cubes?' })).toBeVisible();
+  await expect(page.getByText(/not real containers/)).toBeVisible();
   await page.getByRole('button', { name: 'First box' }).click();
   await expect(page.getByRole('status')).toContainText('the first has four cubes and the second has eight');
   await page.getByRole('button', { name: 'Second box' }).click();
   await expect(page.getByRole('heading', { name: 'The second box has more unit cubes.' })).toBeVisible();
-  await expect(page.getByText(/not real containers/)).toBeVisible();
 });
 
 test('EDU-MB17: MATH-06 builds a chart, checks a data claim and describes a pattern rule', async ({ page }) => {
@@ -323,7 +323,7 @@ test('EDU-MB17: MATH-06 builds a chart, checks a data claim and describes a patt
   await page.getByRole('button', { name: 'Check my chart' }).click();
   await expect(page.getByRole('heading', { name: 'You built a bar chart from the table.' })).toBeVisible();
   await page.getByRole('button', { name: 'Continue to check a claim' }).click();
-  await page.getByRole('button', { name: 'Supported' }).click();
+  await page.getByRole('button', { name: 'Supported', exact: true }).click();
   await expect(page.getByRole('status')).toContainText('Two is less than four');
   await page.getByRole('button', { name: 'Not supported' }).click();
   await expect(page.getByRole('heading', { name: 'You checked the claim against the data.' })).toBeVisible();
