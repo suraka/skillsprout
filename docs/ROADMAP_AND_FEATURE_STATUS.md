@@ -86,6 +86,7 @@ Implemented means source functionality exists; verified scope is separately stat
 - [x] Record user report that all Number Garden reviews are complete and satisfactory; retain draft status because reviewer records are not included here and merge/publication needs separate authorization.
 - [x] Record the user's report that the Number Garden v2 reviews are complete; review records are not attached and the activity remains draft.
 - [x] Add a draft MATH-02 compose/decompose interaction that accepts more than one valid split; verify deterministic answers and recovery.
+- [x] Verify MATH-02 draft extension in GitHub CI: [run 35866977777](https://github.com/suraka/skillsprout/actions/runs/35866977777), 28 runtime tests, 20 Chromium browser tests, TypeScript and production build passed on `655b1a678bfd2655e80e8cb344b262d384d7566d`.
 - [ ] Review the new MATH-02 prompts; build MATH-03…06 as separate tested slices.
 - [x] Extend Number Garden with zero and number-order draft challenges and deterministic answer checks; [CI 35844395876](https://github.com/suraka/skillsprout/actions/runs/35844395876) passed all 27 runtime tests, 20 Chromium browser tests, TypeScript and production build on `0936a51aacc62c35b8efe78a2f142996670d0255`.
 - [x] Group Number Garden into three number lessons with clearly optional number-change practice; [CI 35849147816](https://github.com/suraka/skillsprout/actions/runs/35849147816) passed all 27 runtime tests, 20 Chromium browser tests, TypeScript and production build on `8f6065b0f13f1db1329e3dbaa03b01a113a923bd`.
