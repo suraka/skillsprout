@@ -46,7 +46,7 @@ test('LE-B03: adult-selected level, sensory options, pause, home, and reset stay
   await expect(page.locator('.rh')).toHaveClass(/rh-contrast/);
   await page.getByRole('button',{name:'Pause'}).click();
   await expect(page.getByRole('heading',{name:'Paused'})).toBeVisible();
-  await page.getByRole('button',{name:'Continue'}).click();
+  await page.getByRole('button',{name:'Resume'}).click();
   await page.getByRole('button',{name:'Home',exact:true}).click();
   await page.getByRole('button',{name:'Explore together'}).click();
   await expect(page.locator('.rh-home')).toHaveCount(4);
