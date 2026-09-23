@@ -290,9 +290,10 @@ test('EDU-MB15: MATH-05 U.S. dollar lesson uses real values with recovery and no
   await expect(page.getByRole('heading', { name: 'How much are a $1 bill and one 25-cent quarter together?' })).toBeVisible();
   await page.getByRole('button', { name: '$1.05' }).click();
   await expect(page.getByRole('status')).toContainText('Start with 100 cents, then add 25 cents');
+  await expect(page.getByText('This example uses U.S. dollar values and a U.S. quarter. It does not use exchange rates.')).toBeVisible();
   await page.getByRole('button', { name: '$1.25' }).click();
   await expect(page.getByRole('heading', { name: 'You matched a dollar to cents and added a quarter.' })).toBeVisible();
-  await expect(page.getByText(/No cash is needed|nothing is for sale/)).toBeVisible();
+  await expect(page.getByText('One dollar plus 25 cents is $1.25. This is a math example, not shopping advice; no money is needed.')).toBeVisible();
 });
 
 test('EDU-MB16: MATH-05 compares drawn unit-cube volumes with wrong-answer recovery', async ({ page }) => {
