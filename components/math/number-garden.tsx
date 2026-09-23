@@ -27,6 +27,12 @@ import {
   pretendTokenPurseWithMorePointsAnswerIsCorrect,
   mostSproutsBedAnswerIsCorrect,
   nextAlternatingShapeAnswerIsCorrect,
+  alternatingShapeRuleAnswerIsCorrect,
+  ghanaCoinValueAnswerIsCorrect,
+  ghanaCoinTotalAnswerIsCorrect,
+  unitCubeVolumeComparisonAnswerIsCorrect,
+  sproutChartAnswerIsCorrect,
+  sproutClaimAnswerIsCorrect,
   nextNumberAfterIsCorrect,
   seedSet,
   zeroAnswerIsCorrect,
@@ -181,6 +187,61 @@ function SproutDataTable() {
   </table>;
 }
 
+function GhanaCoinChoices({ onChoose, disabled = false }: { onChoose: (valuePesewas: number) => void; disabled?: boolean }) {
+  const choices = [
+    { value: 200, label: '200 pesewas' },
+    { value: 100, label: '100 pesewas' },
+    { value: 50, label: '50 pesewas' },
+  ];
+  return <div className="ng-split-choices" role="group" aria-label="Choose the coin value">
+    {choices.map(({ value, label }) => <button type="button" className="ng-button ng-split-choice" key={value} disabled={disabled} onClick={() => onChoose(value)}>{label}</button>)}
+  </div>;
+}
+
+function GhanaTotalChoices({ onChoose, disabled = false }: { onChoose: (valuePesewas: number) => void; disabled?: boolean }) {
+  return <div className="ng-split-choices" role="group" aria-label="Choose the total amount">
+    {[150, 105, 50].map((value) => <button type="button" className="ng-button ng-split-choice" key={value} disabled={disabled} onClick={() => onChoose(value)}>{`GH¢${(value / 100).toFixed(2)}`}</button>)}
+  </div>;
+}
+
+function GhanaCoinDisplay({ coins, label }: { coins: readonly { value: string; spokenValue: string }[]; label: string }) {
+  return <ul className="ng-coin-row" aria-label={label}>
+    {coins.map(({ value, spokenValue }, index) => <li className="ng-coin" key={`${value}-${index}`} aria-label={`${spokenValue} coin`}>
+      <strong>{value}</strong><span>coin</span>
+    </li>)}
+  </ul>;
+}
+
+function UnitCubeBoxComparison() {
+  return <div className="ng-box-comparison">
+    {[{ name: 'First box', layers: 1 }, { name: 'Second box', layers: 2 }].map(({ name, layers }) => <figure className="ng-box-model" key={name}>
+      <figcaption>{name}: 2 × 2 × {layers}</figcaption>
+      {Array.from({ length: layers }, (_, layer) => <div className="ng-box-layer" key={layer} aria-label={`Layer ${layer + 1}`}>
+        {Array.from({ length: 4 }, (_, cube) => <span key={cube} aria-hidden="true">■</span>)}
+      </div>)}
+      <strong>{layers * 4} unit cubes</strong>
+    </figure>)}
+  </div>;
+}
+
+function SproutChartBuilder({ onSubmit, disabled = false }: { onSubmit: (values: readonly (number | null)[]) => void; disabled?: boolean }) {
+  const [values, setValues] = useState<(number | null)[]>([null, null, null]);
+  return <div className="ng-chart-builder">
+    <div className="ng-chart-rows" aria-label="Set the sprouts bar for each bed">
+      {sampleSproutData.map(({ bed }, index) => <fieldset className="ng-chart-row" key={bed}>
+        <legend>{bed}: choose the number of sprouts</legend>
+        <div className="ng-chart-values" role="group" aria-label={`${bed} sprouts`}>
+          {[0, 1, 2, 3, 4, 5].map((value) => <button type="button" className="ng-chart-value" key={value} disabled={disabled} aria-pressed={values[index] === value} onClick={() => setValues((current) => current.map((item, itemIndex) => itemIndex === index ? value : item))}>{value}</button>)}
+        </div>
+        <div className="ng-chart-bar-track" role="img" aria-label={`${bed}: ${values[index] ?? 'no value selected'} sprouts`}>
+          <span style={{ width: `${((values[index] ?? 0) / 5) * 100}%` }} />
+        </div>
+      </fieldset>)}
+    </div>
+    <button type="button" className="ng-button primary" disabled={disabled || values.some((value) => value === null)} onClick={() => onSubmit(values)}>Check my chart</button>
+  </div>;
+}
+
 function TokenPurseModel({ values, label }: { values: number[]; label: string }) {
   return <div className="ng-token-purse" role="img" aria-label={label}>
     {values.map((value, index) => <span className="ng-token" key={`${value}-${index}`}>{value} {value === 1 ? 'point' : 'points'}</span>)}
@@ -309,7 +370,7 @@ export function NumberGarden() {
       <p className="ng-intro">Count a group, notice zero and number order, then compare two small groups. Optional previews explore operations, groups, place value, and fractions.</p>
       <aside className="ng-review" aria-label="Draft content review status">
         <strong>Draft preview</strong>
-        <p>The user reports reviewing Number Garden prompts through version 17 and additional MATH-05 lesson material. A grown-up can read every prompt aloud. This visit does not measure lasting math ability.</p>
+        <p>The user reports reviewing Number Garden prompts through version 17 and the source material for the Ghana-currency and further MATH-05 lessons. Version 18 adds these practice screens and extends the MATH-06 data-and-pattern sequence. A grown-up can read every prompt aloud. This visit does not measure lasting math ability.</p>
       </aside>
 
       {step === 0 && <section className="ng-panel" aria-labelledby="ng-start-title">
@@ -329,10 +390,13 @@ export function NumberGarden() {
         <p className="ng-recap"><strong>Optional preview · MATH-05 solids and volume</strong><br/>Recognize a sphere and count unit cubes across two layers.</p>
         <p className="ng-recap"><strong>Optional preview · MATH-05 telling time</strong><br/>Read a clock when the minute hand points to 12. The user reports reviewing this prompt.</p>
         <p className="ng-recap"><strong>Optional preview · MATH-05 comparing mass</strong><br/>Compare identical unit weights on a balance; the user reports reviewing this prompt.</p>
+        <p className="ng-recap"><strong>Reviewed prompt material · MATH-05 Ghana cedi</strong><br/>Recognize GH¢1, GH¢2, and 50-pesewa coin values and add two coin values. This Ghana English example does not ask anyone to handle or spend cash.</p>
+        <p className="ng-recap"><strong>Further preview · MATH-05 volume</strong><br/>Compare two boxes made from drawn unit cubes. The drawings are models, not physical measurements.</p>
         <p className="ng-recap"><strong>New preview · MATH-05 pretend tokens</strong><br/>Add make-believe token values; the user reports reviewing this prompt. These are not real money or local currency.</p>
         <p className="ng-recap"><strong>Preview · MATH-05 comparing pretend points</strong><br/>Compare two make-believe purses with token points; the user reports reviewing this prompt. It does not use real currency.</p>
         <p className="ng-recap"><strong>Draft preview · MATH-06 data detective</strong><br/>Read a small made-up table and find which pretend garden bed has the most sprouts; the user reports reviewing this prompt.</p>
         <p className="ng-recap"><strong>New draft · MATH-06 shape pattern</strong><br/>Use a repeating circle-and-triangle pattern to choose what comes next; the user reports reviewing this prompt.</p>
+        <p className="ng-recap"><strong>Draft sequence · MATH-06 data and patterns</strong><br/>Build a chart from the made-up table, check a claim against it, then describe the repeating shape rule.</p>
         <div className="ng-actions">
           <button className="ng-button primary" disabled={!ready} onClick={() => { setStep(1); setFeedback('Tap each seed once, then choose how many there are.'); }}>Begin Number Garden</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(11); setFeedback('MATH-03 draft preview: look at the equal groups.'); }}>Explore equal groups and sharing</button>
@@ -343,9 +407,11 @@ export function NumberGarden() {
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(26); setFeedback('MATH-05 draft preview: look for the solid with no flat faces.'); }}>Explore solids and volume</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(29); setFeedback('MATH-05 time draft: look at both clock hands.'); }}>Explore telling time</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(31); setFeedback('MATH-05 mass preview: compare the identical unit weights.'); }}>Explore comparing mass</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(41); setFeedback('MATH-05 Ghana cedi example: read the coin value. No cash is needed.'); }}>Explore Ghana cedi coins</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(44); setFeedback('MATH-05 volume preview: compare the unit-cube boxes.'); }}>Compare unit-cube volume</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(33); setFeedback('MATH-05 pretend-token preview: add the point values.'); }}>Explore pretend tokens</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(35); setFeedback('MATH-05 preview: compare the points in both pretend purses.'); }}>Compare pretend purses</button>
-          <button className="ng-button" disabled={!ready} onClick={() => { setStep(37); setFeedback('MATH-06 draft: read the made-up sprout data.'); }}>Explore sprout data</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(37); setFeedback('MATH-06 draft: read the made-up sprout data.'); }}>Explore MATH-06 data and patterns</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(39); setFeedback('MATH-06 draft: notice how the two shapes repeat.'); }}>Explore shape pattern</button>
         </div>
       </section>}
@@ -826,7 +892,7 @@ export function NumberGarden() {
         <p className="ng-step">MATH-06 DATA DRAFT · NO SCORE SAVED</p>
         <h2 id="ng-data-finish-title">The bean bed has the most sprouts in this example.</h2>
         <p>The table uses made-up practice data. It does not describe a real garden or predict how plants grow.</p>
-        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+        <div className="ng-actions"><button className="ng-button primary" onClick={() => { setStep(46); setFeedback('Build a bar chart that matches the made-up table.'); }}>Continue to build a chart</button><button className="ng-button" onClick={home}>Finish and clear this visit</button></div>
       </section>}
 
       {step === 39 && <section className="ng-panel" aria-labelledby="ng-pattern-title">
@@ -855,6 +921,143 @@ export function NumberGarden() {
         <p className="ng-step">MATH-06 PATTERN DRAFT · NO SCORE SAVED</p>
         <h2 id="ng-pattern-finish-title">Triangle comes next in this repeating pattern.</h2>
         <p>The two shapes take turns. This is a small pattern example, not a claim about every pattern.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={() => { setStep(50); setFeedback('Choose the rule that describes the whole repeating pattern.'); }}>Continue to choose the rule</button><button className="ng-button" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 41 && <section className="ng-panel" aria-labelledby="ng-ghana-coin-title">
+        <p className="ng-step">REVIEWED PROMPT MATERIAL · MATH-05 · GHANA CEDI EXAMPLE</p>
+        <h2 id="ng-ghana-coin-title">A coin is worth GH¢2. How many pesewas is that?</h2>
+        <GhanaCoinDisplay coins={[{ value: 'GH¢2', spokenValue: 'two cedi' }]} label="One Ghana cedi coin labelled GH¢2" />
+        <p>In this Ghana example, 100 pesewas make one cedi. Read the coin value, then choose the matching amount.</p>
+        <GhanaCoinChoices disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          if (!ghanaCoinValueAnswerIsCorrect(answer, 200)) {
+            setFeedback('One cedi is 100 pesewas. Count two groups of 100 and try again.');
+            return;
+          }
+          setStep(42);
+          setFeedback('GH¢2 equals 200 pesewas. Next, add the values of two coins.');
+        }} />
+        <p className="ng-disclaimer">A text-only Ghana currency example for learning. No cash is needed; this does not ask you to buy anything.</p>
+      </section>}
+
+      {step === 42 && <section className="ng-panel" aria-labelledby="ng-ghana-total-title">
+        <p className="ng-step">MATH-05 · ADDING GHANA COIN VALUES</p>
+        <h2 id="ng-ghana-total-title">How much are one GH¢1 coin and one 50-pesewa coin together?</h2>
+        <GhanaCoinDisplay coins={[{ value: 'GH¢1', spokenValue: 'one cedi' }, { value: '50 pesewas', spokenValue: 'fifty pesewas' }]} label="Two Ghana coins: GH¢1 and 50 pesewas" />
+        <p>Use the coin values shown. Choose the total in cedis.</p>
+        <GhanaTotalChoices disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          if (!ghanaCoinTotalAnswerIsCorrect(answer, [100, 50])) {
+            setFeedback('Start with GH¢1, then add half a cedi. Try again.');
+            return;
+          }
+          setStep(43);
+          setFeedback('GH¢1 plus 50 pesewas is GH¢1.50.');
+        }} />
+        <p className="ng-disclaimer">Denomination values are for a Ghana English example only. Currency and available coins vary by place.</p>
+      </section>}
+
+      {step === 43 && <section className="ng-panel" aria-labelledby="ng-ghana-finish-title">
+        <p className="ng-step">MATH-05 GHANA CURRENCY DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-ghana-finish-title">You read coin values and added an amount.</h2>
+        <p>This practice uses GH¢1, GH¢2, and 50-pesewa coin values. It is not shopping advice and does not use exchange rates.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 44 && <section className="ng-panel" aria-labelledby="ng-volume-compare-title">
+        <p className="ng-step">FURTHER PREVIEW · MATH-05 · COMPARING VOLUME</p>
+        <h2 id="ng-volume-compare-title">Which box holds more unit cubes?</h2>
+        <UnitCubeBoxComparison />
+        <p>Each little cube is one equal unit. These drawings help compare the amount of space filled; they are not real containers.</p>
+        <div className="ng-split-choices" role="group" aria-label="Choose the box with more unit cubes">
+          {(['left', 'right'] as const).map((side) => <button key={side} type="button" className="ng-button ng-split-choice" disabled={paused} onClick={() => {
+            if (paused) return;
+            if (!unitCubeVolumeComparisonAnswerIsCorrect(side, [2, 2, 1], [2, 2, 2])) {
+              setFeedback('Count each box: the first has four cubes and the second has eight. Try again.');
+              return;
+            }
+            setStep(45);
+            setFeedback('Eight unit cubes fill more space than four.');
+          }}>{side === 'left' ? 'First box' : 'Second box'}</button>)}
+        </div>
+      </section>}
+
+      {step === 45 && <section className="ng-panel" aria-labelledby="ng-volume-compare-finish-title">
+        <p className="ng-step">MATH-05 VOLUME DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-volume-compare-finish-title">The second box has more unit cubes.</h2>
+        <p>Four cubes compared with eight cubes is a model of volume. It does not measure a real object.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 46 && <section className="ng-panel" aria-labelledby="ng-chart-title">
+        <p className="ng-step">MATH-06 · BUILD A CHART FROM MADE-UP DATA</p>
+        <h2 id="ng-chart-title">Use the table to set a bar for each pretend bed.</h2>
+        <SproutDataTable />
+        <p>Choose the number of sprouts in each row. The bars will show the chart you build.</p>
+        <SproutChartBuilder disabled={paused} onSubmit={(values) => {
+          if (paused) return;
+          if (!sproutChartAnswerIsCorrect(values, sampleSproutData)) {
+            setFeedback('Check each bar against the matching row in the table, then try again.');
+            return;
+          }
+          setStep(47);
+          setFeedback('Each bar now matches its row in the made-up table.');
+        }} />
+        <p className="ng-disclaimer">The counts are invented for this practice activity. They are not measurements of real plants.</p>
+      </section>}
+
+      {step === 47 && <section className="ng-panel" aria-labelledby="ng-chart-finish-title">
+        <p className="ng-step">MATH-06 CHART DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-chart-finish-title">You built a bar chart from the table.</h2>
+        <p>Each bar matches one made-up count. Next, check a claim using the data.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={() => { setStep(48); setFeedback('Compare the sunflower claim with all three table values.'); }}>Continue to check a claim</button><button className="ng-button" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 48 && <section className="ng-panel" aria-labelledby="ng-claim-title">
+        <p className="ng-step">MATH-06 · CHECK A CLAIM AGAINST THE DATA</p>
+        <h2 id="ng-claim-title">Claim: “The sunflower bed has the most sprouts.” Is this supported by the table?</h2>
+        <SproutDataTable />
+        <TextChoices label="Choose whether the data supports the claim" choices={['Supported', 'Not supported']} disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          const choice = answer === 'Supported' ? 'supported' : 'not-supported';
+          if (!sproutClaimAnswerIsCorrect(choice, 'Sunflower bed', sampleSproutData)) {
+            setFeedback('Compare the sunflower count with the other rows. Two is less than four. Try again.');
+            return;
+          }
+          setStep(49);
+          setFeedback('The claim is not supported: the sunflower bed has two, while the bean bed has four.');
+        }} />
+        <p className="ng-disclaimer">This conclusion is only about the invented numbers shown here, not real plants.</p>
+      </section>}
+
+      {step === 49 && <section className="ng-panel" aria-labelledby="ng-claim-finish-title">
+        <p className="ng-step">MATH-06 CLAIM CHECK · NO SCORE SAVED</p>
+        <h2 id="ng-claim-finish-title">You checked the claim against the data.</h2>
+        <p>The table does not support “sunflower has the most” because its count is two and the bean count is four.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={() => { setStep(39); setFeedback('Find what comes next in the made-up shape pattern.'); }}>Continue to the shape pattern</button><button className="ng-button" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 50 && <section className="ng-panel" aria-labelledby="ng-pattern-rule-title">
+        <p className="ng-step">MATH-06 · DESCRIBE A PATTERN RULE</p>
+        <h2 id="ng-pattern-rule-title">Which rule describes circle, triangle, circle, triangle?</h2>
+        <p>Choose a rule that can make the whole repeating sequence.</p>
+        <TextChoices label="Choose the repeating shape rule" choices={['Circle, triangle, repeat', 'Circle, triangle, square, repeat', 'Add one triangle each time']} disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          const rule = answer === 'Circle, triangle, repeat' ? 'first-shape-second-shape-repeat' : answer;
+          if (!alternatingShapeRuleAnswerIsCorrect(rule, ['circle', 'triangle', 'circle', 'triangle', 'circle'])) {
+            setFeedback('Check whether the same two shapes take turns each time. Try again.');
+            return;
+          }
+          setStep(51);
+          setFeedback('The rule is: circle, triangle, then repeat.');
+        }} />
+      </section>}
+
+      {step === 51 && <section className="ng-panel" aria-labelledby="ng-math06-sequence-finish-title">
+        <p className="ng-step">MATH-06 DRAFT SEQUENCE COMPLETE · NO SCORE SAVED</p>
+        <h2 id="ng-math06-sequence-finish-title">You read a table, built a chart, checked a claim, and described a pattern rule.</h2>
+        <p>The examples use invented data and a small repeating shape pattern. This draft does not cover every data, chance, ratio, or algebra outcome in MATH-06.</p>
         <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
       </section>}
 
@@ -890,7 +1093,7 @@ export function NumberGarden() {
 
       {step > 0 && <><p className="ng-feedback" role="status" aria-live="polite">{feedback}</p><nav className="ng-session-controls" aria-label="Activity controls">{!paused && <button className="ng-button" onClick={() => setPaused(true)}>Pause</button>}<button className="ng-button" onClick={home}>Home</button><button className="ng-button" onClick={home}>Restart</button></nav></>}
 
-      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. The user reports reviewing Number Garden prompts through version 17 and additional planned real-currency/further MATH-05 materials. On-screen units, cubes, clock, and balance are learning models. No score, profile, or progress record is made.</p></details>
+      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. The user reports reviewing the source material for the Ghana-currency and further MATH-05 lessons. The Ghana example uses text-only GH¢ coin values; no cash or purchase is involved. Version 18 MATH-06 chart, claim-check, and pattern-rule wording needs review. On-screen units, cubes, clock, and balance are learning models. No score, profile, or progress record is made.</p></details>
     </main>
     <footer className="ng-footer">Practice for this visit only · no account · no saved child data</footer>
   </div>;

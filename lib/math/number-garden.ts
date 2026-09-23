@@ -1,8 +1,8 @@
 export const numberGardenManifest = {
   activityId: 'math-number-garden-001',
-  version: 17,
+  version: 18,
   language: 'en',
-  localeVariant: 'en_v2_m02_m03_m04_m05_m06_pattern_draft',
+  localeVariant: 'en_GH_v18_m05_money_geometry_m06_data_pattern_draft',
   reviewStatus: 'draft',
   requiresAccount: false,
   requiresAi: false,
@@ -225,12 +225,77 @@ export function nextAlternatingShapeAnswerIsCorrect(answer: string, sequence: re
   return answer === (sequence.length % 2 === 0 ? first : second);
 }
 
+const ghanaCoinDenominationsPesewas = [1, 5, 10, 20, 50, 100, 200] as const;
+
+export function ghanaCoinValueAnswerIsCorrect(answerPesewas: number, expectedPesewas: number): boolean {
+  return Number.isInteger(answerPesewas)
+    && ghanaCoinDenominationsPesewas.includes(answerPesewas as (typeof ghanaCoinDenominationsPesewas)[number])
+    && answerPesewas === expectedPesewas;
+}
+
+export function ghanaCoinTotalAnswerIsCorrect(answerPesewas: number, coinValuesPesewas: readonly number[]): boolean {
+  return Number.isInteger(answerPesewas)
+    && coinValuesPesewas.length >= 2 && coinValuesPesewas.length <= 4
+    && coinValuesPesewas.every((value) => Number.isInteger(value)
+      && ghanaCoinDenominationsPesewas.includes(value as (typeof ghanaCoinDenominationsPesewas)[number]))
+    && answerPesewas === coinValuesPesewas.reduce((sum, value) => sum + value, 0);
+}
+
+export function unitCubeVolumeComparisonAnswerIsCorrect(
+  answer: 'left' | 'right',
+  left: readonly number[],
+  right: readonly number[],
+): boolean {
+  const volume = (dimensions: readonly number[]) => dimensions.length === 3
+    && dimensions.every((side) => Number.isInteger(side) && side >= 1 && side <= 4)
+    ? dimensions.reduce((total, side) => total * side, 1)
+    : null;
+  const leftVolume = volume(left);
+  const rightVolume = volume(right);
+  return leftVolume !== null && rightVolume !== null && leftVolume !== rightVolume
+    && answer === (leftVolume > rightVolume ? 'left' : 'right');
+}
+
+export function sproutChartAnswerIsCorrect(
+  answer: readonly (number | null)[],
+  data: readonly { bed: string; sprouts: number }[],
+): boolean {
+  return data.length >= 2 && data.length <= 5
+    && answer.length === data.length
+    && new Set(data.map((entry) => entry.bed)).size === data.length
+    && data.every((entry, index) => Number.isInteger(entry.sprouts) && entry.sprouts >= 0 && entry.sprouts <= 10
+      && answer[index] === entry.sprouts);
+}
+
+export function sproutClaimAnswerIsCorrect(
+  answer: 'supported' | 'not-supported',
+  claimedBed: string,
+  data: readonly { bed: string; sprouts: number }[],
+): boolean {
+  if (data.length < 2 || data.length > 5 || new Set(data.map((entry) => entry.bed)).size !== data.length
+    || !data.some((entry) => entry.bed === claimedBed)
+    || data.some((entry) => !Number.isInteger(entry.sprouts) || entry.sprouts < 0 || entry.sprouts > 10)) return false;
+  const maximum = Math.max(...data.map((entry) => entry.sprouts));
+  const leaders = data.filter((entry) => entry.sprouts === maximum);
+  if (leaders.length !== 1) return false;
+  const claimIsSupported = leaders[0].bed === claimedBed;
+  return answer === (claimIsSupported ? 'supported' : 'not-supported');
+}
+
+export function alternatingShapeRuleAnswerIsCorrect(answer: string, sequence: readonly string[]): boolean {
+  return sequence.length >= 4 && sequence.length <= 10
+    && sequence.every((shape, index) => shape === (index % 2 === 0 ? sequence[0] : sequence[1]))
+    && sequence[0] !== sequence[1]
+    && answer === 'first-shape-second-shape-repeat';
+}
+
 export function mathPublicationBlockers(): string[] {
   return [
-    'The user reports reviewing Number Garden prompts through version 17 and additional MATH-05 prompt materials; formal reviewer identities and findings are not attached to this draft.',
+    'The user reports reviewing Number Garden prompts through version 17 and the source prompts for additional MATH-05 work; the version 18 visual implementation and formal review records are not separately documented.',
     'The user reports reviewing the MATH-05 solid-shape and unit-cube volume prompts; reviewer identities and findings are not attached to this draft.',
     'Review completion for version-2 and MATH-02 through MATH-05 prompts is reported by the user; reviewer identities and findings are not attached to this draft.',
+    'The new MATH-06 chart-building, claim-checking, and pattern-rule wording needs review.',
     'The activity remains a draft and has not been separately authorized for publication or merge.',
-    'EDU-M2 still requires remaining MATH-05 implementation outcomes and the complete MATH-06 sequence.',
+    'EDU-M2 still requires broader MATH-05 outcomes and MATH-06 outcomes beyond this draft sequence; qualified and manual review gates remain open.',
   ];
 }

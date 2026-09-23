@@ -256,7 +256,7 @@ test('EDU-MB12: MATH-05 compares two pretend purses by their token points', asyn
 
 test('EDU-MB13: MATH-06 reads a made-up sprout table and retries after a wrong choice', async ({ page }) => {
   await page.goto(route);
-  await page.getByRole('button', { name: 'Explore sprout data' }).click();
+  await page.getByRole('button', { name: 'Explore MATH-06 data and patterns' }).click();
   await expect(page.getByRole('heading', { name: 'Which pretend bed has the most sprouts?' })).toBeVisible();
   await expect(page.getByRole('table', { name: 'Made-up number of sprouts in three pretend garden beds' })).toBeVisible();
   await expect(page.getByRole('cell', { name: '4' })).toBeVisible();
@@ -277,4 +277,63 @@ test('EDU-MB14: MATH-06 completes a repeating shape pattern with retry feedback'
   await expect(page.getByRole('status')).toContainText('Which one comes after the last circle?');
   await page.getByRole('button', { name: 'Triangle' }).click();
   await expect(page.getByRole('heading', { name: 'Triangle comes next in this repeating pattern.' })).toBeVisible();
+});
+
+test('EDU-MB15: MATH-05 Ghana coin lesson uses real values with recovery and no purchase prompt', async ({ page }) => {
+  await page.goto(route);
+  await page.getByRole('button', { name: 'Explore Ghana cedi coins' }).click();
+  await expect(page.getByRole('heading', { name: 'A coin is worth GH¢2. How many pesewas is that?' })).toBeVisible();
+  await expect(page.getByText('100 pesewas make one cedi')).toBeVisible();
+  await page.getByRole('button', { name: '100 pesewas' }).click();
+  await expect(page.getByRole('status')).toContainText('Count two groups of 100');
+  await page.getByRole('button', { name: '200 pesewas' }).click();
+  await expect(page.getByRole('heading', { name: 'How much are one GH¢1 coin and one 50-pesewa coin together?' })).toBeVisible();
+  await page.getByRole('button', { name: 'GH¢1.05' }).click();
+  await expect(page.getByRole('status')).toContainText('Start with GH¢1, then add half a cedi');
+  await page.getByRole('button', { name: 'GH¢1.50' }).click();
+  await expect(page.getByRole('heading', { name: 'You read coin values and added an amount.' })).toBeVisible();
+  await expect(page.getByText(/No cash is needed|buy anything|not shopping advice/)).toBeVisible();
+});
+
+test('EDU-MB16: MATH-05 compares drawn unit-cube volumes with wrong-answer recovery', async ({ page }) => {
+  await page.goto(route);
+  await page.getByRole('button', { name: 'Compare unit-cube volume' }).click();
+  await expect(page.getByRole('heading', { name: 'Which box holds more unit cubes?' })).toBeVisible();
+  await page.getByRole('button', { name: 'First box' }).click();
+  await expect(page.getByRole('status')).toContainText('the first has four cubes and the second has eight');
+  await page.getByRole('button', { name: 'Second box' }).click();
+  await expect(page.getByRole('heading', { name: 'The second box has more unit cubes.' })).toBeVisible();
+  await expect(page.getByText(/not real containers/)).toBeVisible();
+});
+
+test('EDU-MB17: MATH-06 builds a chart, checks a data claim and describes a pattern rule', async ({ page }) => {
+  await page.goto(route);
+  await page.getByRole('button', { name: 'Explore MATH-06 data and patterns' }).click();
+  await page.getByRole('button', { name: 'Basil bed' }).click();
+  await expect(page.getByRole('status')).toContainText('choose the largest one');
+  await page.getByRole('button', { name: 'Bean bed' }).click();
+  await expect(page.getByRole('heading', { name: 'The bean bed has the most sprouts in this example.' })).toBeVisible();
+  await page.getByRole('button', { name: 'Continue to build a chart' }).click();
+  await page.getByRole('group', { name: 'Bean bed sprouts' }).getByRole('button', { name: '3' }).click();
+  await page.getByRole('group', { name: 'Sunflower bed sprouts' }).getByRole('button', { name: '2' }).click();
+  await page.getByRole('group', { name: 'Basil bed sprouts' }).getByRole('button', { name: '3' }).click();
+  await page.getByRole('button', { name: 'Check my chart' }).click();
+  await expect(page.getByRole('status')).toContainText('Check each bar against the matching row');
+  await page.getByRole('group', { name: 'Bean bed sprouts' }).getByRole('button', { name: '4' }).click();
+  await page.getByRole('button', { name: 'Check my chart' }).click();
+  await expect(page.getByRole('heading', { name: 'You built a bar chart from the table.' })).toBeVisible();
+  await page.getByRole('button', { name: 'Continue to check a claim' }).click();
+  await page.getByRole('button', { name: 'Supported' }).click();
+  await expect(page.getByRole('status')).toContainText('Two is less than four');
+  await page.getByRole('button', { name: 'Not supported' }).click();
+  await expect(page.getByRole('heading', { name: 'You checked the claim against the data.' })).toBeVisible();
+  await page.getByRole('button', { name: 'Continue to the shape pattern' }).click();
+  await page.getByRole('button', { name: 'Triangle' }).click();
+  await expect(page.getByRole('heading', { name: 'Triangle comes next in this repeating pattern.' })).toBeVisible();
+  await page.getByRole('button', { name: 'Continue to choose the rule' }).click();
+  await page.getByRole('button', { name: 'Add one triangle each time' }).click();
+  await expect(page.getByRole('status')).toContainText('Check whether the same two shapes take turns');
+  await page.getByRole('button', { name: 'Circle, triangle, repeat' }).click();
+  await expect(page.getByRole('heading', { name: 'You read a table, built a chart, checked a claim, and described a pattern rule.' })).toBeVisible();
+  await expect(page.getByText(/does not cover every data, chance, ratio, or algebra outcome/)).toBeVisible();
 });

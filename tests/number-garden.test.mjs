@@ -20,6 +20,12 @@ import {
   pretendTokenPurseWithMorePointsAnswerIsCorrect,
   mostSproutsBedAnswerIsCorrect,
   nextAlternatingShapeAnswerIsCorrect,
+  alternatingShapeRuleAnswerIsCorrect,
+  ghanaCoinValueAnswerIsCorrect,
+  ghanaCoinTotalAnswerIsCorrect,
+  unitCubeVolumeComparisonAnswerIsCorrect,
+  sproutChartAnswerIsCorrect,
+  sproutClaimAnswerIsCorrect,
   isValidDecomposition,
   markSeedCounted,
   mathPublicationBlockers,
@@ -181,7 +187,7 @@ test('EDU-M20: balance answer matches the heavier bounded unit-mass side', () =>
 
 test('EDU-M05: this is a guest draft with publication review still blocked', () => {
   assert.equal(numberGardenManifest.reviewStatus, 'draft');
-  assert.equal(numberGardenManifest.version, 17);
+  assert.equal(numberGardenManifest.version, 18);
   assert.equal(numberGardenManifest.requiresAccount, false);
   assert.equal(numberGardenManifest.requiresAi, false);
   assert.equal(numberGardenManifest.requiresCameraOrMic, false);
@@ -229,4 +235,49 @@ test('EDU-M24: alternating shape sequence validates the next shape', () => {
   assert.equal(nextAlternatingShapeAnswerIsCorrect('triangle', ['circle', 'triangle']), false);
   assert.equal(nextAlternatingShapeAnswerIsCorrect('triangle', ['circle', 'triangle', 'square']), false);
   assert.equal(nextAlternatingShapeAnswerIsCorrect('triangle', ['circle', 'triangle', 'circle', 'triangle', 'circle', 'triangle', 'circle', 'triangle', 'circle', 'triangle', 'circle']), false);
+});
+
+test('EDU-M25: Ghana coin values use whole pesewas and accepted denominations', () => {
+  assert.equal(ghanaCoinValueAnswerIsCorrect(200, 200), true);
+  assert.equal(ghanaCoinValueAnswerIsCorrect(100, 200), false);
+  assert.equal(ghanaCoinValueAnswerIsCorrect(150, 150), false);
+  assert.equal(ghanaCoinValueAnswerIsCorrect(200.5, 200), false);
+  assert.equal(ghanaCoinTotalAnswerIsCorrect(150, [100, 50]), true);
+  assert.equal(ghanaCoinTotalAnswerIsCorrect(150, [100, 20]), false);
+  assert.equal(ghanaCoinTotalAnswerIsCorrect(70, [50, 20]), true);
+  assert.equal(ghanaCoinTotalAnswerIsCorrect(70, [50, 20, 1.5]), false);
+  assert.equal(ghanaCoinTotalAnswerIsCorrect(70, [50]), false);
+});
+
+test('EDU-M26: unit-cube volume comparison uses bounded box dimensions', () => {
+  assert.equal(unitCubeVolumeComparisonAnswerIsCorrect('right', [2, 2, 1], [2, 2, 2]), true);
+  assert.equal(unitCubeVolumeComparisonAnswerIsCorrect('left', [2, 2, 1], [2, 2, 2]), false);
+  assert.equal(unitCubeVolumeComparisonAnswerIsCorrect('right', [0, 2, 1], [2, 2, 2]), false);
+  assert.equal(unitCubeVolumeComparisonAnswerIsCorrect('right', [2, 2], [2, 2, 2]), false);
+  assert.equal(unitCubeVolumeComparisonAnswerIsCorrect('right', [2, 2, 2], [2, 2, 2]), false);
+});
+
+test('EDU-M27: sprout chart requires every bar to match the synthetic table', () => {
+  const data = [{ bed: 'Bean bed', sprouts: 4 }, { bed: 'Sunflower bed', sprouts: 2 }, { bed: 'Basil bed', sprouts: 3 }];
+  assert.equal(sproutChartAnswerIsCorrect([4, 2, 3], data), true);
+  assert.equal(sproutChartAnswerIsCorrect([4, 3, 2], data), false);
+  assert.equal(sproutChartAnswerIsCorrect([4, 2, null], data), false);
+  assert.equal(sproutChartAnswerIsCorrect([4, 2, 3, 1], data), false);
+  assert.equal(sproutChartAnswerIsCorrect([4, 2], data), false);
+});
+
+test('EDU-M28: data claims are checked against unique bounded values', () => {
+  const data = [{ bed: 'Bean bed', sprouts: 4 }, { bed: 'Sunflower bed', sprouts: 2 }, { bed: 'Basil bed', sprouts: 3 }];
+  assert.equal(sproutClaimAnswerIsCorrect('not-supported', 'Sunflower bed', data), true);
+  assert.equal(sproutClaimAnswerIsCorrect('supported', 'Bean bed', data), true);
+  assert.equal(sproutClaimAnswerIsCorrect('supported', 'Sunflower bed', data), false);
+  assert.equal(sproutClaimAnswerIsCorrect('not-supported', 'Unknown bed', data), false);
+  assert.equal(sproutClaimAnswerIsCorrect('supported', 'Bean bed', [{ bed: 'A', sprouts: 4 }, { bed: 'B', sprouts: 4 }]), false);
+});
+
+test('EDU-M29: pattern rule matches a bounded two-shape alternating sequence', () => {
+  assert.equal(alternatingShapeRuleAnswerIsCorrect('first-shape-second-shape-repeat', ['circle', 'triangle', 'circle', 'triangle', 'circle']), true);
+  assert.equal(alternatingShapeRuleAnswerIsCorrect('first-shape-second-shape-repeat', ['circle', 'triangle', 'circle']), false);
+  assert.equal(alternatingShapeRuleAnswerIsCorrect('first-shape-second-shape-repeat', ['circle', 'circle', 'circle', 'circle']), false);
+  assert.equal(alternatingShapeRuleAnswerIsCorrect('circle-triangle-repeat', ['circle', 'triangle', 'circle', 'triangle']), false);
 });
