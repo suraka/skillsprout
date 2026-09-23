@@ -1,5 +1,11 @@
 import { test, expect } from 'playwright/test';
 const demo='/demo/sorting-garden';
+test.beforeEach(async ({ page }) => {
+ page.on('pageerror', error => console.error('Browser exception:', error.stack));
+});
+test.afterEach(async ({ page }, testInfo) => {
+ if (testInfo.status !== testInfo.expectedStatus) console.log('Failure page:', await page.locator('body').innerText());
+});
 test('SG-B01: sample, counterexample, repair and history',async({page})=>{
  await page.goto(demo); const run=page.getByRole('button',{name:'Run',exact:true});
  await run.click(); await expect(page.getByText('This card reached the matching basket.',{exact:false})).toBeVisible();
