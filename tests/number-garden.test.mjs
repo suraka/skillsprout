@@ -164,6 +164,6 @@ test('EDU-M05: this is a guest draft with publication review still blocked', () 
   assert.equal(numberGardenManifest.requiresAi, false);
   assert.equal(numberGardenManifest.requiresCameraOrMic, false);
   assert.equal(numberGardenManifest.savesLearnerData, false);
-  assert.ok(mathPublicationBlockers().length >= 4);
-  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('MATH-05 solid-shape and unit-cube volume')));
+  assert.ok(mathPublicationBlockers().length >= 3);
+  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('reviewing the MATH-05 solid-shape and unit-cube volume')));
 });

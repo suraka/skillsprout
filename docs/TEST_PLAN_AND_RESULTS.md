@@ -87,7 +87,7 @@ Release status remains PARTIAL / BLOCKED FOR RELEASE. No qualified literacy, loc
 
 ## EDU-M2 first mathematics draft — Number Garden
 
-Implementation adds `/learning/number-garden` as a guest-only draft. Version 11 retains user-reviewed MATH-02 through MATH-04 and the initial MATH-05 2D-shape/length prompts. It adds a sphere-identification prompt and counts unit cubes in two layers; these new MATH-05 prompts remain draft pending review. No database, feature API, Firebase, cookie, localStorage or sessionStorage writes are added.
+Implementation adds `/learning/number-garden` as a guest-only draft. Version 11 retains user-reviewed MATH-02 through MATH-04 and the initial MATH-05 2D-shape/length prompts. It adds a sphere-identification prompt and counts unit cubes in two layers; the user reports reviewing these prompts. No database, feature API, Firebase, cookie, localStorage or sessionStorage writes are added.
 
 Local verification after the change:
 
@@ -103,13 +103,13 @@ Verified version 2: [Frontend checks 35844395876](https://github.com/suraka/skil
 
 Verified final rerun: [Frontend checks 35841877262](https://github.com/suraka/skillsprout/actions/runs/35841877262), commit `56c5722000659e7c4d71fe44da1e0e4a25f8adc5`, passed frozen install, TypeScript, all 26 runtime tests, all 20 Chromium browser tests, and production build. Browser assertions confirmed the full activity/recovery flow, offline pause/resume, no API or external requests, no browser-storage writes, and mobile-width fit. Earlier failed runs exposed the issues above; they are resolved by this verified head.
 
-The user reports reviewing and approving the MATH-02 prompts. Newly added MATH-03 prompts need review. The PR remains draft as instructed. Reviewer identities, findings and formal sign-off records were not provided for the repository.
+The user reports reviewing and approving the MATH-02 prompts and reviewing MATH-03 prompts. The PR remains draft as instructed. Reviewer identities, findings and formal sign-off records were not provided for the repository.
 
 Verified version 3 grouping: [Frontend checks 35849147816](https://github.com/suraka/skillsprout/actions/runs/35849147816), commit `8f6065b0f13f1db1329e3dbaa03b01a113a923bd`, passed frozen install, TypeScript, all 27 runtime tests, all 20 Chromium browser tests, and production build. Browser coverage checked the three-lesson completion boundary, optional number-change practice, wrong-answer recovery, offline pause/resume, no API/external requests, no storage writes and mobile-width fit. EDU-M2 remains partial, not a reviewed three-unit course.
 
 Verified version 5 MATH-02 draft: [Frontend checks 35866977777](https://github.com/suraka/skillsprout/actions/runs/35866977777), commit `655b1a678bfd2655e80e8cb344b262d384d7566d`, passed frozen install, TypeScript, all 28 runtime tests, all 20 Chromium browser tests and production build. Browser coverage tested compose answer recovery, a valid split of five, existing add/take practice and guest privacy checks. Runtime coverage confirms both 1+4 and 2+3 are accepted and an invalid sum is rejected. The new MATH-02 prompts remain draft pending review.
 
-The user approved MATH-02 and reports reviewing MATH-03 and MATH-04 prompts, including fraction number-line comparison. The user reports reviewing version 10 MATH-05 shape and screen-measure prompts. New version 11 solid/volume prompts remain draft until reviewed. This repository does not contain formal review records. EDU-M2 is PARTIAL; this activity is not the complete sequence required by the blueprint. No proficiency claim or migration was made.
+The user approved MATH-02 and reports reviewing MATH-03 through MATH-05 prompts, including fraction number-line comparison and version 11 solid/volume prompts. This repository does not contain formal review records. EDU-M2 is PARTIAL; this activity is not the complete sequence required by the blueprint. No proficiency claim or migration was made.
 
 
 Verified version 6 MATH-03 draft: [Frontend checks 35871683522](https://github.com/suraka/skillsprout/actions/runs/35871683522), commit `7a60b53fab05ef3cab7c85376942c17b5bad3dbb`, passed frozen install, TypeScript, all 30 runtime tests, all 21 Chromium browser tests, and production build. Browser EDU-MB03 tested wrong-answer recovery and successful completion for equal groups, the 2×3 array, and sharing six seeds between two beds.
@@ -122,4 +122,6 @@ Verified version 9 MATH-04 number-line comparison: [Frontend checks 35886656831]
 
 Verified version 10 MATH-05 preview: [Frontend checks 35890202123](https://github.com/suraka/skillsprout/actions/runs/35890202123), commit `ca70676adeda23cf9c8758566601b2742adba3cb`, passed TypeScript, all 37 runtime tests, all 25 Chromium browser tests, and production build. Coverage identifies a triangle by three straight sides and compares fixed 3-unit/5-unit bars; the UI labels these as screen units and says they are not a calibrated ruler. This is a small slice only; 3D geometry and mass, volume, time and money measures remain unimplemented.
 
-Verified version 11 MATH-05 solid/volume preview: results will be recorded after GitHub CI completes. The activity identifies a sphere as having no flat faces and counts two layers of four unit cubes. Mass, time and money measurement still need separate reviewed slices.
+Verified version 11 MATH-05 solid/volume preview: [Frontend checks 35891823985](https://github.com/suraka/skillsprout/actions/runs/35891823985), commit `9fbe47a26888493716809559c22316f18d41db2b`, passed frozen install, TypeScript, all 39 runtime tests, all 26 Chromium browser tests and production build. Browser coverage checks sphere identification and unit-cube volume with wrong-answer recovery. The user reports reviewing these prompts. Mass, time and money measurement still need separate lessons and review.
+
+The user reports reviewing the new version 11 prompts. This is recorded as user-reported review; formal reviewer identities and findings are not attached to this draft. EDU-M2 remains partial, and the PR remains draft.

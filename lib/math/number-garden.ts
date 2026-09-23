@@ -2,7 +2,7 @@ export const numberGardenManifest = {
   activityId: 'math-number-garden-001',
   version: 11,
   language: 'en',
-  localeVariant: 'en_v2_m02_m03_m04_m05_reviewed_m05_volume_draft',
+  localeVariant: 'en_v2_m02_m03_m04_m05_user_reviewed',
   reviewStatus: 'draft',
   requiresAccount: false,
   requiresAi: false,
@@ -166,9 +166,9 @@ export function unitCubeVolumeAnswerIsCorrect(answer: number, rows: number, colu
 
 export function mathPublicationBlockers(): string[] {
   return [
-    'The new MATH-05 solid-shape and unit-cube volume prompts are a draft and still need review.',
-    'Review completion for version-2 and MATH-02 through MATH-04 prompts is reported by the user; reviewer identities and findings are not attached to this draft.',
+    'The user reports reviewing the MATH-05 solid-shape and unit-cube volume prompts; reviewer identities and findings are not attached to this draft.',
+    'Review completion for version-2 and MATH-02 through MATH-05 prompts is reported by the user; reviewer identities and findings are not attached to this draft.',
     'The activity remains a draft and has not been separately authorized for publication or merge.',
-    'EDU-M2 still requires the remaining MATH-04 through MATH-06 outcomes.',
+    'EDU-M2 still requires remaining MATH-05 measurement outcomes and MATH-06 outcomes.',
   ];
 }

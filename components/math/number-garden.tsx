@@ -232,7 +232,7 @@ export function NumberGarden() {
       <p className="ng-intro">Count a group, notice zero and number order, then compare two small groups. Optional previews explore operations, groups, place value, and fractions.</p>
       <aside className="ng-review" aria-label="Draft content review status">
         <strong>Draft preview</strong>
-        <p>The user reports reviewing the first MATH-05 shape and length prompts, as well as MATH-03 and MATH-04. This version adds new solid-shape and unit-cube volume prompts, which need review. A grown-up can read every prompt aloud. This visit does not measure lasting math ability.</p>
+        <p>The user reports reviewing both MATH-05 prompt groups, as well as MATH-03 and MATH-04. A grown-up can read every prompt aloud. This visit does not measure lasting math ability.</p>
       </aside>
 
       {step === 0 && <section className="ng-panel" aria-labelledby="ng-start-title">
@@ -654,7 +654,7 @@ export function NumberGarden() {
 
       {step > 0 && <><p className="ng-feedback" role="status" aria-live="polite">{feedback}</p><nav className="ng-session-controls" aria-label="Activity controls">{!paused && <button className="ng-button" onClick={() => setPaused(true)}>Pause</button>}<button className="ng-button" onClick={home}>Home</button><button className="ng-button" onClick={home}>Restart</button></nav></>}
 
-      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. The user reports reviewing the first MATH-05 triangle/length prompts and MATH-03/MATH-04 prompts. Version 11 adds draft sphere and unit-cube volume prompts which need review. On-screen units and cubes are learning models, not real instruments. No score, profile, or progress record is made.</p></details>
+      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. The user reports reviewing the MATH-05 triangle/length and sphere/volume prompts, and MATH-03/MATH-04 prompts. On-screen units and cubes are learning models, not real instruments. No score, profile, or progress record is made.</p></details>
     </main>
     <footer className="ng-footer">Practice for this visit only · no account · no saved child data</footer>
   </div>;
