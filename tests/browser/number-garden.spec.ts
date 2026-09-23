@@ -144,9 +144,10 @@ test('EDU-MB05: MATH-04 connects tenths, decimals, and percent', async ({ page }
   await page.getByRole('button', { name: '0.5' }).click();
 
   await expect(page.getByRole('heading', { name: 'Five of ten equal parts are shaded. What percent is shaded?' })).toBeVisible();
-  await page.getByRole('button', { name: '40%' }).click();
+  await page.getByRole('button', { name: '20%' }).click();
   await expect(page.getByRole('status')).toContainText('one half of the bar');
   await page.getByRole('button', { name: '50%' }).click();
   await expect(page.getByRole('heading', { name: 'You connected equal parts, decimals, and percent.' })).toBeVisible();
   await expect(page.getByText('Five tenths, 0.5, and 50% describe the same amount.')).toBeVisible();
 });
+
