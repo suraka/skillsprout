@@ -119,14 +119,16 @@ Implemented means source functionality exists; verified scope is separately stat
 - [x] Add further MATH-05 unit-cube volume comparison and deterministic evaluator coverage.
 - [x] Extend the MATH-06 draft path with a chart builder, synthetic-data claim check, and symbolic alternating-shape rule.
 - [x] Verify v18 in GitHub CI: [run 35924065190](https://github.com/suraka/skillsprout/actions/runs/35924065190), 50 runtime tests, 35 Chromium browser tests, TypeScript and production build passed at commit `6131a8fa3093b860fae1ead7593ef416e49be71c`.
-- [ ] Review new version 19 wording and rendered MATH-05/MATH-06 screens; attach review records.
+- [ ] Review version 20 U.S. money/ruler wording and rendered MATH-05/MATH-06 screens; attach review records.
 - [ ] Continue MATH-05 geometry and calibrated-measurement outcomes and suitable MATH-06 statistics, probability, ratio and algebra outcomes.
 - [x] Verify version 15 in GitHub CI: [run 35909835744](https://github.com/suraka/skillsprout/actions/runs/35909835744), 43 runtime tests, 30 Chromium browser tests, TypeScript and production build passed.
 - [x] Add a draft sphere and unit-cube volume preview with runtime/browser coverage.
 - [x] Record the user report that the MATH-05 solid/volume prompts were reviewed.
 - [x] Add bounded MATH-05 geometry, perimeter, U.S. customary model-ruler, elapsed-time, and equal-unit mass previews, plus MATH-06 chance, equivalent-ratio, and function-rule previews with deterministic/runtime/browser coverage.
 - [x] Verify v19 in GitHub CI: [run 35926350295](https://github.com/suraka/skillsprout/actions/runs/35926350295), all 59 runtime tests, 38 Chromium browser tests, TypeScript and production build passed on `ca1ea8a5a322e3a66e597f234acc0be2ec10394a`.
-- [ ] Continue broader MATH-05 and MATH-06 outcomes and complete new v19 human review gates.
+- [x] Localize current Number Garden money examples to U.S. dollars/cents and the illustrated ruler to inches for the `en-US` variant.
+- [x] Verify v20 in GitHub CI: [run 35929285089](https://github.com/suraka/skillsprout/actions/runs/35929285089), all 59 runtime tests, 38 Chromium browser tests, TypeScript and production build passed on `0710d9520913c555afc025679627e23c260456af`; a first browser run exposed one misplaced disclaimer assertion, which was corrected before this passing run.
+- [ ] Continue broader MATH-05 and MATH-06 outcomes and complete new v20 human review gates.
 - [x] Verify version 6 MATH-03 draft in GitHub CI: [run 35871683522](https://github.com/suraka/skillsprout/actions/runs/35871683522), 30 runtime tests, 21 Chromium browser tests, TypeScript and production build passed on `7a60b53fab05ef3cab7c85376942c17b5bad3dbb`.
 - [x] Verify version 7 MATH-04 draft in GitHub CI: [run 35874071554](https://github.com/suraka/skillsprout/actions/runs/35874071554), 32 runtime tests, 22 Chromium browser tests, TypeScript and production build passed on `c114416345c796177a7bf09d3350f69bc897ded3`.
 - [x] Extend Number Garden with zero and number-order draft challenges and deterministic answer checks; [CI 35844395876](https://github.com/suraka/skillsprout/actions/runs/35844395876) passed all 27 runtime tests, 20 Chromium browser tests, TypeScript and production build on `0936a51aacc62c35b8efe78a2f142996670d0255`.
