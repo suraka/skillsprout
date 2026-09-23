@@ -113,6 +113,8 @@ Implemented means source functionality exists; verified scope is separately stat
 - [x] Record the user report that version 15, planned real-currency, and further MATH-05 prompt materials were reviewed.
 - [x] Add a small MATH-06 data-table reading draft using an explicitly made-up dataset.
 - [x] Verify version 16 in GitHub CI: [run 35911395609](https://github.com/suraka/skillsprout/actions/runs/35911395609), 44 runtime tests, 31 Chromium browser tests, TypeScript and production build passed.
+- [x] Add the MATH-06 repeating-shape pattern preview; the user reports reviewing it.
+- [x] Verify version 17 in GitHub CI: [run 35920333504](https://github.com/suraka/skillsprout/actions/runs/35920333504), 45 runtime tests, 32 Chromium browser tests, TypeScript and production build passed.
 - [x] Verify version 15 in GitHub CI: [run 35909835744](https://github.com/suraka/skillsprout/actions/runs/35909835744), 43 runtime tests, 30 Chromium browser tests, TypeScript and production build passed.
 - [x] Add a draft sphere and unit-cube volume preview with runtime/browser coverage.
 - [x] Record the user report that the MATH-05 solid/volume prompts were reviewed.
@@ -122,7 +124,7 @@ Implemented means source functionality exists; verified scope is separately stat
 - [x] Extend Number Garden with zero and number-order draft challenges and deterministic answer checks; [CI 35844395876](https://github.com/suraka/skillsprout/actions/runs/35844395876) passed all 27 runtime tests, 20 Chromium browser tests, TypeScript and production build on `0936a51aacc62c35b8efe78a2f142996670d0255`.
 - [x] Group Number Garden into three number lessons with clearly optional number-change practice; [CI 35849147816](https://github.com/suraka/skillsprout/actions/runs/35849147816) passed all 27 runtime tests, 20 Chromium browser tests, TypeScript and production build on `8f6065b0f13f1db1329e3dbaa03b01a113a923bd`.
 
-Continue by reading this checklist, MASTER_BLUEPRINT.md, FOUNDATIONAL_CURRICULUM.md, EARLY_MATH_DRAFT.md and TEST_PLAN_AND_RESULTS.md. Number Garden prompts through version 17 are reported reviewed. Planned real-currency/further MATH-05 lessons are reported reviewed but not yet implemented. Other early-years and literacy slices still have their own review gates. Additional MATH-05 lessons remain unimplemented; implementation and completion of MATH-06 are next. Version 17 local checks pass; GitHub CI publication is blocked until the Cloudflare production build trigger can be prevented. Existing lesson evidence remains untouched; no migration was run.
+Continue by reading this checklist, MASTER_BLUEPRINT.md, FOUNDATIONAL_CURRICULUM.md, EARLY_MATH_DRAFT.md and TEST_PLAN_AND_RESULTS.md. Number Garden prompts through version 17 are reported reviewed. Planned real-currency/further MATH-05 lessons are reported reviewed but not yet implemented. Other early-years and literacy slices still have their own review gates. Additional MATH-05 lessons remain unimplemented; implementation and completion of MATH-06 are next. Version 17 GitHub CI passed (run 35920333504). Cloudflare’s PR bot still shows an older build for fb9b6cc0; no version 17 production deployment is verified. Existing lesson evidence remains untouched; no migration was run.
 
 
 ## Verified delivery references
