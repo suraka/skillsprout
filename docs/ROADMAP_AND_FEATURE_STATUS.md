@@ -98,6 +98,7 @@ Implemented means source functionality exists; verified scope is separately stat
 - [x] Verify version 9 MATH-04 number-line comparison in GitHub CI: [run 35886656831](https://github.com/suraka/skillsprout/actions/runs/35886656831), 35 runtime tests, 24 Chromium browser tests, TypeScript and production build passed on `b4f1f7d5ee95476d462789c6101816ddc106280f`.
 - [x] Record user approval of the MATH-04 fraction number-line prompt.
 - [x] Add an initial MATH-05 2D-shape and screen-unit length preview with runtime/browser tests.
+- [x] Verify version 10 MATH-05 preview in GitHub CI: [run 35890202123](https://github.com/suraka/skillsprout/actions/runs/35890202123), 37 runtime tests, 25 Chromium browser tests, TypeScript and production build passed on `ca70676adeda23cf9c8758566601b2742adba3cb`.
 - [ ] Review the new MATH-05 prompts; extend 3D shapes and mass/volume/time/money measures, then build MATH-06 as a separate tested slice.
 - [x] Verify version 6 MATH-03 draft in GitHub CI: [run 35871683522](https://github.com/suraka/skillsprout/actions/runs/35871683522), 30 runtime tests, 21 Chromium browser tests, TypeScript and production build passed on `7a60b53fab05ef3cab7c85376942c17b5bad3dbb`.
 - [x] Verify version 7 MATH-04 draft in GitHub CI: [run 35874071554](https://github.com/suraka/skillsprout/actions/runs/35874071554), 32 runtime tests, 22 Chromium browser tests, TypeScript and production build passed on `c114416345c796177a7bf09d3350f69bc897ded3`.
