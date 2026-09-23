@@ -95,6 +95,10 @@ Local verification after the change:
 - `pnpm exec tsc --noEmit`: PASS.
 - Focused ESLint for the new route, component, runtime and tests: PASS. Existing whole-site lint findings in the legacy Explore page are outside this focused result.
 - `pnpm build`: PASS; production route list includes `/learning/number-garden`.
-- `pnpm exec playwright test --grep EDU-MB`: BLOCKED before browser assertions; local Chromium executable is missing. Three cases `EDU-MB00…02` are authored, but this local run is not evidence they pass. Run them in GitHub Chromium CI before claiming browser behavior verified.
+- Local `pnpm exec playwright test --grep EDU-MB`: BLOCKED before browser assertions because this workspace lacks Playwright's Chromium executable. GitHub CI provides the browser execution evidence below.
+
+CI follow-up: the first full run exposed two real gaps. The server-rendered start button could receive a click before hydration attached its handler, and the root family provider made an unnecessary `/api/config` request on this guest route. The start control now remains disabled until client hydration is ready, and the route bypasses the account/catalog provider. CI also caught a duplicate Resume control in the paused state, which was removed.
+
+Verified final rerun: [Frontend checks 35841877262](https://github.com/suraka/skillsprout/actions/runs/35841877262), commit `56c5722000659e7c4d71fe44da1e0e4a25f8adc5`, passed frozen install, TypeScript, all 26 runtime tests, all 20 Chromium browser tests, and production build. Browser assertions confirmed the full activity/recovery flow, offline pause/resume, no API or external requests, no browser-storage writes, and mobile-width fit. Earlier failed runs exposed the issues above; they are resolved by this verified head.
 
 Human review is NOT TESTED: qualified early-math content reviewer, English locale/numeral narration decision, safety/assets, accessibility/screen-reader, real-device and consenting family checks remain open. EDU-M2 is PARTIAL; this one draft is not the three reviewed units required by the blueprint. No proficiency claim or migration was made.
