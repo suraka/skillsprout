@@ -19,6 +19,8 @@ import {
   fartherRightFractionAnswerIsCorrect,
   shapeSidesAnswerIsCorrect,
   longerScreenMeasureAnswerIsCorrect,
+  solidWithoutFlatFacesAnswerIsCorrect,
+  unitCubeVolumeAnswerIsCorrect,
   nextNumberAfterIsCorrect,
   seedSet,
   zeroAnswerIsCorrect,
@@ -82,6 +84,28 @@ function ShapeChoices({ onChoose, disabled = false }: { onChoose: (answer: strin
   </div>;
 }
 
+function SolidChoices({ onChoose, disabled = false }: { onChoose: (answer: string) => void; disabled?: boolean }) {
+  return <div className="ng-shape-choices" role="group" aria-label="Choose the solid with no flat faces">
+    {(['cube', 'sphere', 'cylinder'] as const).map((solid) => <button type="button" className="ng-shape-choice" key={solid} disabled={disabled} onClick={() => onChoose(solid)} aria-label={solid[0].toUpperCase() + solid.slice(1)}>
+      <svg viewBox="0 0 80 80" aria-hidden="true" focusable="false">
+        {solid === 'cube' && <><polygon points="40,8 68,24 40,40 12,24"/><polygon points="12,24 40,40 40,70 12,54"/><polygon points="40,40 68,24 68,54 40,70"/></>}
+        {solid === 'sphere' && <circle cx="40" cy="40" r="29"/>}
+        {solid === 'cylinder' && <><path d="M14 20 C14 8 66 8 66 20 L66 60 C66 72 14 72 14 60 Z"/><ellipse cx="40" cy="20" rx="26" ry="11"/><path d="M14 60 C14 72 66 72 66 60" fill="none"/></>}
+      </svg>
+      <span>{solid[0].toUpperCase() + solid.slice(1)}</span>
+    </button>)}
+  </div>;
+}
+
+function UnitCubeLayers() {
+  return <div className="ng-cube-layers" role="img" aria-label="A box with two layers of unit cubes, four cubes in each layer">
+    {[1, 2].map((layer) => <div className="ng-cube-layer" key={layer}>
+      <strong>Layer {layer}</strong>
+      <div>{Array.from({ length: 4 }, (_, index) => <svg viewBox="0 0 48 48" key={index} aria-hidden="true"><polygon points="24,3 44,14 24,25 4,14"/><polygon points="4,14 24,25 24,46 4,35"/><polygon points="24,25 44,14 44,35 24,46"/></svg>)}</div>
+    </div>)}
+  </div>;
+}
+
 function ScreenMeasureBar({ units, label }: { units: number; label: string }) {
   return <div className="ng-measure-bar" role="img" aria-label={`${label}: ${units} equal screen units`}>
     {Array.from({ length: units }, (_, index) => <span key={index} aria-hidden="true"/>)}
@@ -92,6 +116,14 @@ function MeasureChoices({ onChoose, disabled = false }: { onChoose: (answer: 'le
   return <div className="ng-compare-grid" role="group" aria-label="Choose the strip with more screen units">
     <button type="button" className="ng-measure-choice" disabled={disabled} onClick={() => onChoose('left')} aria-label="Three screen units"><ScreenMeasureBar units={3} label="First strip"/><strong>First strip</strong></button>
     <button type="button" className="ng-measure-choice" disabled={disabled} onClick={() => onChoose('right')} aria-label="Five screen units"><ScreenMeasureBar units={5} label="Second strip"/><strong>Second strip</strong></button>
+  </div>;
+}
+
+function UnitCubeChoices({ onChoose, disabled = false }: { onChoose: (answer: number) => void; disabled?: boolean }) {
+  return <div className="ng-numerals" role="group" aria-label="Choose the number of unit cubes">
+    {[6, 8, 10, 12].map((value) => <button type="button" className="ng-numeral" disabled={disabled} key={value} onClick={() => onChoose(value)} aria-label={`${value} unit cubes`}>
+      <span>{value}</span><small>unit cubes</small>
+    </button>)}
   </div>;
 }
 
@@ -200,7 +232,7 @@ export function NumberGarden() {
       <p className="ng-intro">Count a group, notice zero and number order, then compare two small groups. Optional previews explore operations, groups, place value, and fractions.</p>
       <aside className="ng-review" aria-label="Draft content review status">
         <strong>Draft preview</strong>
-        <p>The user reports reviewing MATH-03 and MATH-04 prompts. The new MATH-05 shape and screen-measure preview needs review. A grown-up can read every prompt aloud. This visit does not measure lasting math ability.</p>
+        <p>The user reports reviewing the first MATH-05 shape and length prompts, as well as MATH-03 and MATH-04. This version adds new solid-shape and unit-cube volume prompts, which need review. A grown-up can read every prompt aloud. This visit does not measure lasting math ability.</p>
       </aside>
 
       {step === 0 && <section className="ng-panel" aria-labelledby="ng-start-title">
@@ -217,6 +249,7 @@ export function NumberGarden() {
         <p className="ng-recap"><strong>Optional preview · MATH-04 tenths and percent</strong><br/>Connect five tenths, 0.5, and 50% using the same ten-part bar. This new preview is still draft content.</p>
         <p className="ng-recap"><strong>Optional preview · MATH-04 fractions on a number line</strong><br/>Compare one quarter and three quarters using their positions from zero to one.</p>
         <p className="ng-recap"><strong>Optional preview · MATH-05 shapes and measurement</strong><br/>Find a three-sided shape and compare two strips using equal on-screen units. The display is a learning model, not a real ruler.</p>
+        <p className="ng-recap"><strong>Optional preview · MATH-05 solids and volume</strong><br/>Recognize a sphere and count unit cubes across two layers.</p>
         <div className="ng-actions">
           <button className="ng-button primary" disabled={!ready} onClick={() => { setStep(1); setFeedback('Tap each seed once, then choose how many there are.'); }}>Begin Number Garden</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(11); setFeedback('MATH-03 draft preview: look at the equal groups.'); }}>Explore equal groups and sharing</button>
@@ -224,6 +257,7 @@ export function NumberGarden() {
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(18); setFeedback('MATH-04 draft preview: count the shaded tenths.'); }}>Explore tenths and percent</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(21); setFeedback('MATH-04 draft preview: compare the fraction positions.'); }}>Explore fractions on a number line</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(23); setFeedback('MATH-05 draft preview: look for a shape with three straight sides.'); }}>Explore shapes and screen units</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(26); setFeedback('MATH-05 draft preview: look for the solid with no flat faces.'); }}>Explore solids and volume</button>
         </div>
       </section>}
 
@@ -551,6 +585,43 @@ export function NumberGarden() {
         <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
       </section>}
 
+      {step === 26 && <section className="ng-panel" aria-labelledby="ng-solid-title">
+        <p className="ng-step">OPTIONAL PREVIEW · MATH-05 · 3D SOLIDS</p>
+        <h2 id="ng-solid-title">Which solid has no flat faces?</h2>
+        <SolidChoices disabled={paused} onChoose={(solid) => {
+          if (paused) return;
+          if (!solidWithoutFlatFacesAnswerIsCorrect(solid)) {
+            setFeedback('Look for the solid with a completely curved surface. Try again.');
+            return;
+          }
+          setStep(27);
+          setFeedback('A sphere has no flat faces. Next, count unit cubes in two layers.');
+        }} />
+      </section>}
+
+      {step === 27 && <section className="ng-panel" aria-labelledby="ng-volume-title">
+        <p className="ng-step">OPTIONAL PREVIEW · MATH-05 · VOLUME WITH UNIT CUBES</p>
+        <h2 id="ng-volume-title">A box has two layers. Each layer has four unit cubes. How many cubes fill the box?</h2>
+        <UnitCubeLayers />
+        <p>Count four cubes in each layer, then count both layers. These are drawn unit cubes, not a real container measurement.</p>
+        <UnitCubeChoices onChoose={(value) => {
+          if (paused) return;
+          if (!unitCubeVolumeAnswerIsCorrect(value, 2, 2, 2)) {
+            setFeedback('There are two layers with four unit cubes in each. Count both layers and try again.');
+            return;
+          }
+          setStep(28);
+          setFeedback('Two layers of four make eight unit cubes altogether.');
+        }} disabled={paused} />
+      </section>}
+
+      {step === 28 && <section className="ng-panel" aria-labelledby="ng-math05-volume-finish-title">
+        <p className="ng-step">MATH-05 DRAFT PREVIEW COMPLETE · NO SCORE SAVED</p>
+        <h2 id="ng-math05-volume-finish-title">You explored a sphere and volume with unit cubes.</h2>
+        <p>The cube drawing is a learning model. Other 3D shapes and measurement topics need more lessons.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
       {step === 5 && <section className="ng-panel" aria-labelledby="ng-add-title">
         <p className="ng-step">OPTIONAL PRACTICE · MATH-02 · ADD ONE</p>
         <h2 id="ng-add-title">Two seeds are here. Add one more.</h2>
@@ -583,7 +654,7 @@ export function NumberGarden() {
 
       {step > 0 && <><p className="ng-feedback" role="status" aria-live="polite">{feedback}</p><nav className="ng-session-controls" aria-label="Activity controls">{!paused && <button className="ng-button" onClick={() => setPaused(true)}>Pause</button>}<button className="ng-button" onClick={home}>Home</button><button className="ng-button" onClick={home}>Restart</button></nav></>}
 
-      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. The user reports reviewing the MATH-03 and MATH-04 prompts. The MATH-05 triangle and on-screen length prompts are new and remain draft pending review. Screen units are a diagram only, not a real measuring instrument. No score, profile, or progress record is made.</p></details>
+      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. The user reports reviewing the first MATH-05 triangle/length prompts and MATH-03/MATH-04 prompts. Version 11 adds draft sphere and unit-cube volume prompts which need review. On-screen units and cubes are learning models, not real instruments. No score, profile, or progress record is made.</p></details>
     </main>
     <footer className="ng-footer">Practice for this visit only · no account · no saved child data</footer>
   </div>;

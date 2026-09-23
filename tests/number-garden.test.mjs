@@ -12,6 +12,8 @@ import {
   fartherRightFractionAnswerIsCorrect,
   shapeSidesAnswerIsCorrect,
   longerScreenMeasureAnswerIsCorrect,
+  solidWithoutFlatFacesAnswerIsCorrect,
+  unitCubeVolumeAnswerIsCorrect,
   isValidDecomposition,
   markSeedCounted,
   mathPublicationBlockers,
@@ -140,13 +142,28 @@ test('EDU-M16: screen-length comparison checks bounded whole equal units', () =>
   assert.equal(longerScreenMeasureAnswerIsCorrect('right', 11, 5), false);
 });
 
+test('EDU-M17: sphere answer matches the solid with no flat faces', () => {
+  assert.equal(solidWithoutFlatFacesAnswerIsCorrect('sphere'), true);
+  assert.equal(solidWithoutFlatFacesAnswerIsCorrect('cube'), false);
+  assert.equal(solidWithoutFlatFacesAnswerIsCorrect('cylinder'), false);
+  assert.equal(solidWithoutFlatFacesAnswerIsCorrect('unknown'), false);
+});
+
+test('EDU-M18: unit-cube volume counts whole bounded rows, columns, and layers', () => {
+  assert.equal(unitCubeVolumeAnswerIsCorrect(8, 2, 2, 2), true);
+  assert.equal(unitCubeVolumeAnswerIsCorrect(7, 2, 2, 2), false);
+  assert.equal(unitCubeVolumeAnswerIsCorrect(8, 2, 2, 1), false);
+  assert.equal(unitCubeVolumeAnswerIsCorrect(8, 2.5, 2, 2), false);
+  assert.equal(unitCubeVolumeAnswerIsCorrect(40, 4, 4, 4), false);
+});
+
 test('EDU-M05: this is a guest draft with publication review still blocked', () => {
   assert.equal(numberGardenManifest.reviewStatus, 'draft');
-  assert.equal(numberGardenManifest.version, 10);
+  assert.equal(numberGardenManifest.version, 11);
   assert.equal(numberGardenManifest.requiresAccount, false);
   assert.equal(numberGardenManifest.requiresAi, false);
   assert.equal(numberGardenManifest.requiresCameraOrMic, false);
   assert.equal(numberGardenManifest.savesLearnerData, false);
   assert.ok(mathPublicationBlockers().length >= 4);
-  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('MATH-05 shape and screen-measure')));
+  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('MATH-05 solid-shape and unit-cube volume')));
 });

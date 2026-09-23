@@ -87,7 +87,7 @@ Release status remains PARTIAL / BLOCKED FOR RELEASE. No qualified literacy, loc
 
 ## EDU-M2 first mathematics draft — Number Garden
 
-Implementation adds `/learning/number-garden` as a guest-only draft. Version 10 retains user-reviewed MATH-02, MATH-03 and MATH-04 prompts, including decimals, percent and fraction number-line comparison. It adds an initial MATH-05 2D-shape and on-screen length-comparison preview; these new prompts remain draft pending review. No database, feature API, Firebase, cookie, localStorage or sessionStorage writes are added.
+Implementation adds `/learning/number-garden` as a guest-only draft. Version 11 retains user-reviewed MATH-02 through MATH-04 and the initial MATH-05 2D-shape/length prompts. It adds a sphere-identification prompt and counts unit cubes in two layers; these new MATH-05 prompts remain draft pending review. No database, feature API, Firebase, cookie, localStorage or sessionStorage writes are added.
 
 Local verification after the change:
 
@@ -109,7 +109,7 @@ Verified version 3 grouping: [Frontend checks 35849147816](https://github.com/su
 
 Verified version 5 MATH-02 draft: [Frontend checks 35866977777](https://github.com/suraka/skillsprout/actions/runs/35866977777), commit `655b1a678bfd2655e80e8cb344b262d384d7566d`, passed frozen install, TypeScript, all 28 runtime tests, all 20 Chromium browser tests and production build. Browser coverage tested compose answer recovery, a valid split of five, existing add/take practice and guest privacy checks. Runtime coverage confirms both 1+4 and 2+3 are accepted and an invalid sum is rejected. The new MATH-02 prompts remain draft pending review.
 
-The user approved MATH-02 and reports reviewing MATH-03 and MATH-04 prompts, including fraction number-line comparison. New version 10 MATH-05 shape and screen-measure prompts remain draft until reviewed. This repository does not contain formal review records. EDU-M2 is PARTIAL; this activity is not the complete sequence required by the blueprint. No proficiency claim or migration was made.
+The user approved MATH-02 and reports reviewing MATH-03 and MATH-04 prompts, including fraction number-line comparison. The user reports reviewing version 10 MATH-05 shape and screen-measure prompts. New version 11 solid/volume prompts remain draft until reviewed. This repository does not contain formal review records. EDU-M2 is PARTIAL; this activity is not the complete sequence required by the blueprint. No proficiency claim or migration was made.
 
 
 Verified version 6 MATH-03 draft: [Frontend checks 35871683522](https://github.com/suraka/skillsprout/actions/runs/35871683522), commit `7a60b53fab05ef3cab7c85376942c17b5bad3dbb`, passed frozen install, TypeScript, all 30 runtime tests, all 21 Chromium browser tests, and production build. Browser EDU-MB03 tested wrong-answer recovery and successful completion for equal groups, the 2×3 array, and sharing six seeds between two beds.
@@ -121,3 +121,5 @@ Verified version 8 MATH-04 decimal/percent extension: [Frontend checks 358846329
 Verified version 9 MATH-04 number-line comparison: [Frontend checks 35886656831](https://github.com/suraka/skillsprout/actions/runs/35886656831), commit `b4f1f7d5ee95476d462789c6101816ddc106280f`, passed TypeScript, all 35 runtime tests, all 24 Chromium browser tests, and production build. The learner compares 1/4 and 3/4 on an equally spaced 0-to-1 line and retries after a wrong selection.
 
 Verified version 10 MATH-05 preview: [Frontend checks 35890202123](https://github.com/suraka/skillsprout/actions/runs/35890202123), commit `ca70676adeda23cf9c8758566601b2742adba3cb`, passed TypeScript, all 37 runtime tests, all 25 Chromium browser tests, and production build. Coverage identifies a triangle by three straight sides and compares fixed 3-unit/5-unit bars; the UI labels these as screen units and says they are not a calibrated ruler. This is a small slice only; 3D geometry and mass, volume, time and money measures remain unimplemented.
+
+Verified version 11 MATH-05 solid/volume preview: results will be recorded after GitHub CI completes. The activity identifies a sphere as having no flat faces and counts two layers of four unit cubes. Mass, time and money measurement still need separate reviewed slices.

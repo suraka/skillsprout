@@ -181,3 +181,21 @@ test('EDU-MB07: MATH-05 identifies a 2D shape and compares equal screen units', 
   await expect(page.getByRole('heading', { name: 'You found a triangle and compared measured lengths.' })).toBeVisible();
   await expect(page.getByText('The strip model uses equal on-screen units. It is not a calibrated real-world measuring tool.')).toBeVisible();
 });
+
+test('EDU-MB08: MATH-05 identifies a sphere and counts unit cubes by layer', async ({ page }) => {
+  await page.goto(route);
+  await page.getByRole('button', { name: 'Explore solids and volume' }).click();
+
+  await expect(page.getByRole('heading', { name: 'Which solid has no flat faces?' })).toBeVisible();
+  await page.getByRole('button', { name: 'Cube' }).click();
+  await expect(page.getByRole('status')).toContainText('completely curved surface');
+  await page.getByRole('button', { name: 'Sphere' }).click();
+
+  await expect(page.getByRole('heading', { name: 'A box has two layers. Each layer has four unit cubes. How many cubes fill the box?' })).toBeVisible();
+  await expect(page.getByRole('img', { name: 'A box with two layers of unit cubes, four cubes in each layer' })).toBeVisible();
+  await page.getByRole('button', { name: '6 unit cubes' }).click();
+  await expect(page.getByRole('status')).toContainText('Count both layers');
+  await page.getByRole('button', { name: '8 unit cubes' }).click();
+  await expect(page.getByRole('heading', { name: 'You explored a sphere and volume with unit cubes.' })).toBeVisible();
+  await expect(page.getByText('The cube drawing is a learning model. Other 3D shapes and measurement topics need more lessons.')).toBeVisible();
+});

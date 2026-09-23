@@ -1,8 +1,8 @@
 export const numberGardenManifest = {
   activityId: 'math-number-garden-001',
-  version: 10,
+  version: 11,
   language: 'en',
-  localeVariant: 'en_v2_m02_m03_m04_reviewed_m05_draft',
+  localeVariant: 'en_v2_m02_m03_m04_m05_reviewed_m05_volume_draft',
   reviewStatus: 'draft',
   requiresAccount: false,
   requiresAi: false,
@@ -154,9 +154,19 @@ export function longerScreenMeasureAnswerIsCorrect(answer: 'left' | 'right', lef
     && answer === (leftUnits > rightUnits ? 'left' : 'right');
 }
 
+export function solidWithoutFlatFacesAnswerIsCorrect(answer: string): boolean {
+  return answer === 'sphere';
+}
+
+export function unitCubeVolumeAnswerIsCorrect(answer: number, rows: number, columns: number, layers: number): boolean {
+  return Number.isInteger(answer) && Number.isInteger(rows) && Number.isInteger(columns) && Number.isInteger(layers)
+    && rows > 0 && columns > 0 && layers > 0 && rows <= 4 && columns <= 4 && layers <= 4
+    && rows * columns * layers <= 32 && answer === rows * columns * layers;
+}
+
 export function mathPublicationBlockers(): string[] {
   return [
-    'The new MATH-05 shape and screen-measure prompts are a draft and still need review.',
+    'The new MATH-05 solid-shape and unit-cube volume prompts are a draft and still need review.',
     'Review completion for version-2 and MATH-02 through MATH-04 prompts is reported by the user; reviewer identities and findings are not attached to this draft.',
     'The activity remains a draft and has not been separately authorized for publication or merge.',
     'EDU-M2 still requires the remaining MATH-04 through MATH-06 outcomes.',
