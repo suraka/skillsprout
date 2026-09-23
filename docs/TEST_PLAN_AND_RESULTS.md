@@ -87,7 +87,7 @@ Release status remains PARTIAL / BLOCKED FOR RELEASE. No qualified literacy, loc
 
 ## EDU-M2 first mathematics draft — Number Garden
 
-Implementation adds `/learning/number-garden` as a guest-only draft. Version 5 retains the three number-sense lessons and adds optional MATH-02 compose/decompose prompts alongside add-one/take-one practice. Both 1+4 and 2+3 are accepted ways to make five. Wrong answers give recovery prompts. The newly added MATH-02 copy remains draft pending review. No database, feature API, Firebase, cookie, localStorage or sessionStorage writes are added.
+Implementation adds `/learning/number-garden` as a guest-only draft. Version 6 retains the three number-sense lessons, MATH-02 compose/decompose practice and add/take practice. The user approved the MATH-02 prompts. It adds optional MATH-03 equal-groups, array, and equal-sharing previews with fixed quantities and retry feedback; these new prompts remain draft pending review. No database, feature API, Firebase, cookie, localStorage or sessionStorage writes are added.
 
 Local verification after the change:
 
@@ -103,10 +103,10 @@ Verified version 2: [Frontend checks 35844395876](https://github.com/suraka/skil
 
 Verified final rerun: [Frontend checks 35841877262](https://github.com/suraka/skillsprout/actions/runs/35841877262), commit `56c5722000659e7c4d71fe44da1e0e4a25f8adc5`, passed frozen install, TypeScript, all 26 runtime tests, all 20 Chromium browser tests, and production build. Browser assertions confirmed the full activity/recovery flow, offline pause/resume, no API or external requests, no browser-storage writes, and mobile-width fit. Earlier failed runs exposed the issues above; they are resolved by this verified head.
 
-The product owner reports that reviews of the prior Number Garden prompt set are complete and satisfactory. The MATH-02 compose/decompose prompts were added afterward and need review. The PR remains draft as instructed. Reviewer identities, findings and formal sign-off records were not provided for the repository.
+The user reports reviewing and approving the MATH-02 prompts. Newly added MATH-03 prompts need review. The PR remains draft as instructed. Reviewer identities, findings and formal sign-off records were not provided for the repository.
 
 Verified version 3 grouping: [Frontend checks 35849147816](https://github.com/suraka/skillsprout/actions/runs/35849147816), commit `8f6065b0f13f1db1329e3dbaa03b01a113a923bd`, passed frozen install, TypeScript, all 27 runtime tests, all 20 Chromium browser tests, and production build. Browser coverage checked the three-lesson completion boundary, optional number-change practice, wrong-answer recovery, offline pause/resume, no API/external requests, no storage writes and mobile-width fit. EDU-M2 remains partial, not a reviewed three-unit course.
 
 Verified version 5 MATH-02 draft: [Frontend checks 35866977777](https://github.com/suraka/skillsprout/actions/runs/35866977777), commit `655b1a678bfd2655e80e8cb344b262d384d7566d`, passed frozen install, TypeScript, all 28 runtime tests, all 20 Chromium browser tests and production build. Browser coverage tested compose answer recovery, a valid split of five, existing add/take practice and guest privacy checks. Runtime coverage confirms both 1+4 and 2+3 are accepted and an invalid sum is rejected. The new MATH-02 prompts remain draft pending review.
 
-The product owner reports that reviews of the prior Number Garden content are complete. New MATH-02 prompts in version 5 remain draft until reviewed. This repository does not contain reviewer identities, findings or formal sign-off records. EDU-M2 is PARTIAL; this activity is not the complete sequence required by the blueprint. No proficiency claim or migration was made.
+The user approved the MATH-02 prompts. New MATH-03 prompts in version 6 remain draft until reviewed. This repository does not contain reviewer identities, findings or formal sign-off records. EDU-M2 is PARTIAL; this activity is not the complete sequence required by the blueprint. No proficiency claim or migration was made.

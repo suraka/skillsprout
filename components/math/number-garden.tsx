@@ -8,8 +8,10 @@ import {
   compareAnswerIsCorrect,
   countAnswerIsCorrect,
   countIsComplete,
+  equalShareAnswerIsCorrect,
   isValidDecomposition,
   markSeedCounted,
+  multiplicationAnswerIsCorrect,
   nextNumberAfterIsCorrect,
   seedSet,
   zeroAnswerIsCorrect,
@@ -139,7 +141,7 @@ export function NumberGarden() {
       <p className="ng-intro">Count a group, notice zero and number order, then compare two small groups.</p>
       <aside className="ng-review" aria-label="Draft content review status">
         <strong>Draft preview</strong>
-        <p>The product owner reports that all reviews of the version-2 prompts are complete and is satisfied with them, including the English locale, age and ability fit, accessibility, and safety. New optional operations prompts were added after that review and remain draft content. A grown-up can read every prompt and number aloud. This visit does not measure lasting math ability.</p>
+        <p>The product owner reports that version-2 reviews are complete; the product owner also approved the new MATH-02 compose and split prompts. The MATH-03 equal-groups, array, and sharing prompts are a new draft and need review. A grown-up can read every prompt and number aloud. This visit does not measure lasting math ability.</p>
       </aside>
 
       {step === 0 && <section className="ng-panel" aria-labelledby="ng-start-title">
@@ -151,7 +153,11 @@ export function NumberGarden() {
           <li><span>3</span><div><strong>Compare groups</strong><small>Look closely or count together to find which has more.</small></div></li>
         </ol>
         <p className="ng-recap"><strong>Optional practice · MATH-02 operations</strong><br/>Bring groups together, split a group in different ways, add one, and take one away.</p>
-        <div className="ng-actions"><button className="ng-button primary" disabled={!ready} onClick={() => { setStep(1); setFeedback('Tap each seed once, then choose how many there are.'); }}>Begin Number Garden</button></div>
+        <p className="ng-recap"><strong>Optional preview · MATH-03 groups and sharing</strong><br/>Explore equal groups, rows, and fair sharing. This new preview is still draft content.</p>
+        <div className="ng-actions">
+          <button className="ng-button primary" disabled={!ready} onClick={() => { setStep(1); setFeedback('Tap each seed once, then choose how many there are.'); }}>Begin Number Garden</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(11); setFeedback('MATH-03 draft preview: look at the equal groups.'); }}>Explore equal groups and sharing</button>
+        </div>
       </section>}
 
       {step === 1 && <section className="ng-panel" aria-labelledby="ng-count-title">
@@ -220,6 +226,7 @@ export function NumberGarden() {
         <div className="ng-actions">
           <button className="ng-button primary" onClick={home}>Finish these number lessons</button>
           <button className="ng-button" onClick={() => { setStep(9); setFeedback('Optional operations practice: join two small groups.'); }}>Try optional operations practice</button>
+          <button className="ng-button" onClick={() => { setStep(11); setFeedback('MATH-03 draft preview: look at the equal groups.'); }}>Explore equal groups and sharing</button>
         </div>
       </section>}
 
@@ -261,6 +268,69 @@ export function NumberGarden() {
         </div>
       </section>}
 
+      {step === 11 && <section className="ng-panel" aria-labelledby="ng-equal-groups-title">
+        <p className="ng-step">OPTIONAL PREVIEW · MATH-03 · EQUAL GROUPS</p>
+        <h2 id="ng-equal-groups-title">There are three equal groups with two seeds in each. How many seeds altogether?</h2>
+        <div className="ng-equal-groups" role="group" aria-label="Three equal groups of two seeds">
+          {[0, 1, 2].map((group) => <div className="ng-operation-group" key={group}><Seeds count={2} label={`Group ${group + 1}`}/><strong>2 seeds</strong></div>)}
+        </div>
+        <p>You can count every seed, or count two, four, six as you move from group to group.</p>
+        <NumeralChoices values={[4, 5, 6, 7]} onChoose={(value) => {
+          if (paused) return;
+          if (!multiplicationAnswerIsCorrect(value, 3, 2)) {
+            setFeedback('Count the seeds in all three groups and try again.');
+            return;
+          }
+          setStep(12);
+          setFeedback('Three groups of two make six. Now look at six seeds arranged in rows.');
+        }} disabled={paused} />
+      </section>}
+
+      {step === 12 && <section className="ng-panel" aria-labelledby="ng-array-title">
+        <p className="ng-step">OPTIONAL PREVIEW · MATH-03 · ARRAYS</p>
+        <h2 id="ng-array-title">This array has two rows with three seeds in each row. How many seeds altogether?</h2>
+        <div className="ng-array" role="img" aria-label="Array with two rows and three seeds in each row">
+          {Array.from({ length: 6 }, (_, index) => <span className={`ng-seed ng-seed-${index % 3}`} key={index} aria-hidden="true">✿</span>)}
+        </div>
+        <p>Count across each row, or count all the seeds.</p>
+        <NumeralChoices values={[4, 5, 6, 7]} onChoose={(value) => {
+          if (paused) return;
+          if (!multiplicationAnswerIsCorrect(value, 2, 3)) {
+            setFeedback('Count both rows and try again.');
+            return;
+          }
+          setStep(13);
+          setFeedback('The two rows hold six seeds. Now share six fairly between two beds.');
+        }} disabled={paused} />
+      </section>}
+
+      {step === 13 && <section className="ng-panel" aria-labelledby="ng-sharing-title">
+        <p className="ng-step">OPTIONAL PREVIEW · MATH-03 · FAIR SHARING</p>
+        <h2 id="ng-sharing-title">Share six seeds equally between two garden beds. How many seeds go in each bed?</h2>
+        <Seeds count={6} label="Six seeds to share" />
+        <div className="ng-sharing-beds" role="group" aria-label="Two empty garden beds">
+          <div className="ng-sharing-bed" aria-label="First garden bed"><strong>Bed 1</strong></div>
+          <div className="ng-sharing-bed" aria-label="Second garden bed"><strong>Bed 2</strong></div>
+        </div>
+        <p>Imagine placing one seed in each bed, then repeating until all six are shared.</p>
+        <NumeralChoices onChoose={(value) => {
+          if (paused) return;
+          if (!equalShareAnswerIsCorrect(value, 6, 2)) {
+            setFeedback('Share the seeds one at a time between the two beds, then try again.');
+            return;
+          }
+          setStep(14);
+          setFeedback('Each bed gets three seeds when six are shared equally between two beds.');
+        }} disabled={paused} />
+      </section>}
+
+      {step === 14 && <section className="ng-panel" aria-labelledby="ng-math03-finish-title">
+        <p className="ng-step">MATH-03 DRAFT PREVIEW COMPLETE · NO SCORE SAVED</p>
+        <h2 id="ng-math03-finish-title">You explored equal groups, rows, and fair sharing.</h2>
+        <p>This describes practice in this visit. It is not a score or a measure of lasting math skill.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
       {step === 5 && <section className="ng-panel" aria-labelledby="ng-add-title">
         <p className="ng-step">OPTIONAL PRACTICE · MATH-02 · ADD ONE</p>
         <h2 id="ng-add-title">Two seeds are here. Add one more.</h2>
@@ -293,7 +363,7 @@ export function NumberGarden() {
 
       {step > 0 && <><p className="ng-feedback" role="status" aria-live="polite">{feedback}</p><nav className="ng-session-controls" aria-label="Activity controls">{!paused && <button className="ng-button" onClick={() => setPaused(true)}>Pause</button>}<button className="ng-button" onClick={home}>Home</button><button className="ng-button" onClick={home}>Restart</button></nav></>}
 
-      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. The product owner reports version-2 reviews complete. The new optional MATH-02 compose and decompose prompts were added after that review and remain draft. No score, profile, or progress record is made.</p></details>
+      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. The product owner reports version-2 reviews complete and approved the MATH-02 compose/decompose prompts. The new MATH-03 equal-groups, array, and sharing prompts were added afterward and remain draft. No score, profile, or progress record is made.</p></details>
     </main>
     <footer className="ng-footer">Practice for this visit only · no account · no saved child data</footer>
   </div>;

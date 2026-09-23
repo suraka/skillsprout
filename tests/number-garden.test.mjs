@@ -6,9 +6,11 @@ import {
   compareAnswerIsCorrect,
   countAnswerIsCorrect,
   countIsComplete,
+  equalShareAnswerIsCorrect,
   isValidDecomposition,
   markSeedCounted,
   mathPublicationBlockers,
+  multiplicationAnswerIsCorrect,
   numberGardenManifest,
   nextNumberAfterIsCorrect,
   seedSet,
@@ -63,13 +65,28 @@ test('EDU-M07: composing and decomposing small amounts supports multiple valid s
   assert.equal(isValidDecomposition(5, 0, 5), false);
 });
 
+test('EDU-M08: equal groups and arrays share one checked total', () => {
+  assert.equal(multiplicationAnswerIsCorrect(6, 3, 2), true);
+  assert.equal(multiplicationAnswerIsCorrect(6, 2, 3), true);
+  assert.equal(multiplicationAnswerIsCorrect(5, 3, 2), false);
+  assert.equal(multiplicationAnswerIsCorrect(7, 3, 2), false);
+  assert.equal(multiplicationAnswerIsCorrect(6.5, 3, 2), false);
+});
+
+test('EDU-M09: fair-sharing answer requires equal whole-number shares', () => {
+  assert.equal(equalShareAnswerIsCorrect(3, 6, 2), true);
+  assert.equal(equalShareAnswerIsCorrect(2, 6, 2), false);
+  assert.equal(equalShareAnswerIsCorrect(2, 5, 2), false);
+  assert.equal(equalShareAnswerIsCorrect(2.5, 5, 2), false);
+});
+
 test('EDU-M05: this is a guest draft with publication review still blocked', () => {
   assert.equal(numberGardenManifest.reviewStatus, 'draft');
-  assert.equal(numberGardenManifest.version, 5);
+  assert.equal(numberGardenManifest.version, 6);
   assert.equal(numberGardenManifest.requiresAccount, false);
   assert.equal(numberGardenManifest.requiresAi, false);
   assert.equal(numberGardenManifest.requiresCameraOrMic, false);
   assert.equal(numberGardenManifest.savesLearnerData, false);
   assert.ok(mathPublicationBlockers().length >= 4);
-  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('new MATH-02 compose and decompose prompts')));
+  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('new MATH-03 equal-groups')));
 });

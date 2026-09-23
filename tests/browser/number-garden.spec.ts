@@ -93,3 +93,25 @@ test('EDU-MB02: guest math practice has no API, account, or browser-storage writ
   await expect(page.evaluate(() => ({ local: localStorage.length, session: sessionStorage.length, cookies: document.cookie }))).resolves.toEqual({ local: 0, session: 0, cookies: '' });
   expect(externalRequests).toEqual([]);
 });
+
+test('EDU-MB03: MATH-03 equal groups, arrays, and fair sharing recover from wrong answers', async ({ page }) => {
+  await page.goto(route);
+  await page.getByRole('button', { name: 'Explore equal groups and sharing' }).click();
+
+  await expect(page.getByRole('heading', { name: 'There are three equal groups with two seeds in each. How many seeds altogether?' })).toBeVisible();
+  await page.getByRole('button', { name: '5 seeds' }).click();
+  await expect(page.getByRole('status')).toContainText('Count the seeds in all three groups');
+  await page.getByRole('button', { name: '6 seeds' }).click();
+
+  await expect(page.getByRole('heading', { name: 'This array has two rows with three seeds in each row. How many seeds altogether?' })).toBeVisible();
+  await page.getByRole('button', { name: '5 seeds' }).click();
+  await expect(page.getByRole('status')).toContainText('Count both rows');
+  await page.getByRole('button', { name: '6 seeds' }).click();
+
+  await expect(page.getByRole('heading', { name: 'Share six seeds equally between two garden beds. How many seeds go in each bed?' })).toBeVisible();
+  await page.getByRole('button', { name: '2 seeds' }).click();
+  await expect(page.getByRole('status')).toContainText('Share the seeds one at a time');
+  await page.getByRole('button', { name: '3 seeds' }).click();
+  await expect(page.getByRole('heading', { name: 'You explored equal groups, rows, and fair sharing.' })).toBeVisible();
+  await expect(page.getByText('This describes practice in this visit. It is not a score or a measure of lasting math skill.')).toBeVisible();
+});

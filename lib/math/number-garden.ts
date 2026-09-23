@@ -1,8 +1,8 @@
 export const numberGardenManifest = {
   activityId: 'math-number-garden-001',
-  version: 5,
+  version: 6,
   language: 'en',
-  localeVariant: 'en_reviewed_v2_new_m02_draft',
+  localeVariant: 'en_v2_m02_reviewed_m03_draft',
   reviewStatus: 'draft',
   requiresAccount: false,
   requiresAi: false,
@@ -74,11 +74,23 @@ export function isValidDecomposition(total: number, firstPart: number, secondPar
     && firstPart + secondPart === total;
 }
 
+export function multiplicationAnswerIsCorrect(answer: number, groups: number, perGroup: number): boolean {
+  return Number.isInteger(answer) && Number.isInteger(groups) && Number.isInteger(perGroup)
+    && groups > 0 && groups <= 6 && perGroup > 0 && perGroup <= 6
+    && groups * perGroup <= 12 && answer === groups * perGroup;
+}
+
+export function equalShareAnswerIsCorrect(perGroup: number, total: number, groups: number): boolean {
+  return Number.isInteger(perGroup) && Number.isInteger(total) && Number.isInteger(groups)
+    && total >= 0 && total <= 12 && groups > 0 && groups <= 6
+    && total % groups === 0 && perGroup === total / groups;
+}
+
 export function mathPublicationBlockers(): string[] {
   return [
-    'The new MATH-02 compose and decompose prompts were authored after the reported version-2 review and still need review.',
-    'Review completion for the version-2 content is reported by the product owner; reviewer identities and findings are not attached to this draft.',
+    'The new MATH-03 equal-groups, array, and sharing prompts were authored after the reported reviews and still need review.',
+    'Review completion for version-2 and MATH-02 content is reported by the product owner; reviewer identities and findings are not attached to this draft.',
     'The activity remains a draft and has not been separately authorized for publication or merge.',
-    'EDU-M2 still requires the remaining MATH-03 through MATH-06 outcomes.',
+    'EDU-M2 still requires the remaining MATH-04 through MATH-06 outcomes.',
   ];
 }
