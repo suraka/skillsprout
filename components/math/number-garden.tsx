@@ -22,6 +22,7 @@ import {
   solidWithoutFlatFacesAnswerIsCorrect,
   unitCubeVolumeAnswerIsCorrect,
   wholeHourAnswerIsCorrect,
+  heavierBalanceSideAnswerIsCorrect,
   nextNumberAfterIsCorrect,
   seedSet,
   zeroAnswerIsCorrect,
@@ -149,6 +150,25 @@ function TimeChoices({ onChoose, disabled = false }: { onChoose: (hour: number) 
   </div>;
 }
 
+function BalanceModel() {
+  return <svg className="ng-balance-model" viewBox="0 0 200 150" role="img" aria-label="Balance model: the left pan is lower and holds three identical unit weights; the right pan holds two">
+    <path d="M100 25 L100 113 L72 143 L128 143 Z" className="ng-balance-support" />
+    <line x1="35" y1="82" x2="165" y2="52" className="ng-balance-beam" />
+    <line x1="38" y1="82" x2="38" y2="112" className="ng-balance-string" />
+    <line x1="162" y1="53" x2="162" y2="83" className="ng-balance-string" />
+    <path d="M13 112 Q38 132 63 112" className="ng-balance-pan" />
+    <path d="M137 83 Q162 103 187 83" className="ng-balance-pan" />
+    {[0, 1, 2].map((index) => <rect key={`left-${index}`} x={22 + index * 11} y="94" width="9" height="13" rx="2" className="ng-balance-weight" />)}
+    {[0, 1].map((index) => <rect key={`right-${index}`} x={150 + index * 11} y="65" width="9" height="13" rx="2" className="ng-balance-weight" />)}
+  </svg>;
+}
+
+function BalanceChoices({ onChoose, disabled = false }: { onChoose: (side: 'left' | 'right') => void; disabled?: boolean }) {
+  return <div className="ng-split-choices" role="group" aria-label="Choose the heavier balance pan">
+    {(['left', 'right'] as const).map((side) => <button type="button" className="ng-button ng-split-choice" key={side} disabled={disabled} onClick={() => onChoose(side)}>{side === 'left' ? 'Left pan' : 'Right pan'}</button>)}
+  </div>;
+}
+
 export function NumberGarden() {
   // Keep the server-rendered start control inert until React has attached its
   // event handlers. This prevents an early tap from being lost during hydration.
@@ -254,7 +274,7 @@ export function NumberGarden() {
       <p className="ng-intro">Count a group, notice zero and number order, then compare two small groups. Optional previews explore operations, groups, place value, and fractions.</p>
       <aside className="ng-review" aria-label="Draft content review status">
         <strong>Draft preview</strong>
-        <p>The user reports reviewing both MATH-05 prompt groups, as well as MATH-03 and MATH-04. A grown-up can read every prompt aloud. This visit does not measure lasting math ability.</p>
+        <p>The user reports reviewing MATH-05 prompts through version 12, as well as MATH-03 and MATH-04. The new version 13 mass prompt needs review. A grown-up can read every prompt aloud. This visit does not measure lasting math ability.</p>
       </aside>
 
       {step === 0 && <section className="ng-panel" aria-labelledby="ng-start-title">
@@ -272,7 +292,8 @@ export function NumberGarden() {
         <p className="ng-recap"><strong>Optional preview · MATH-04 fractions on a number line</strong><br/>Compare one quarter and three quarters using their positions from zero to one.</p>
         <p className="ng-recap"><strong>Optional preview · MATH-05 shapes and measurement</strong><br/>Find a three-sided shape and compare two strips using equal on-screen units. The display is a learning model, not a real ruler.</p>
         <p className="ng-recap"><strong>Optional preview · MATH-05 solids and volume</strong><br/>Recognize a sphere and count unit cubes across two layers.</p>
-        <p className="ng-recap"><strong>Optional draft · MATH-05 telling time</strong><br/>Read a clock when the minute hand points to 12. This new prompt needs review.</p>
+        <p className="ng-recap"><strong>Optional preview · MATH-05 telling time</strong><br/>Read a clock when the minute hand points to 12. The user reports reviewing this prompt.</p>
+        <p className="ng-recap"><strong>Optional draft · MATH-05 comparing mass</strong><br/>Compare identical unit weights on a balance. This new prompt needs review.</p>
         <div className="ng-actions">
           <button className="ng-button primary" disabled={!ready} onClick={() => { setStep(1); setFeedback('Tap each seed once, then choose how many there are.'); }}>Begin Number Garden</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(11); setFeedback('MATH-03 draft preview: look at the equal groups.'); }}>Explore equal groups and sharing</button>
@@ -282,6 +303,7 @@ export function NumberGarden() {
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(23); setFeedback('MATH-05 draft preview: look for a shape with three straight sides.'); }}>Explore shapes and screen units</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(26); setFeedback('MATH-05 draft preview: look for the solid with no flat faces.'); }}>Explore solids and volume</button>
           <button className="ng-button" disabled={!ready} onClick={() => { setStep(29); setFeedback('MATH-05 time draft: look at both clock hands.'); }}>Explore telling time</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(31); setFeedback('MATH-05 mass draft: compare the identical unit weights.'); }}>Explore comparing mass</button>
         </div>
       </section>}
 
@@ -669,6 +691,29 @@ export function NumberGarden() {
         <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
       </section>}
 
+      {step === 31 && <section className="ng-panel" aria-labelledby="ng-mass-title">
+        <p className="ng-step">NEW DRAFT PREVIEW · MATH-05 · COMPARING MASS</p>
+        <h2 id="ng-mass-title">Each block has the same mass. Which balance pan is heavier?</h2>
+        <BalanceModel />
+        <p>Look at the balance and compare the identical unit weights. The lower pan carries more mass.</p>
+        <BalanceChoices disabled={paused} onChoose={(side) => {
+          if (paused) return;
+          if (!heavierBalanceSideAnswerIsCorrect(side, 3, 2)) {
+            setFeedback('Look for the pan that hangs lower. Try again.');
+            return;
+          }
+          setStep(32);
+          setFeedback('The left pan hangs lower, so its three identical unit weights have more mass than the two on the right.');
+        }} />
+      </section>}
+
+      {step === 32 && <section className="ng-panel" aria-labelledby="ng-math05-mass-finish-title">
+        <p className="ng-step">MATH-05 MASS DRAFT PREVIEW · NO SCORE SAVED</p>
+        <h2 id="ng-math05-mass-finish-title">You compared mass using identical unit weights.</h2>
+        <p>This balance drawing is a learning model, not a calibrated measuring instrument.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
       {step === 5 && <section className="ng-panel" aria-labelledby="ng-add-title">
         <p className="ng-step">OPTIONAL PRACTICE · MATH-02 · ADD ONE</p>
         <h2 id="ng-add-title">Two seeds are here. Add one more.</h2>
@@ -701,7 +746,7 @@ export function NumberGarden() {
 
       {step > 0 && <><p className="ng-feedback" role="status" aria-live="polite">{feedback}</p><nav className="ng-session-controls" aria-label="Activity controls">{!paused && <button className="ng-button" onClick={() => setPaused(true)}>Pause</button>}<button className="ng-button" onClick={home}>Home</button><button className="ng-button" onClick={home}>Restart</button></nav></>}
 
-      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. The user reports reviewing MATH-05 prompts through version 11 and MATH-03/MATH-04 prompts. The new version 12 time prompt needs review. On-screen units, cubes, and clock are learning models. No score, profile, or progress record is made.</p></details>
+      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. The user reports reviewing MATH-05 prompts through version 12, and MATH-03/MATH-04 prompts. The new version 13 balance and unit-mass prompt needs review. On-screen units, cubes, clock, and balance are learning models. No score, profile, or progress record is made.</p></details>
     </main>
     <footer className="ng-footer">Practice for this visit only · no account · no saved child data</footer>
   </div>;

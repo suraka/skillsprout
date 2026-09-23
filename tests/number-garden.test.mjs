@@ -15,6 +15,7 @@ import {
   solidWithoutFlatFacesAnswerIsCorrect,
   unitCubeVolumeAnswerIsCorrect,
   wholeHourAnswerIsCorrect,
+  heavierBalanceSideAnswerIsCorrect,
   isValidDecomposition,
   markSeedCounted,
   mathPublicationBlockers,
@@ -166,14 +167,22 @@ test('EDU-M19: clock answer matches a valid exact hour', () => {
   assert.equal(wholeHourAnswerIsCorrect(3.5, 3), false);
 });
 
+test('EDU-M20: balance answer matches the heavier bounded unit-mass side', () => {
+  assert.equal(heavierBalanceSideAnswerIsCorrect('left', 3, 2), true);
+  assert.equal(heavierBalanceSideAnswerIsCorrect('right', 3, 2), false);
+  assert.equal(heavierBalanceSideAnswerIsCorrect('right', 2, 3), true);
+  assert.equal(heavierBalanceSideAnswerIsCorrect('left', 2, 2), false);
+  assert.equal(heavierBalanceSideAnswerIsCorrect('left', 6, 2), false);
+});
+
 test('EDU-M05: this is a guest draft with publication review still blocked', () => {
   assert.equal(numberGardenManifest.reviewStatus, 'draft');
-  assert.equal(numberGardenManifest.version, 12);
+  assert.equal(numberGardenManifest.version, 13);
   assert.equal(numberGardenManifest.requiresAccount, false);
   assert.equal(numberGardenManifest.requiresAi, false);
   assert.equal(numberGardenManifest.requiresCameraOrMic, false);
   assert.equal(numberGardenManifest.savesLearnerData, false);
   assert.ok(mathPublicationBlockers().length >= 3);
   assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('reviewing the MATH-05 solid-shape and unit-cube volume')));
-  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('MATH-05 whole-hour time')));
+  assert.ok(mathPublicationBlockers().some((blocker) => blocker.includes('MATH-05 balance and unit-mass')));
 });

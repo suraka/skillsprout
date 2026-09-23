@@ -1,8 +1,8 @@
 export const numberGardenManifest = {
   activityId: 'math-number-garden-001',
-  version: 12,
+  version: 13,
   language: 'en',
-  localeVariant: 'en_v2_m02_m03_m04_m05_time_draft',
+  localeVariant: 'en_v2_m02_m03_m04_m05_mass_draft',
   reviewStatus: 'draft',
   requiresAccount: false,
   requiresAi: false,
@@ -170,9 +170,20 @@ export function wholeHourAnswerIsCorrect(answer: number, expectedHour: number): 
     && answer === expectedHour;
 }
 
+export function heavierBalanceSideAnswerIsCorrect(
+  answer: 'left' | 'right',
+  leftUnits: number,
+  rightUnits: number,
+): boolean {
+  return Number.isInteger(leftUnits) && Number.isInteger(rightUnits)
+    && leftUnits >= 1 && leftUnits <= 5 && rightUnits >= 1 && rightUnits <= 5
+    && leftUnits !== rightUnits
+    && answer === (leftUnits > rightUnits ? 'left' : 'right');
+}
+
 export function mathPublicationBlockers(): string[] {
   return [
-    'The new MATH-05 whole-hour time prompt is a draft and needs review.',
+    'The new MATH-05 balance and unit-mass prompt is a draft and needs review.',
     'The user reports reviewing the MATH-05 solid-shape and unit-cube volume prompts; reviewer identities and findings are not attached to this draft.',
     'Review completion for version-2 and MATH-02 through MATH-05 prompts is reported by the user; reviewer identities and findings are not attached to this draft.',
     'The activity remains a draft and has not been separately authorized for publication or merge.',

@@ -212,3 +212,16 @@ test('EDU-MB09: MATH-05 reads an exact hour and recovers from a wrong time', asy
   await expect(page.getByRole('heading', { name: 'You read an exact hour on a clock.' })).toBeVisible();
   await expect(page.getByText('This is one short time-reading example. Other time and measurement topics need separate lessons.')).toBeVisible();
 });
+
+test('EDU-MB10: MATH-05 compares identical unit weights on a balance', async ({ page }) => {
+  await page.goto(route);
+  await page.getByRole('button', { name: 'Explore comparing mass' }).click();
+
+  await expect(page.getByRole('heading', { name: 'Each block has the same mass. Which balance pan is heavier?' })).toBeVisible();
+  await expect(page.getByRole('img', { name: 'Balance model: the left pan is lower and holds three identical unit weights; the right pan holds two' })).toBeVisible();
+  await page.getByRole('button', { name: 'Right pan' }).click();
+  await expect(page.getByRole('status')).toContainText('pan that hangs lower');
+  await page.getByRole('button', { name: 'Left pan' }).click();
+  await expect(page.getByRole('heading', { name: 'You compared mass using identical unit weights.' })).toBeVisible();
+  await expect(page.getByText('This balance drawing is a learning model, not a calibrated measuring instrument.')).toBeVisible();
+});
