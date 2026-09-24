@@ -1,6 +1,6 @@
 # SkillSprout v2.3 implementation roadmap and continuity checklist
 
-Updated 2026-09-23. Authority: attached SkillSprout-2.3.md, preserved at MASTER_BLUEPRINT.md.
+Updated 2026-09-24. Authority: attached SkillSprout-2.3.md, preserved at MASTER_BLUEPRINT.md.
 Canonical shared docs: suraka/skillsprout. Backend implementation stays in suraka/skillsprout-backend.
 
 ## Audit baseline
@@ -148,3 +148,51 @@ Continue by reading this checklist, MASTER_BLUEPRINT.md, FOUNDATIONAL_CURRICULUM
 - First browser failures were real: clicks and edits before hydration were lost. Controls now wait for event handlers; slow-script test SG-B06 proves readiness and the first edit/run. Earlier failed runs remain recorded in the test evidence.
 - Existing Cloudflare PR bot reports a preview for the older `eaecada2` commit. The current branch preview and its deployed source version have NOT been verified; passing CI is not deployment evidence.
 - Phase 1B implementation source is in the same draft PR at `5d04ecf79589ce678ca83789a1ac662b9dc11fb1`; [CI 35827629569](https://github.com/suraka/skillsprout/actions/runs/35827629569) passed TypeScript, 14 runtime cases, 11 browser tests and production build. No frontend API, database migration, authenticated account or backend changes apply to this no-account guest activity. Early-years, physical-device, assistive-technology/family review and real Firebase staging are NOT TESTED.
+
+## Staging and recovery checkpoint — 24 September 2026
+
+### Exact preview and verification
+
+- Frontend PR #1 head tested: cf5cf287e73cca90c29e8dc3e0c8eb9c7944d901.
+- GitHub Frontend checks run 35933387039 completed successfully: frozen install, TypeScript, runtime tests, Chromium browser tests, and production build.
+- Cloudflare PR bot reported a successful commit preview at https://4678fb86-skillsprout.surakaobliya.workers.dev for that exact commit. This is a review preview, not proof of the live production version.
+- The preview runs in Preview mode with six sample courses and an in-memory sample learner. Number Garden identifies itself as draft, visit-only practice with no saved learner data.
+- Browser check: completed Number Garden core lessons with keyboard Enter; tested retry/navigation, the 1-dollar to 100-cents and 1-dollar-plus-25-cents-to-1.25-dollar activities, Pause, Resume, Home, completion and return to the existing catalog. The AI Explorers sample lesson completed in preview mode; displayed progress changed to 1/3 and returned to 0/3 after reload. The catalog showed six sample adventures.
+- The exact-head browser suite contains 21 Number Garden cases. EDU-MB02 checks a 360px viewport, reduced motion and offline use and asserts no API/external requests, no local/session storage writes, and no cookies. All browser tests passed in run 35933387039. The code uses semantic landmarks and named buttons; keyboard activation was also observed manually.
+- This is a guest-preview test with synthetic sample data. It does not verify real Firebase authentication, a Railway staging service, PostgreSQL staging, or production integration. Screen-reader operation and measured color contrast were not tested.
+
+### Environment inventory and blockers
+
+| Service | Verified | Not verified / blocked |
+|---|---|---|
+| Cloudflare | PR bot confirmed a successful exact-commit preview at the URL above. | Account configuration, production deployment SHA, environment variables and rollback history. Dashboard access remained on a repeated verification challenge after one reload. |
+| Railway | Repository deployment file specifies a Docker build, Alembic upgrade in pre-deploy, and seed-before-start. | No separate staging service/database or backup settings are documented in the repository. Account inspection did not complete because GitHub second-factor verification was rejected. |
+| PostgreSQL | Backend CI for backend draft PR #2 (run 35933265054) passed PostgreSQL migration, seed, Alembic consistency, tests and lint. | No staging DATABASE_URL or TEST_DATABASE_URL is configured locally. The Compose file uses a persistent named volume, so it was not started as a disposable restore target. Docker, psql, pg_dump and pg_restore are unavailable. |
+| Firebase | Repository settings are environment-provided; the checked-in example contains placeholders only. | No Firebase staging project, emulator configuration, test account or credentials are available. Preview stayed in guest/sample mode; sign-in, token refresh, logout and role authorization were not tested. |
+| Backups | No backup artifact or provider backup report was available to inspect. | Backup schedule, retention, last successful snapshot, point-in-time recovery window and restore test are UNKNOWN / NOT VERIFIED. This does not prove backups are absent. |
+
+The /api/config route could not be inspected in the cloud browser (ERR_BLOCKED_BY_CLIENT). The visible preview mode and guest-only route establish the tested experience's sample behavior, but do not establish whether a Firebase web key is set in the preview. No production database connection or learner record was accessed or changed.
+
+### Production version and rollback evidence
+
+The last source refs visible in PR metadata are frontend main 0048e13092e1e2d78809c2194c7fe469143c975d and backend main 1c6e8339ba9973c1da3b559ef5bd66cb4e892159. These refs are not evidence of deployed production builds. A prior read-only audit recorded backend health/readiness and a six-course catalog responding successfully on 23 September; deployed frontend/backend source SHAs and the deployed database migration revision remain UNVERIFIED. Cloudflare dashboard and Railway account inspection were blocked as described above.
+
+Proposed non-destructive rollback, pending provider-account verification:
+
+1. Before a release, record the frontend Worker deployment ID/SHA, backend Railway deployment ID/SHA, and live Alembic revision; identify the last known-good application deployments.
+2. If code must be rolled back, redeploy/pin those known-good frontend and backend builds while leaving PostgreSQL and all learner rows untouched. Verify health, catalog and authenticated smoke tests after rollback.
+3. Do not run an Alembic downgrade or restore a backup over the live database as an application rollback. PR #1 Number Garden has no database writes. Backend PR #2 remains a separate draft; its additive migration has not been deployed.
+4. If database recovery is required, restore a snapshot into a separate isolated database first. Validate it and reconcile learner writes created after the backup before any traffic cutover; preserve the original database and later writes. Do not discard post-backup learner records.
+
+Provider rollback controls, previous production deployment IDs, available backup artifact and isolated PostgreSQL restore have not been verified. No merge, migration, production deployment, restore, or production-data change was performed.
+
+### Open release evidence checklist
+
+- [x] Verify exact PR preview commit and GitHub CI.
+- [x] Exercise Number Garden navigation, keyboard operation, guest privacy behavior and a pre-existing sample course.
+- [ ] Identify live production frontend/backend deployment IDs and source SHAs in Cloudflare and Railway.
+- [ ] Establish isolated Railway/PostgreSQL/Firebase staging with synthetic accounts and no production database connection.
+- [ ] Verify real Firebase sign-in, token lifecycle and authorization on that isolated stack.
+- [ ] Inspect backup schedule/retention and record the newest successful backup ID.
+- [ ] Restore a backup to isolated PostgreSQL and validate schema/catalog without touching live data.
+- [ ] Confirm provider-specific code rollback while retaining the database and learner writes.
