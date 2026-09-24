@@ -1,4 +1,5 @@
 'use client';
+import {usePathname} from 'next/navigation';
 import React,{createContext,useContext,useEffect,useState} from 'react';
 import {Config,Course,Student,Enrollment,sampleCourses,request,signIn,signOut} from '@/lib/academy';
 type User={display_name:string;role:string};
@@ -7,6 +8,12 @@ let previewId=0;
 const nextPreviewId=()=>`preview-${++previewId}`;
 const Context=createContext<State|null>(null);
 export function AcademyProvider({children}:{children:React.ReactNode}){
+ const pathname=usePathname();
+ // Guest play never initializes account/catalog requests or family state.
+ if(pathname==='/demo/sorting-garden'||pathname?.startsWith('/little-explorers')||pathname?.startsWith('/learning/letters-and-sounds')||pathname==='/learning/number-garden')return <>{children}</>;
+ return <ConnectedAcademyProvider>{children}</ConnectedAcademyProvider>;
+}
+function ConnectedAcademyProvider({children}:{children:React.ReactNode}){
  const [config,setConfig]=useState<Config|null>(null),[ready,setReady]=useState(false),[courses,setCourses]=useState<Course[]>([]),[students,setStudents]=useState<Student[]>([]),[enrollments,setEnrollments]=useState<Enrollment[]>([]),[user,setUser]=useState<User|null>(null),[error,setError]=useState(''),[completed,setCompleted]=useState<Record<string,string[]>>({});
  const demo=ready&&config!==null&&!config.apiUrl;
  useEffect(()=>{fetch('/api/config').then(r=>{if(!r.ok)throw Error('Configuration unavailable');return r.json() as Promise<Config>;}).then(async(c:Config)=>{setConfig(c);if(c.apiUrl){setCourses(await request<Course[]>(c,'/courses'));}else{setCourses(sampleCourses);setStudents([{id:'sample-learner',first_name:'Alex',age_band:'8-10'}]);}setReady(true);}).catch(()=>{setError('We could not connect. Please reload to try again.');setReady(true);});},[]);

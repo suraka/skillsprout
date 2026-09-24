@@ -1,0 +1,201 @@
+# Verification record — 24 September 2026
+
+Baseline: frontend typecheck/build passed; backend 4 SQLite tests with mocked Firebase and ruff passed. Existing main PostgreSQL CI and public live health/catalog evidence are linked in ROADMAP_AND_FEATURE_STATUS.md.
+
+Before workspace maintenance: 10 new runtime tests, TypeScript, targeted ESLint and production build passed. Local browser checks were BLOCKED by invalid/truncated Chromium download archives. A later retry also encountered a stale dev lock. No browser screenshot, complete interaction verification, real-device or family study was produced. Those results apply to the earlier local copy; restored-code results and subsequent CI browser verification are recorded below.
+
+## Reproduce
+
+`pnpm install --frozen-lockfile`; `pnpm test:runtime`; `pnpm exec tsc --noEmit`; `pnpm build`.
+Browser test command and dependency are recorded alongside the restored test suite. No browser test is passed merely because it exists.
+Backend: `uv sync --frozen --group dev`; `uv run pytest -q`; `uv run ruff check app tests`. Never use production TEST_DATABASE_URL: fixtures DROP ALL TABLES. Mock identity tests do not prove real Firebase login.
+
+## Release gates
+
+M1 is a rules simulator preview, not trained AI, a reviewed course or saved learning. Real keyboard/touch/screen-reader, actual contrast/reflow, slow-network/device and consenting-family tests remain NOT TESTED until evidence is recorded. Firebase staging, deployed revision/backups/restore remain unverified. No production changes or deployment claimed.
+
+## Restored-code verification (rerun)
+
+- `pnpm test:runtime`: PASS, all 10 SG-R01…10 tests.
+- `pnpm exec tsc --noEmit`: PASS.
+- Targeted ESLint for new runtime/editor/route: PASS; later includes browser tests/config.
+- `pnpm build`: PASS; `/demo/sorting-garden` and original routes included.
+- Backend: 4 pytest tests PASS; ruff PASS; application source unchanged.
+- First restored remote checkpoint f0ed7af6f03b9de2ff3879a7a4ab662181c683d4: [GitHub CI 35787547554](https://github.com/suraka/skillsprout/actions/runs/35787547554) passed existing typecheck/build workflow. This run predates the added browser CI gate and does NOT prove browser behavior.
+- Browser SG-B01…06 and REG-B01: PASS in Chromium CI after the fix described below. Coverage: counterexample/repair/history, error/recovery, keyboard/pause/step, network/storage/reset, offline/mobile, first interaction after slow loading, and legacy catalog/enrollment/completion. Local browser installation remains blocked; CI provided the actual execution evidence.
+
+Browser reproduction: `pnpm exec playwright install --with-deps chromium`, then `pnpm test:browser`. Config starts localhost:5173 with synthetic sample mode; no real accounts. Playwright 1.63.0 is pinned as a dev dependency. Existing unrelated transitive version retained.
+
+## Browser failure investigation — 23 September
+
+The first actual Chromium run [35788156044](https://github.com/suraka/skillsprout/actions/runs/35788156044), at `eaecada2a70608189daf4295eb76555947097973`, failed all five guest tests; REG-B01 passed. Browser installation itself succeeded in CI. The diagnostic run [35824632342](https://github.com/suraka/skillsprout/actions/runs/35824632342) reproduced the failures and captured page state: the first click had no effect, while early sample/reorder edits were lost and subsequent runs used the unchanged starter. No runtime exception explained those four cases. Going offline before hydration also interrupted page initialization.
+
+Fix `78845d0d7a948ea4bf6ae0a0e8961f2d3f8332ae` keeps all program buttons, selects and dragging disabled until React is ready to handle events. The page announces loading and includes a no-JavaScript alternative. SG-B06 holds JavaScript requests, checks disabled controls, releases loading, then verifies the first sample edit and Run. Keyboard and offline tests wait for enabled controls rather than treating server-rendered HTML as a ready application. No arbitrary sleep or retries were added to hide failures. CI retains failure traces for seven days; tests use only synthetic local state.
+
+Verified result: [CI 35824919320](https://github.com/suraka/skillsprout/actions/runs/35824919320), fix commit `78845d0d7a948ea4bf6ae0a0e8961f2d3f8332ae`, completed successfully. TypeScript, all 10 runtime tests, all 7 browser tests (39.7 seconds including server startup), and production build passed. Inspected job `107064458052` logs contain no captured browser exceptions. Browser tests run against the local development server; production output is build-checked, not a deployed-browser verification. Targeted lint and TypeScript also passed locally after the fix.
+
+Backend PostgreSQL [CI 35787871190](https://github.com/suraka/skillsprout-backend/actions/runs/35787871190) passed at the unchanged documentation-only backend head `79a4987e700a4cf8afa68338b9512a3e7754b78a`.
+
+## Remaining release review checklist
+
+These are separate from automated Chromium emulation and are NOT complete:
+
+- [ ] Physical touch device and lower-end-device check: edit/reorder without dragging, run/pause/step, recover from invalid order, and finish; record device, browser, viewport and observed latency.
+- [ ] Screen-reader and keyboard review: named controls, logical focus order, stage announcements, errors and the end-of-session screen; record assistive technology and defects.
+- [ ] Visual review at narrow viewport and increased text/zoom, including text/focus contrast and controls; preserve screenshots and actual measurements.
+- [ ] Qualified educator review of the counterexample, age framing, simulation disclosure and offline prompt; record reviewer, version and decision.
+- [ ] Consenting adult-assisted family usability session using synthetic cards only; verify understanding of the rule, repair and privacy/finish controls. Do not collect raw child interactions or claim mastery.
+- [ ] Before saved family features: real Firebase staging sign-in/refresh/logout and authorization, deployment/migration provenance, backup/restore, consent and retention decisions.
+
+Until these gates are satisfied, M1 remains a guest preview under review. Phase 1B follows verified Phase 1; Phase 1C requires a reviewed content outline. Never mark these reviews complete from automated tests.
+
+
+## Phase 1B — Rainbow Habitat (23 September)
+
+Implementation is on the frontend draft branch at `suraka/skillsprout`. The first code-only CI run [35826492509](https://github.com/suraka/skillsprout/actions/runs/35826492509) found that some controls could be activated before React hydration. The second run [35826900642](https://github.com/suraka/skillsprout/actions/runs/35826900642) verified the readiness guard; 10 of 11 browser tests passed, while the mobile/offline test exposed that Pause also hid Home. Run [35827327223](https://github.com/suraka/skillsprout/actions/runs/35827327223) confirmed that Home must work offline inside the loaded experience instead of depending on a route request; it still found a control-layout defect: Pause hid Home. Fix commit `5d04ecf79589ce678ca83789a1ac662b9dc11fb1` keeps Resume, Home and grownup navigation visible while paused. The resulting [CI 35827629569](https://github.com/suraka/skillsprout/actions/runs/35827629569) passed all steps; all 11 Chromium browser tests passed (40.1 seconds).
+
+Four runtime tests (LE-RH01…04) cover uniqueness of the correct answer across 2/3/4 choices and optional color, deterministic rounds and rejected invalid settings. Four browser tests (LE-B01…04) cover the truthful one-live-card hub, matching/retry/keyboard/finish, adult settings, transient state, mobile/reduced-motion and navigating Home to the playbook and back while offline. Existing Sorting Garden and lesson regression tests continue in the same browser suite. The first two CI runs showed the intended test sensitivity: hydration and navigation defects caused failures, which were corrected rather than weakening expectations.
+
+The app shows original inline SVG shapes/patterns, large semantic buttons with text labels, text prompt replay, color-independent matching by default, optional color matching, adult controls for choice count/sound/motion/high contrast, a three-turn finite activity, pause/resume/Home/finish, and an offline household-object discussion. Sound defaults off; when selected it uses a brief synthesized tone following a correct tap. There is no spoken narration. The hub has one playable card and three noninteractive “Coming soon” cards. There is no score, timer, tracking, storage, learner profile, network API, database, authentication or third-party asset fetch in the guest activity. Therefore no backend or schema work applies to this Phase 1B slice.
+
+Verified on `5d04ecf79589ce678ca83789a1ac662b9dc11fb1`: [CI 35827629569](https://github.com/suraka/skillsprout/actions/runs/35827629569) passed TypeScript, all 14 runtime tests, all 11 browser tests and production build. The local build also passed after the Pause/Home adjustment; targeted ESLint passed before that final JSX-only adjustment. Local Chromium installation is unavailable; CI is the browser execution environment.
+
+Still NOT TESTED: physical toddler-targeted touch, device performance, assistive technology/screen readers, actual contrast measurements, qualified early-years scope/usability, and consenting adult-assisted family use. Automated semantic/keyboard checks do not replace these reviews. Guest ages 2–4 are an adult-assisted proposal, not an approved suitability claim.
+
+## Phase 1C — Foundational literacy draft
+
+The English-language guest preview at /learning/letters-and-sounds contains three sequenced activities: identify a shared initial sound (LIT-01), connect the first sound in moon/apple/top to m/a/t (LIT-02/03), and arrange those taught letters to build mat (LIT-04). The outcome graph and the draft activity manifest publication gate are in lib/literacy/foundation.ts. An optional local device voice is used only when the browser reports an installed local English voice; otherwise an adult can say the words. The voice is not a reviewed recording. Original inline SVG choices have text labels.
+
+Guest practice state and the grown-up recap exist only in page memory and clear on exit/reset. The activity makes no API request and writes no cookies, localStorage or sessionStorage. No lesson content, child identity or evidence is sent to the backend. Therefore this no-account preview needs no auth, backend endpoint or database migration; those become necessary only for a later authorized saved-learning feature.
+
+New tests: EDU-L01…07 runtime tests check unique deterministic answers, fixed grapheme keys, exact decoding, prerequisite ordering, transient non-mastery evidence, graph validity and draft publication blockers. EDU-B00…05 browser tests cover the Explore link, no API/storage from the activity, retry/recovery, all three lessons, word construction, pause/Home, keyboard and narrow/offline use.
+
+Local verification on the literacy draft worktree:
+
+- pnpm install --frozen-lockfile: PASS; lockfile was unchanged.
+- pnpm test:runtime: PASS, 21 tests total (10 Sorting Garden, 4 Rainbow Habitat, 7 literacy).
+- pnpm exec tsc --noEmit: PASS.
+- Targeted ESLint for literacy UI, route, runtime and browser tests: PASS.
+- pnpm build: PASS; route /learning/letters-and-sounds is present in production build output.
+- pnpm test:browser: BLOCKED before application assertions because this workspace does not have Playwright's Chromium executable. Trace error reports missing chromium_headless_shell; this does not count as a browser-test failure or pass. The current CI run must execute EDU-B00…05.
+
+First GitHub Actions execution: [CI 35831757105](https://github.com/suraka/skillsprout/actions/runs/35831757105) on draft commit de661db4f7964dadfecefa45899eec927f747e48 passed frozen install, TypeScript and all 21 runtime tests. Chromium installed successfully; 16 of 17 browser tests passed. EDU-B05 tried to focus and press Enter before its start button became enabled, so the test remained on the overview. The failure was in test readiness; the route and remaining interaction cases passed. The test now waits for the button to be enabled before keyboard input.
+
+Verified rerun: [CI 35832187899](https://github.com/suraka/skillsprout/actions/runs/35832187899), PR #1, completed successfully for commit `41c6acdb625b8fe54b6c439c95560f135b70a891`. Frozen install, TypeScript, all 21 runtime tests, all 17 Chromium browser tests, and production build passed. The build includes `/learning/letters-and-sounds`. This is automated browser evidence only; manual human review remains pending.
+
+Release status remains PARTIAL / BLOCKED FOR RELEASE. No qualified literacy, locale/pronunciation, asset, accessibility, safety or family reviewer has approved these exact content versions. Native-speaker pronunciation, physical-device operation, screen-reader review, real contrast/zoom, low-end-device performance and consenting-family usability are NOT TESTED. Current task answer records are activity practice, not verified proficiency or durable learning.
+
+## EDU-M2 first mathematics draft — Number Garden
+
+Implementation adds `/learning/number-garden` as a guest-only draft. Version 11 retains user-reviewed MATH-02 through MATH-04 and the initial MATH-05 2D-shape/length prompts. It adds a sphere-identification prompt and counts unit cubes in two layers; the user reports reviewing these prompts. No database, feature API, Firebase, cookie, localStorage or sessionStorage writes are added.
+
+Local verification after the change:
+
+- `pnpm test:runtime`: PASS, 26 total runtime tests including five Number Garden cases for one-to-one duplicate prevention, fixed count, comparison key, bounded changes and draft review blockers.
+- `pnpm exec tsc --noEmit`: PASS.
+- Focused ESLint for the new route, component, runtime and tests: PASS. Existing whole-site lint findings in the legacy Explore page are outside this focused result.
+- `pnpm build`: PASS; production route list includes `/learning/number-garden`.
+- Local `pnpm exec playwright test --grep EDU-MB`: BLOCKED before browser assertions because this workspace lacks Playwright's Chromium executable. GitHub CI provides the browser execution evidence below.
+
+CI follow-up: the first full run exposed two real gaps. The server-rendered start button could receive a click before hydration attached its handler, and the root family provider made an unnecessary `/api/config` request on this guest route. The start control now remains disabled until client hydration is ready, and the route bypasses the account/catalog provider. CI also caught a duplicate Resume control in the paused state, which was removed. Follow-up CI passed all 20 browser tests. Version 2 adds zero and number-order challenges with deterministic retry checks.
+
+Verified version 2: [Frontend checks 35844395876](https://github.com/suraka/skillsprout/actions/runs/35844395876), commit `0936a51aacc62c35b8efe78a2f142996670d0255`, passed frozen install, TypeScript, all 27 runtime tests, all 20 Chromium browser tests, and production build. The expanded browser test follows counting/cardinality through zero, number order, comparison, addition and subtraction, including wrong-answer recovery. Guest-only network and storage assertions still pass. All content remains explicitly draft pending qualified review.
+
+Verified final rerun: [Frontend checks 35841877262](https://github.com/suraka/skillsprout/actions/runs/35841877262), commit `56c5722000659e7c4d71fe44da1e0e4a25f8adc5`, passed frozen install, TypeScript, all 26 runtime tests, all 20 Chromium browser tests, and production build. Browser assertions confirmed the full activity/recovery flow, offline pause/resume, no API or external requests, no browser-storage writes, and mobile-width fit. Earlier failed runs exposed the issues above; they are resolved by this verified head.
+
+The user reports reviewing and approving the MATH-02 prompts and reviewing MATH-03 prompts. The PR remains draft as instructed. Reviewer identities, findings and formal sign-off records were not provided for the repository.
+
+Verified version 3 grouping: [Frontend checks 35849147816](https://github.com/suraka/skillsprout/actions/runs/35849147816), commit `8f6065b0f13f1db1329e3dbaa03b01a113a923bd`, passed frozen install, TypeScript, all 27 runtime tests, all 20 Chromium browser tests, and production build. Browser coverage checked the three-lesson completion boundary, optional number-change practice, wrong-answer recovery, offline pause/resume, no API/external requests, no storage writes and mobile-width fit. EDU-M2 remains partial, not a reviewed three-unit course.
+
+Verified version 5 MATH-02 draft: [Frontend checks 35866977777](https://github.com/suraka/skillsprout/actions/runs/35866977777), commit `655b1a678bfd2655e80e8cb344b262d384d7566d`, passed frozen install, TypeScript, all 28 runtime tests, all 20 Chromium browser tests and production build. Browser coverage tested compose answer recovery, a valid split of five, existing add/take practice and guest privacy checks. Runtime coverage confirms both 1+4 and 2+3 are accepted and an invalid sum is rejected. The new MATH-02 prompts remain draft pending review.
+
+The user approved MATH-02 and reports reviewing MATH-03 through MATH-05 prompts, including fraction number-line comparison and version 11 solid/volume prompts. This repository does not contain formal review records. EDU-M2 is PARTIAL; this activity is not the complete sequence required by the blueprint. No proficiency claim or migration was made.
+
+
+Verified version 6 MATH-03 draft: [Frontend checks 35871683522](https://github.com/suraka/skillsprout/actions/runs/35871683522), commit `7a60b53fab05ef3cab7c85376942c17b5bad3dbb`, passed frozen install, TypeScript, all 30 runtime tests, all 21 Chromium browser tests, and production build. Browser EDU-MB03 tested wrong-answer recovery and successful completion for equal groups, the 2×3 array, and sharing six seeds between two beds.
+
+Verified version 7 MATH-04 draft: [Frontend checks 35874071554](https://github.com/suraka/skillsprout/actions/runs/35874071554), commit `c114416345c796177a7bf09d3350f69bc897ded3`, passed TypeScript, all 32 runtime tests, all 22 Chromium browser tests, and production build. The place-value example forms 14 from one ten and four ones; the fraction visual is divided into four equal-size parts and accepts both 2/4 and 1/2. This is a partial MATH-04 preview; decimals and percent are outside this slice.
+
+Verified version 8 MATH-04 decimal/percent extension: [Frontend checks 35884632920](https://github.com/suraka/skillsprout/actions/runs/35884632920), commit `c4c0f33afebddd89bbc8510597d488b24483adbb`, passed TypeScript, all 34 runtime tests, all 23 Chromium browser tests, and production build. The ten equal cells model five tenths; the number line marks 0.5 midway between zero and one; a second prompt connects five of ten parts to 50%. An earlier browser run failed because its test selected 40%, which was not one of the fixed answer choices; the test now uses the offered 20% wrong answer and passed.
+
+Verified version 9 MATH-04 number-line comparison: [Frontend checks 35886656831](https://github.com/suraka/skillsprout/actions/runs/35886656831), commit `b4f1f7d5ee95476d462789c6101816ddc106280f`, passed TypeScript, all 35 runtime tests, all 24 Chromium browser tests, and production build. The learner compares 1/4 and 3/4 on an equally spaced 0-to-1 line and retries after a wrong selection.
+
+Verified version 10 MATH-05 preview: [Frontend checks 35890202123](https://github.com/suraka/skillsprout/actions/runs/35890202123), commit `ca70676adeda23cf9c8758566601b2742adba3cb`, passed TypeScript, all 37 runtime tests, all 25 Chromium browser tests, and production build. Coverage identifies a triangle by three straight sides and compares fixed 3-unit/5-unit bars; the UI labels these as screen units and says they are not a calibrated ruler. This is a small slice only; 3D geometry and mass, volume, time and money measures remain unimplemented.
+
+Verified version 11 MATH-05 solid/volume preview and review-state update: [Frontend checks 35892569257](https://github.com/suraka/skillsprout/actions/runs/35892569257), commit `98f034bab1bad9f49fcce528908ab855b60db732`, passed frozen install, TypeScript, all 39 runtime tests, all 26 Chromium browser tests and production build. Browser coverage checks sphere identification and unit-cube volume with wrong-answer recovery. The user reports reviewing these prompts. Mass, time and money measurement still need separate lessons and review.
+
+The user reports reviewing the version 11 prompts. This is recorded as user-reported review; formal reviewer identities and findings are not attached to this draft. Version 12 adds an exact-hour clock prompt, which the user reports reviewing. EDU-M2 remains partial, and the PR remains draft.
+
+Verified version 12 MATH-05 time preview: [Frontend checks 35902117313](https://github.com/suraka/skillsprout/actions/runs/35902117313), commit `7f91ae1c639f360cd2a4d97ea5dfbc95d0f296ee`, passed frozen install, TypeScript, all 40 runtime tests, all 27 Chromium browser tests, and production build. Browser EDU-MB09 confirms the accessible 3:00 clock, wrong-answer retry, and completion state. The user reports reviewing the exact-hour prompt; it covers one narrow time-reading example only.
+
+Version 13 adds a balance model comparing three identical unit weights with two. Its new mass prompt remains draft pending review.
+
+
+Verified version 13 MATH-05 balance/mass preview: [Frontend checks 35906762256](https://github.com/suraka/skillsprout/actions/runs/35906762256), commit `56c2319a7416dff8c83081857958f1c244df3e74`, passed TypeScript, all 41 runtime tests, all 28 Chromium browser tests, and production build. Browser EDU-MB10 checks the accessible balance description, wrong-answer recovery, and correct completion. The user reports reviewing this prompt.
+
+Version 14 adds one make-believe 2-point plus 1-point token example. The label states these are learning tokens, not real money, prices, or local currency. Runtime and browser tests cover the total, wrong-answer recovery, and that disclaimer. [Frontend CI 35908281758](https://github.com/suraka/skillsprout/actions/runs/35908281758), commit `fb9b6cc04bb9d821a73f389fe37e3f37bee927fb`, passed TypeScript, all 42 runtime tests, all 29 Chromium browser tests, and production build. The user reports reviewing this prompt; it is not a complete money curriculum. Version 15 adds a comparison of two fixed pretend purses (2+1 points versus 1+1 points), with accessible labels and wrong-answer recovery. The user reports reviewing the version 14 prompt. The new version 15 comparison remains pending review.
+
+
+Verified version 15 MATH-05 pretend-purse comparison: [Frontend CI 35909835744](https://github.com/suraka/skillsprout/actions/runs/35909835744), commit `f264720816e37e7fba65637c064b30120fee254a`, passed TypeScript, all 43 runtime tests, all 30 Chromium browser tests and production build. Browser EDU-MB12 checks both accessible purse descriptions, wrong-answer recovery, and completion. The user reports reviewing the version 15 comparison and additional real-currency/further MATH-05 prompt materials. Implementation of those additional lessons remains outstanding.
+
+
+Version 16 adds a MATH-06 synthetic-data table prompt. The fixed made-up rows are bean bed 4, sunflower bed 2, and basil bed 3; the learner identifies the largest value. Runtime and browser tests cover unique-maximum validation, retry, accessible table semantics and the disclaimer against real-world inference. Content remains pending user review. [Frontend CI 35911395609](https://github.com/suraka/skillsprout/actions/runs/35911395609), commit `384d7cf35846bffbf70aa969b157d998462d4b79`, passed TypeScript, all 44 runtime tests, all 31 Chromium browser tests and production build. Browser EDU-MB13 checks table semantics, wrong-answer retry and made-up-data wording.
+
+Version 17 adds one bounded MATH-06 pattern prompt: circle, triangle, circle, triangle, circle, then choose the next shape. Semantic text labels accompany each shape; square is a distractor. The user reports reviewing this prompt. GitHub CI [Frontend CI 35920333504](https://github.com/suraka/skillsprout/actions/runs/35920333504) passed frozen install, TypeScript, all 45 runtime tests, all 32 Chromium browser tests, and production build. The Cloudflare bot still reports an older build for commit fb9b6cc0; no production deployment for version 17 is verified.
+
+
+Version 18 added a localized currency value prompt, a further unit-cube volume comparison, and a fuller MATH-06 path for building a chart from made-up counts, checking a claim, extending a repeating shape sequence, and selecting its rule. Version 20 replaces the currency prompt with a U.S. dollar/cents example ($1 = 100 cents; $1 + 25 cents = $1.25), represented as integer cents; text-only labels do not solicit cash or purchases. Runtime tests cover supported denominations, whole-cent sums, bounded cube dimensions, exact chart rows, unique-maximum claim checks, and the alternating rule. Browser tests cover recovery and accessible controls for all three additions. A local browser run could not execute: all 35 cases stopped before test launch because this environment lacks the Playwright Chromium headless-shell executable. No browser assertion failed locally; GitHub CI is required to complete this gate. The user reports reviewing the source prompts for the MATH-05 work; the new MATH-06 chart/claim/rule wording needs review. The activity remains draft.
+
+The first v18 CI attempt, [run 35923672953](https://github.com/suraka/skillsprout/actions/runs/35923672953), passed frozen install, TypeScript, and all 50 runtime tests, then found two browser-test issues: the volume disclaimer was asserted after that screen had closed, and a non-exact “Supported” locator also matched “Not supported.” Both were test-only issues and were corrected in commit `6131a8f`. Follow-up [run 35924065190](https://github.com/suraka/skillsprout/actions/runs/35924065190) passed frozen install, TypeScript, all 50 runtime tests, all 35 Chromium browser tests, and production build. There are no remaining CI failures for that verified run.
+
+Version 20 adds U.S. dollars/cents and inches to the existing quarter-turn, rectangle-perimeter, elapsed-time, equal-unit mass, likelihood, equivalent-ratio and add-three function examples. Local checks passed all 59 runtime tests, TypeScript, targeted ESLint, production build, and `git diff --check`. Local browser execution is unavailable because Playwright Chromium is not installed. First follow-up [run 35928934692](https://github.com/suraka/skillsprout/actions/runs/35928934692) passed install, TypeScript, and all 59 runtime tests, then found one browser assertion searching for a no-cash disclaimer after the lesson had navigated away from that screen; the other 37 browser tests passed. The assertion now checks the disclaimer on its visible lesson/completion screens. Follow-up [run 35929285089](https://github.com/suraka/skillsprout/actions/runs/35929285089), commit `0710d9520913c555afc025679627e23c260456af`, passed frozen install, TypeScript, all 59 runtime tests, all 38 Chromium browser tests, and production build. The v20 U.S. locale copy and rendered screens still require the documented human review gates.
+
+U.S. currency references checked 2026-09-23: [U.S. Mint Coin Classroom](https://kids.usmint.gov/about-the-mint/dollar) states that one dollar equals 100 cents; [U.S. Mint Circulating Coins](https://www.usmint.gov/learn/coins-and-medals/circulating-coins) identifies currently circulating U.S. coin denominations. Version 20 also changes the illustrated model ruler to inches; the illustration is not calibrated.
+
+## Staging and recovery checkpoint — 24 September 2026
+
+### Exact preview and verification
+
+- Frontend PR #1 head tested: cf5cf287e73cca90c29e8dc3e0c8eb9c7944d901.
+- GitHub Frontend checks run 35933387039 completed successfully: frozen install, TypeScript, runtime tests, Chromium browser tests, and production build.
+- Cloudflare PR bot reported a successful commit preview at https://4678fb86-skillsprout.surakaobliya.workers.dev for that exact commit. This is a review preview, not proof of the live production version.
+- The preview runs in Preview mode with six sample courses and an in-memory sample learner. Number Garden identifies itself as draft, visit-only practice with no saved learner data.
+- Browser check: completed Number Garden core lessons with keyboard Enter; tested retry/navigation, the 1-dollar to 100-cents and 1-dollar-plus-25-cents-to-1.25-dollar activities, Pause, Resume, Home, completion and return to the existing catalog. The AI Explorers sample lesson completed in preview mode; displayed progress changed to 1/3 and returned to 0/3 after reload. The catalog showed six sample adventures.
+- The exact-head browser suite contains 21 Number Garden cases. EDU-MB02 checks a 360px viewport, reduced motion and offline use and asserts no API/external requests, no local/session storage writes, and no cookies. All browser tests passed in run 35933387039. The code uses semantic landmarks and named buttons; keyboard activation was also observed manually.
+- This is a guest-preview test with synthetic sample data. It does not verify real Firebase authentication, a Railway staging service, PostgreSQL staging, or production integration. Screen-reader operation and measured color contrast were not tested.
+
+### Environment inventory and blockers
+
+| Service | Verified | Not verified / blocked |
+|---|---|---|
+| Cloudflare | PR bot confirmed a successful exact-commit preview at the URL above. | Account configuration, production deployment SHA, environment variables and rollback history. Dashboard access remained on a repeated verification challenge after one reload. |
+| Railway | Repository deployment file specifies a Docker build, Alembic upgrade in pre-deploy, and seed-before-start. | No separate staging service/database or backup settings are documented in the repository. Account inspection did not complete because GitHub second-factor verification was rejected. |
+| PostgreSQL | Backend CI for backend draft PR #2 (run 35933265054) passed PostgreSQL migration, seed, Alembic consistency, tests and lint. | No staging DATABASE_URL or TEST_DATABASE_URL is configured locally. The Compose file uses a persistent named volume, so it was not started as a disposable restore target. Docker, psql, pg_dump and pg_restore are unavailable. |
+| Firebase | Repository settings are environment-provided; the checked-in example contains placeholders only. | No Firebase staging project, emulator configuration, test account or credentials are available. Preview stayed in guest/sample mode; sign-in, token refresh, logout and role authorization were not tested. |
+| Backups | No backup artifact or provider backup report was available to inspect. | Backup schedule, retention, last successful snapshot, point-in-time recovery window and restore test are UNKNOWN / NOT VERIFIED. This does not prove backups are absent. |
+
+The /api/config route could not be inspected in the cloud browser (ERR_BLOCKED_BY_CLIENT). The visible preview mode and guest-only route establish the tested experience's sample behavior, but do not establish whether a Firebase web key is set in the preview. No production database connection or learner record was accessed or changed.
+
+### Production version and rollback evidence
+
+The last source refs visible in PR metadata are frontend main 0048e13092e1e2d78809c2194c7fe469143c975d and backend main 1c6e8339ba9973c1da3b559ef5bd66cb4e892159. These refs are not evidence of deployed production builds. A prior read-only audit recorded backend health/readiness and a six-course catalog responding successfully on 23 September; deployed frontend/backend source SHAs and the deployed database migration revision remain UNVERIFIED. Cloudflare dashboard and Railway account inspection were blocked as described above.
+
+Proposed non-destructive rollback, pending provider-account verification:
+
+1. Before a release, record the frontend Worker deployment ID/SHA, backend Railway deployment ID/SHA, and live Alembic revision; identify the last known-good application deployments.
+2. If code must be rolled back, redeploy/pin those known-good frontend and backend builds while leaving PostgreSQL and all learner rows untouched. Verify health, catalog and authenticated smoke tests after rollback.
+3. Do not run an Alembic downgrade or restore a backup over the live database as an application rollback. PR #1 Number Garden has no database writes. Backend PR #2 remains a separate draft; its additive migration has not been deployed.
+4. If database recovery is required, restore a snapshot into a separate isolated database first. Validate it and reconcile learner writes created after the backup before any traffic cutover; preserve the original database and later writes. Do not discard post-backup learner records.
+
+Provider rollback controls, previous production deployment IDs, available backup artifact and isolated PostgreSQL restore have not been verified. No merge, migration, production deployment, restore, or production-data change was performed.
+
+### Open release evidence checklist
+
+- [x] Verify exact PR preview commit and GitHub CI.
+- [x] Exercise Number Garden navigation, keyboard operation, guest privacy behavior and a pre-existing sample course.
+- [ ] Identify live production frontend/backend deployment IDs and source SHAs in Cloudflare and Railway.
+- [ ] Establish isolated Railway/PostgreSQL/Firebase staging with synthetic accounts and no production database connection.
+- [ ] Verify real Firebase sign-in, token lifecycle and authorization on that isolated stack.
+- [ ] Inspect backup schedule/retention and record the newest successful backup ID.
+- [ ] Restore a backup to isolated PostgreSQL and validate schema/catalog without touching live data.
+- [ ] Confirm provider-specific code rollback while retaining the database and learner writes.
