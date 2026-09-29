@@ -39,8 +39,9 @@ Backend feature branch `codex/staging-auth-api-smoke`:
 
 - Create `app/staging_target.py`: parse the configured database identity, compare it with explicit expected staging values, and produce a redacted target summary.
 - Create `scripts/staging_preflight.py`: refuse non-staging/mismatched targets; perform only `SELECT` checks for database identity and `alembic_version`.
-- Create `scripts/staging_smoke.py`: sign in synthetic guardians through Firebase Identity Toolkit in memory, then make read-only requests to `/api/v1/ready`, `/api/v1/me`, `/api/v1/students`, and `/api/v1/students/{student_id}`.
+- Create `scripts/staging_smoke.py`: sign in synthetic guardians through Firebase Identity Toolkit in memory, then call `/api/v1/ready`, `/api/v1/me`, and `/api/v1/students/{student_id}`; as guardian B, also send a deliberate PATCH denial probe to guardian A's disposable synthetic learner.
 - Create `tests/test_staging_target.py`: unit tests for target validation, fail-closed behavior, and secret-free summaries.
+- Create `tests/test_staging_smoke.py`: mock-based tests for status handling and credential/token redaction.
 - Modify `.github/workflows/ci.yml`: lint the new `scripts` directory as well as `app` and `tests`; do not add provider secrets or run the remote staging suite in regular CI.
 
 Frontend feature branch `codex/staging-auth-browser`:
@@ -69,15 +70,16 @@ Documentation feature branch `codex/staging-auth-recovery-runbook`:
 - `ExpectedStagingTarget` is an immutable dataclass with `database_host: str`, `database_name: str`, `frontend_url: str`, and `firebase_project_id: str`.
 - `validate_staging_target(settings: Settings, expected: ExpectedStagingTarget) -> dict[str, str]` returns only safe identity values; it raises a clear error unless `APP_ENV` is `staging` and all configured values match.
 - `staging_preflight.py` reads expected values from `STAGING_EXPECTED_DB_HOST`, `STAGING_EXPECTED_DB_NAME`, `STAGING_EXPECTED_FRONTEND_URL`, and `STAGING_EXPECTED_FIREBASE_PROJECT_ID`; missing values fail before connecting. It then runs read-only SQL for `current_database()` and `alembic_version` and emits a redacted JSON summary.
-- `staging_smoke.py` consumes `STAGING_API_ORIGIN`, `STAGING_FIREBASE_WEB_API_KEY`, `STAGING_PARENT_A_EMAIL`, `STAGING_PARENT_A_PASSWORD`, `STAGING_PARENT_B_EMAIL`, `STAGING_PARENT_B_PASSWORD`, and `STAGING_PARENT_A_STUDENT_ID`. Tokens stay in process memory and are never printed. The command makes no POST, PATCH, PUT, DELETE, schema, or seed request.
+- `staging_smoke.py` consumes `STAGING_API_ORIGIN`, `STAGING_FIREBASE_WEB_API_KEY`, `STAGING_PARENT_A_EMAIL`, `STAGING_PARENT_A_PASSWORD`, `STAGING_PARENT_B_EMAIL`, `STAGING_PARENT_B_PASSWORD`, and `STAGING_PARENT_A_STUDENT_ID`. Tokens stay in process memory and are never printed. The default smoke makes read requests plus one deliberate PATCH denial probe against the disposable synthetic learner; no successful mutation is expected. Optional `--verify-revocation` and `--verify-expiry` modes keep a synthetic test token in memory and verify the expected denial without displaying it.
 
 - [ ] **Step 1: Write tests for the target guard.** Add `test_rejects_non_staging_app_env`, `test_rejects_database_host_or_name_mismatch`, `test_requires_all_expected_target_values`, and `test_safe_summary_excludes_database_password` in `tests/test_staging_target.py`.
 - [ ] **Step 2: Run the focused tests and confirm they fail for the missing module/behavior.** Run: `uv run pytest tests/test_staging_target.py -q`. Expected: tests fail because the validator is not implemented.
 - [ ] **Step 3: Implement `ExpectedStagingTarget` and `validate_staging_target`.** Parse `DATABASE_URL` with `urllib.parse`; never include its username, password, query string, or full value in an exception or summary.
 - [ ] **Step 4: Implement `scripts/staging_preflight.py`.** Abort before connecting if `APP_ENV` or any expected identifier is missing/mismatched. When matched, use only `SELECT current_database()` and `SELECT version_num FROM alembic_version`; fail if no single migration revision is present.
-- [ ] **Step 5: Implement `scripts/staging_smoke.py`.** Use `httpx` to call Firebase sign-in and the staging API. Assert both accounts can read `/me`; guardian A can read the supplied synthetic learner; guardian B receives only 403 or 404 for that known ID. Do not print response bodies for authentication errors or any token.
-- [ ] **Step 6: Run focused and repository checks.** Run `uv run pytest tests/test_staging_target.py -q`, `uv run pytest -q`, and `uv run ruff check app scripts tests`. Expected: all tests and lint pass; existing CI commands remain green.
-- [ ] **Step 7: Update the backend CI lint command and open a draft PR from `codex/staging-auth-api-smoke` to backend `main`.** The normal workflow checks `app`, `scripts`, and `tests`, but never runs the remote staging command or receives staging secrets.
+- [ ] **Step 5: Implement `scripts/staging_smoke.py`.** Use `httpx` to call Firebase sign-in and the staging API. Assert both accounts can read `/me`; guardian A can read the supplied synthetic learner; guardian B receives only 403 or 404 for both GET and PATCH on that known ID. Never print response bodies for authentication errors, passwords, ID tokens, refresh tokens, or authorization headers.
+- [ ] **Step 6: Test the smoke command without staging secrets.** Add tests in `tests/test_staging_smoke.py` proving an authentication failure is reported without printing the supplied password/token and that a failed cross-family status fails the command. Run `uv run pytest tests/test_staging_target.py tests/test_staging_smoke.py -q` and confirm the new cases fail before implementation.
+- [ ] **Step 7: Run focused and repository checks.** Run `uv run pytest tests/test_staging_target.py tests/test_staging_smoke.py -q`, `uv run pytest -q`, and `uv run ruff check app scripts tests`. Expected: all tests and lint pass; existing CI commands remain green.
+- [ ] **Step 8: Update the backend CI lint command and open a draft PR from `codex/staging-auth-api-smoke` to backend `main`.** The normal workflow checks `app`, `scripts`, and `tests`, but never runs the remote staging command or receives staging secrets.
 
 ## Task 2: Frontend Remote Staging Browser Suite
 
@@ -89,13 +91,13 @@ Documentation feature branch `codex/staging-auth-recovery-runbook`:
 - Modify: `suraka/skillsprout/package.json`
 
 **Interfaces:**
-- `loadStagingConfig(env: NodeJS.ProcessEnv) -> StagingTestConfig` requires `STAGING_FRONTEND_URL`, `STAGING_API_ORIGIN`, `STAGING_FIREBASE_WEB_API_KEY`, `STAGING_PARENT_A_EMAIL`, and `STAGING_PARENT_A_PASSWORD`; it rejects non-HTTPS frontend URLs, URL paths/query strings where an origin is expected, and missing credentials.
+- `loadStagingConfig(env)` in the JavaScript module, documented with JSDoc as taking `NodeJS.ProcessEnv` and returning `StagingTestConfig`, requires `STAGING_FRONTEND_URL`, `STAGING_API_ORIGIN`, `STAGING_FIREBASE_WEB_API_KEY`, `STAGING_PARENT_A_EMAIL`, and `STAGING_PARENT_A_PASSWORD`; it rejects non-HTTPS frontend URLs, URL paths/query strings where an origin is expected, and missing credentials.
 - `playwright.staging.config.ts` uses the returned `baseURL`, contains no `webServer`, and fails with a clear configuration error if the staging settings are missing.
 - `pnpm test:staging-config` runs only local config-unit tests. `pnpm test:staging` runs the remote suite and is not added to the ordinary PR workflow.
 
 - [ ] **Step 1: Write config guard tests.** Add tests for missing values, non-HTTPS frontend URL, path/query in an origin, and error output that never includes the supplied password.
 - [ ] **Step 2: Run the config tests and confirm they fail before implementation.** Run: `node --test tests/staging/config.test.mjs`. Expected: failures for the missing `loadStagingConfig` function.
-- [ ] **Step 3: Implement `loadStagingConfig(env: NodeJS.ProcessEnv): StagingTestConfig`.** Check exact frontend/API origins and required values; never log or serialize passwords.
+- [ ] **Step 3: Implement `loadStagingConfig(env)` with JSDoc input/return types.** Check exact frontend/API origins and required values; never log or serialize passwords.
 - [ ] **Step 4: Create `playwright.staging.config.ts` and add package scripts.** It must use the remote `STAGING_FRONTEND_URL`, omit `webServer`, and fail rather than skip if the remote test settings are absent.
 - [ ] **Step 5: Add browser cases.** Add tests named `staging runtime config matches allowlist`, `guardian signs in and loads account`, `invalid credentials stay signed out`, `token refresh succeeds before API request`, `refresh rejection clears private state`, and `logout and reload clear family state`. Use accessible role/label selectors from the existing parent sign-in UI; do not log credentials, Firebase responses, or auth headers.
 - [ ] **Step 6: Run local checks.** Run `node --test tests/staging/config.test.mjs`, `pnpm exec tsc --noEmit`, `pnpm test:runtime`, `pnpm test:browser`, and `pnpm build`. Expected: all existing guest tests remain green; remote staging tests are not executed without a staging target and credentials.
@@ -132,9 +134,9 @@ Documentation feature branch `codex/staging-auth-recovery-runbook`:
 - Record: `suraka/skillsprout/docs/TEST_PLAN_AND_RESULTS.md` only after results exist.
 
 - [ ] **Step 1: Confirm the synthetic test accounts and learner exist only in the designated staging Firebase/database.** Use no child-identifying details; if accounts are not available, stop and request the authorized operator to create them.
-- [ ] **Step 2: Run the backend real-token smoke.** Run: `uv run python scripts/staging_smoke.py`. Expected: valid Firebase ID tokens accepted; `/ready`, `/me`, and guardian A's learner read succeed; guardian B receives 403/404 for guardian A's learner.
+- [ ] **Step 2: Run the backend real-token smoke.** Run: `uv run python scripts/staging_smoke.py`. Expected: valid Firebase ID tokens accepted; `/ready`, `/me`, and guardian A's learner read succeed; guardian B receives 403/404 for both GET and PATCH on guardian A's learner.
 - [ ] **Step 3: Run the remote browser suite against the exact staging origins.** Run: `pnpm test:staging`. Expected: runtime config matches the allowlist; valid sign-in loads the account; invalid sign-in stays signed out; refresh succeeds; simulated refresh rejection clears private state; logout and reload clear family state.
-- [ ] **Step 4: Verify revoked/expired token behavior with the authorized Firebase operator.** Revoke or disable only a synthetic staging test account, verify the previous token is denied by staging API, then restore the synthetic test account and record the outcome. Do not test with a real user.
+- [ ] **Step 4: Verify revoked/expired token behavior with the authorized Firebase operator.** For revocation, run `uv run python scripts/staging_smoke.py --verify-revocation`; the command holds the synthetic account's ID token in memory while the operator revokes that account's sessions in the Firebase staging console, then verifies the old token is denied. For expiry, run `uv run python scripts/staging_smoke.py --verify-expiry`; it waits until the token's returned expiry plus a short buffer, then verifies denial. Re-enable or sign in the synthetic account after revocation and record the outcomes. Never display or copy the token; do not test with a real user.
 - [ ] **Step 5: Record exact SHAs, origins, project/database identifiers, test outcomes, run artifacts, and limitations.** Do not record credentials or tokens. Leave unrun provider cases NOT TESTED or BLOCKED.
 
 ## Task 6: Staging Backup and Isolated Restore Rehearsal
