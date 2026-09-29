@@ -209,4 +209,9 @@ Report exact PR links, source and target branches, changed paths, CI checks run,
 
 ## Handoff
 
-The implementation is documentation-only and spans two repositories with a stacked frontend dependency, so use a fresh reviewer for each repository's changes and a final cross-repository review. Keep both resulting PRs in draft until the owner reviews them. The owner must separately authorize any merge, environment change, migration, or production action.
+This documentation-only plan spans two repositories and the frontend work is stacked on PR #1's source branch. Follow the execution method the owner selects:
+
+- **Subagent-driven:** use a fresh implementer for each task and a fresh reviewer before moving to the next task, followed by a cross-repository review.
+- **Native:** implement the tasks sequentially in this session, then use one fresh independent reviewer for the whole branch.
+
+Keep both resulting PRs in draft until the owner reviews them. The owner must separately authorize any merge, environment change, migration, or production action.
