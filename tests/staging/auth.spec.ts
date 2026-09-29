@@ -16,6 +16,7 @@ async function signInAndLoadAccount(page: Page) {
   ));
   await submitValidCredentials(page);
   expect((await meResponse).ok()).toBeTruthy();
+  await expect(page.getByRole('heading', { name: 'Welcome back, grown-up' })).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Sign out' })).toBeVisible();
 }
 
