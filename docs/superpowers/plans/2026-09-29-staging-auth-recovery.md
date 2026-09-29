@@ -51,7 +51,8 @@ Frontend feature branch `codex/staging-auth-browser`:
 - Create `tests/staging/config.test.mjs`: unit tests for the staging URL/config guard.
 - Create `playwright.staging.config.ts`: run only against the explicit HTTPS staging URL and do not start the local dev server.
 - Create `tests/staging/auth.spec.ts`: browser tests for sign-in, runtime config, refresh, refresh failure, logout/reload, and private-screen behavior.
-- Modify `package.json`: add `test:staging-config` and `test:staging` scripts.
+- Modify `package.json`: add pinned dev dependency `@playwright/test@1.62.0` and `test:staging-config` / `test:staging` scripts.
+- Modify `pnpm-lock.yaml`: regenerate with the repository's pinned pnpm version.
 
 Documentation feature branch `codex/staging-auth-recovery-runbook`:
 
@@ -90,8 +91,10 @@ Documentation feature branch `codex/staging-auth-recovery-runbook`:
 - Create: `suraka/skillsprout/playwright.staging.config.ts`
 - Create: `suraka/skillsprout/tests/staging/auth.spec.ts`
 - Modify: `suraka/skillsprout/package.json`
+- Modify: `suraka/skillsprout/pnpm-lock.yaml`
 
 **Interfaces:**
+- Add pinned `@playwright/test@1.62.0` as a dev dependency and regenerate `pnpm-lock.yaml` with pnpm `11.25.0`.
 - `loadStagingConfig(env)` in the JavaScript module, documented with JSDoc as taking `NodeJS.ProcessEnv` and returning `StagingTestConfig`, requires `STAGING_FRONTEND_URL`, `STAGING_API_ORIGIN`, `STAGING_EXPECTED_API_ORIGIN`, `STAGING_FIREBASE_WEB_API_KEY`, `STAGING_PARENT_A_EMAIL`, and `STAGING_PARENT_A_PASSWORD`; it rejects non-HTTPS origins, URL credentials/path/query/fragment where an origin is expected, missing credentials, and any API-origin mismatch before sign-in.
 - `playwright.staging.config.ts` uses the returned `baseURL`, contains no `webServer`, and fails with a clear configuration error if the staging settings are missing.
 - `pnpm test:staging-config` runs only local config-unit tests. `pnpm test:staging` runs the remote suite and is not added to the ordinary PR workflow.
@@ -99,7 +102,7 @@ Documentation feature branch `codex/staging-auth-recovery-runbook`:
 - [ ] **Step 1: Write config guard tests.** Add tests for missing values, non-HTTPS frontend URL, path/query in an origin, and error output that never includes the supplied password.
 - [ ] **Step 2: Run the config tests and confirm they fail before implementation.** Run: `node --test tests/staging/config.test.mjs`. Expected: failures for the missing `loadStagingConfig` function.
 - [ ] **Step 3: Implement `loadStagingConfig(env)` with JSDoc input/return types.** Check exact frontend/API origins and required values; never log or serialize passwords.
-- [ ] **Step 4: Create `playwright.staging.config.ts` and add package scripts.** It must use the remote `STAGING_FRONTEND_URL`, omit `webServer`, and fail rather than skip if the remote test settings are absent.
+- [ ] **Step 4: Create `playwright.staging.config.ts` and add package scripts.** It must use the remote `STAGING_FRONTEND_URL`, omit `webServer`, and fail rather than skip if the remote test settings are absent. Update `package.json` and `pnpm-lock.yaml` with the pinned Playwright dependency and regenerate the lock with pnpm `11.25.0`.
 - [ ] **Step 5: Add browser cases.** Add tests named `staging runtime config matches allowlist`, `guardian signs in and loads account`, `invalid credentials stay signed out`, `token refresh succeeds before API request`, `refresh rejection clears private state`, and `logout and reload clear family state`. Use accessible role/label selectors from the existing parent sign-in UI; do not log credentials, Firebase responses, or auth headers.
 - [ ] **Step 6: Run local checks.** Run `node --test tests/staging/config.test.mjs`, `pnpm exec tsc --noEmit`, `pnpm test:runtime`, `pnpm test:browser`, and `pnpm build`. Expected: all existing guest tests remain green; remote staging tests are not executed without a staging target and credentials.
 - [ ] **Step 7: Open a draft frontend PR from `codex/staging-auth-browser` to `main`.** Keep staging credentials out of GitHub workflow config and repository files.
