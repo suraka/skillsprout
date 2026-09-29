@@ -9,6 +9,7 @@
 
 const REQUIRED_KEYS = [
   'STAGING_FRONTEND_URL',
+  'STAGING_EXPECTED_FRONTEND_ORIGIN',
   'STAGING_API_ORIGIN',
   'STAGING_EXPECTED_API_ORIGIN',
   'STAGING_FIREBASE_WEB_API_KEY',
@@ -28,11 +29,21 @@ export function loadStagingConfig(env) {
   );
 
   const baseURL = parseHttpsOrigin(values.STAGING_FRONTEND_URL, 'STAGING_FRONTEND_URL');
+  const expectedFrontendOrigin = parseHttpsOrigin(
+    values.STAGING_EXPECTED_FRONTEND_ORIGIN,
+    'STAGING_EXPECTED_FRONTEND_ORIGIN',
+  );
   const apiOrigin = parseHttpsOrigin(values.STAGING_API_ORIGIN, 'STAGING_API_ORIGIN');
   const expectedApiOrigin = parseHttpsOrigin(
     values.STAGING_EXPECTED_API_ORIGIN,
     'STAGING_EXPECTED_API_ORIGIN',
   );
+
+  if (baseURL !== expectedFrontendOrigin) {
+    throw new Error(
+      'STAGING_FRONTEND_URL must exactly match STAGING_EXPECTED_FRONTEND_ORIGIN before staging tests run',
+    );
+  }
 
   if (apiOrigin !== expectedApiOrigin) {
     throw new Error(
