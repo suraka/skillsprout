@@ -81,8 +81,18 @@ test('token refresh succeeds before API request', async ({ page }) => {
 });
 
 test('ordinary API failures preserve private state', async ({ page }) => {
-  await page.goto('/');
-  await page.route('**/api/v1/courses', async (route) => {
+  await page.goto('/parents');
+  await signInAndLoadAccount(page);
+  await expect(page.getByRole('button', { name: 'Add a learner' })).toBeVisible();
+
+  let learnerWrites = 0;
+  await page.route('**/api/v1/students', async (route) => {
+    if (route.request().method() !== 'POST') {
+      await route.continue();
+      return;
+    }
+
+    learnerWrites += 1;
     await route.fulfill({
       status: 503,
       contentType: 'application/json',
@@ -90,10 +100,15 @@ test('ordinary API failures preserve private state', async ({ page }) => {
     });
   });
 
-  await signInAndLoadAccount(page);
+  await page.getByRole('button', { name: 'Add a learner' }).click();
+  await page.getByLabel('First name or nickname').fill('Staging learner');
+  await page.getByRole('button', { name: 'Add learner', exact: true }).click();
 
-  await expect(page.getByRole('button', { name: 'Sign out' })).toBeVisible();
   await expect(page.getByRole('alert')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Sign out' })).toBeVisible();
+  await page.getByRole('button', { name: 'Close' }).click();
+  await expect(page.getByRole('heading', { name: 'Welcome to your family space.' })).toBeVisible();
+  expect(learnerWrites).toBe(1);
 });
 
 test('refresh rejection clears private state', async ({ page }) => {
@@ -142,6 +157,7 @@ test('later refresh rejection clears family state before learner write', async (
 
   await expect(page.getByRole('alert')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Sign out' })).toHaveCount(0);
+  await page.getByRole('button', { name: 'Close' }).click();
   await expect(page.getByRole('heading', { name: 'Your family’s next chapter starts here.' })).toBeVisible();
   expect(learnerWrites).toBe(0);
 });
