@@ -92,7 +92,7 @@ Documentation feature branch `codex/staging-auth-recovery-runbook`:
 - Modify: `suraka/skillsprout/package.json`
 
 **Interfaces:**
-- `loadStagingConfig(env)` in the JavaScript module, documented with JSDoc as taking `NodeJS.ProcessEnv` and returning `StagingTestConfig`, requires `STAGING_FRONTEND_URL`, `STAGING_API_ORIGIN`, `STAGING_FIREBASE_WEB_API_KEY`, `STAGING_PARENT_A_EMAIL`, and `STAGING_PARENT_A_PASSWORD`; it rejects non-HTTPS frontend URLs, URL paths/query strings where an origin is expected, and missing credentials.
+- `loadStagingConfig(env)` in the JavaScript module, documented with JSDoc as taking `NodeJS.ProcessEnv` and returning `StagingTestConfig`, requires `STAGING_FRONTEND_URL`, `STAGING_API_ORIGIN`, `STAGING_EXPECTED_API_ORIGIN`, `STAGING_FIREBASE_WEB_API_KEY`, `STAGING_PARENT_A_EMAIL`, and `STAGING_PARENT_A_PASSWORD`; it rejects non-HTTPS origins, URL credentials/path/query/fragment where an origin is expected, missing credentials, and any API-origin mismatch before sign-in.
 - `playwright.staging.config.ts` uses the returned `baseURL`, contains no `webServer`, and fails with a clear configuration error if the staging settings are missing.
 - `pnpm test:staging-config` runs only local config-unit tests. `pnpm test:staging` runs the remote suite and is not added to the ordinary PR workflow.
 
