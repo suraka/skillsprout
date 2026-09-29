@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "skipLibCheck": true,
+    "types": [],
+    "outDir": ".literacy-test-build",
+    "rootDir": "lib/literacy"
+  },
+  "include": ["lib/literacy/foundation.ts"]
+}
