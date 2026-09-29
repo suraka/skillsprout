@@ -9,7 +9,6 @@ export default defineConfig({
   fullyParallel: false,
   use: {
     baseURL: staging.baseURL,
-    trace: 'retain-on-failure',
   },
   projects: [
     {
