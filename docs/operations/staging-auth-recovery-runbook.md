@@ -178,7 +178,7 @@ Create one record per run. Retain only redacted summaries, non-secret resource i
 
 ### Final gate labels
 
-Choose only after reviewer inspection:
+For each gate, select exactly one state: **VERIFIED**, **PARTIAL**, **NOT TESTED**, or **BLOCKED**. Keep the current default until evidence supports changing it, and record the evidence or blocker beside each label.
 
 - Environment isolation: **BLOCKED**
 - Real staging authentication and authorization: **BLOCKED**
