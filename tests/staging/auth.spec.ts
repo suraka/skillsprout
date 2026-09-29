@@ -1,0 +1,85 @@
+import { expect, test } from 'playwright/test';
+import { loadStagingConfig } from '../../scripts/staging-test-config.mjs';
+
+const staging = loadStagingConfig(process.env);
+
+async function signIn(page: import('playwright/test').Page) {
+  await page.getByRole('button', { name: 'Parent sign in' }).click();
+  await page.getByLabel('Email').fill(staging.parentAEmail);
+  await page.getByLabel('Password').fill(staging.parentAPassword);
+  await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Sign out' })).toBeVisible();
+}
+
+test('staging runtime config matches allowlist', async ({ page }) => {
+  await page.goto('/');
+  const response = await page.request.get('/api/config');
+
+  expect(response.ok()).toBeTruthy();
+  const runtimeConfig = await response.json() as {
+    apiUrl?: unknown;
+    firebaseApiKey?: unknown;
+  };
+  expect(runtimeConfig.apiUrl).toBe(staging.apiOrigin);
+  expect(typeof runtimeConfig.firebaseApiKey).toBe('string');
+  expect((runtimeConfig.firebaseApiKey as string).length).toBeGreaterThan(0);
+});
+
+test('guardian signs in and loads account', async ({ page }) => {
+  await page.goto('/');
+  await signIn(page);
+  await expect(page.getByRole('button', { name: 'Sign out' })).toBeVisible();
+});
+
+test('invalid credentials stay signed out', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Parent sign in' }).click();
+  await page.getByLabel('Email').fill(`invalid-${Date.now()}@example.test`);
+  await page.getByLabel('Password').fill('not-a-valid-parent-password');
+  await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+
+  await expect(page.getByRole('alert')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Sign out' })).toHaveCount(0);
+});
+
+test('token refresh succeeds before API request', async ({ page }) => {
+  let refreshRequests = 0;
+  await page.route('https://securetoken.googleapis.com/**', async route => {
+    refreshRequests += 1;
+    await route.continue();
+  });
+  await page.clock.install();
+  await page.goto('/');
+  await signIn(page);
+  await page.clock.fastForward(3_541_000);
+  await page.getByRole('link', { name: 'For parents', exact: true }).click();
+
+  await expect.poll(() => refreshRequests).toBeGreaterThan(0);
+  await expect(page.getByRole('button', { name: 'Sign out' })).toBeVisible();
+});
+
+test('refresh rejection clears private state', async ({ page }) => {
+  await page.route('https://securetoken.googleapis.com/**', async route => {
+    await route.abort('failed');
+  });
+  await page.clock.install();
+  await page.goto('/');
+  await signIn(page);
+  await page.clock.fastForward(3_541_000);
+  await page.getByRole('link', { name: 'For parents', exact: true }).click();
+
+  await expect(page.getByRole('button', { name: 'Sign out' })).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Your family’s next chapter starts here.' })).toBeVisible();
+});
+
+test('logout and reload clear family state', async ({ page }) => {
+  await page.goto('/');
+  await signIn(page);
+  await page.getByRole('button', { name: 'Sign out' }).click();
+  await page.reload();
+
+  await expect(page.getByRole('button', { name: 'Parent sign in' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Sign out' })).toHaveCount(0);
+  await page.getByRole('link', { name: 'For parents', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Your family’s next chapter starts here.' })).toBeVisible();
+});
