@@ -196,3 +196,8 @@ Provider rollback controls, previous production deployment IDs, available backup
 - [ ] Inspect backup schedule/retention and record the newest successful backup ID.
 - [ ] Restore a backup to isolated PostgreSQL and validate schema/catalog without touching live data.
 - [ ] Confirm provider-specific code rollback while retaining the database and learner writes.
+
+## Agent workflow and release navigation
+
+- [Agent operating model](development/agent-operating-model.md): controller, session roles, repository ownership, review flow, and authorization.
+- [Release gates](development/release-gates.md): evidence needed for staging, auth, migrations, backups, recovery, provenance, and rollback.
