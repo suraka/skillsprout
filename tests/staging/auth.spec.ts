@@ -72,6 +72,22 @@ test('token refresh succeeds before API request', async ({ page }) => {
   await expect.poll(() => refreshRequests).toBeGreaterThan(0);
 });
 
+test('ordinary API failures preserve private state', async ({ page }) => {
+  await page.goto('/');
+  await page.route('**/api/v1/courses', async (route) => {
+    await route.fulfill({
+      status: 503,
+      contentType: 'application/json',
+      body: JSON.stringify({ detail: 'Temporary service interruption' }),
+    });
+  });
+
+  await signInAndLoadAccount(page);
+
+  await expect(page.getByRole('button', { name: 'Sign out' })).toBeVisible();
+  await expect(page.getByRole('alert')).toBeVisible();
+});
+
 test('refresh rejection clears private state', async ({ page }) => {
   await expireTokenAfterAuthenticatedMe(page);
   await page.route('https://securetoken.googleapis.com/**', async (route) => {
