@@ -53,6 +53,7 @@ Frontend feature branch `codex/staging-auth-browser`:
 - Create `tests/staging/auth.spec.ts`: browser tests for sign-in, runtime config, refresh, refresh failure, logout/reload, and private-screen behavior.
 - Modify `package.json`: add pinned dev dependency `@playwright/test@1.62.0` and `test:staging-config` / `test:staging` scripts.
 - Modify `pnpm-lock.yaml`: regenerate with the repository's pinned pnpm version.
+- Modify `.github/workflows/ci.yml`: run only the local `test:staging-config` guard tests; do not add staging credentials or the remote `test:staging` suite.
 
 Documentation feature branch `codex/staging-auth-recovery-runbook`:
 
@@ -92,12 +93,13 @@ Documentation feature branch `codex/staging-auth-recovery-runbook`:
 - Create: `suraka/skillsprout/tests/staging/auth.spec.ts`
 - Modify: `suraka/skillsprout/package.json`
 - Modify: `suraka/skillsprout/pnpm-lock.yaml`
+- Modify: `suraka/skillsprout/.github/workflows/ci.yml`
 
 **Interfaces:**
 - Add pinned `@playwright/test@1.62.0` as a dev dependency and regenerate `pnpm-lock.yaml` with pnpm `11.25.0`.
 - `loadStagingConfig(env)` in the JavaScript module, documented with JSDoc as taking `NodeJS.ProcessEnv` and returning `StagingTestConfig`, requires `STAGING_FRONTEND_URL`, `STAGING_API_ORIGIN`, `STAGING_EXPECTED_API_ORIGIN`, `STAGING_FIREBASE_WEB_API_KEY`, `STAGING_PARENT_A_EMAIL`, and `STAGING_PARENT_A_PASSWORD`; it rejects non-HTTPS origins, URL credentials/path/query/fragment where an origin is expected, missing credentials, and any API-origin mismatch before sign-in.
 - `playwright.staging.config.ts` uses the returned `baseURL`, contains no `webServer`, and fails with a clear configuration error if the staging settings are missing.
-- `pnpm test:staging-config` runs only local config-unit tests. `pnpm test:staging` runs the remote suite and is not added to the ordinary PR workflow.
+- `pnpm test:staging-config` runs only local config-unit tests and is added to the ordinary PR workflow without secrets. `pnpm test:staging` runs the remote suite and is not added to the ordinary PR workflow.
 
 - [ ] **Step 1: Write config guard tests.** Add tests for missing values, non-HTTPS frontend URL, path/query in an origin, and error output that never includes the supplied password.
 - [ ] **Step 2: Run the config tests and confirm they fail before implementation.** Run: `node --test tests/staging/config.test.mjs`. Expected: failures for the missing `loadStagingConfig` function.
