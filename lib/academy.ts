@@ -6,6 +6,8 @@ export type Enrollment={id:string;student_id:string;course_id:string;status:stri
 export const sampleCourses=sample as Course[];
 export type Config={apiUrl:string;firebaseApiKey:string};
 export class TokenRefreshRejectedError extends Error{constructor(){super('Please sign in again.');this.name='TokenRefreshRejectedError';}}
+let tokenRefreshRejectedHandler:undefined|(()=>void);
+export function setTokenRefreshRejectedHandler(handler:()=>void){tokenRefreshRejectedHandler=handler;return()=>{if(tokenRefreshRejectedHandler===handler)tokenRefreshRejectedHandler=undefined;};}
 let token='',refreshToken='',expiresAt=0;
 export function signOut(){token='';refreshToken='';expiresAt=0;}
 export async function signIn(config:Config,email:string,password:string,signup:boolean){
@@ -13,6 +15,6 @@ export async function signIn(config:Config,email:string,password:string,signup:b
  const d=await r.json() as {error?:{message?:string};idToken:string;refreshToken:string;expiresIn:string}; if(!r.ok)throw Error(d.error?.message==='EMAIL_EXISTS'?'An account with this email already exists.':'Could not sign in. Check your email and password.');token=d.idToken;refreshToken=d.refreshToken;expiresAt=Date.now()+Number(d.expiresIn)*1000;
 }
 export async function request<T>(config:Config,path:string,options:RequestInit={}):Promise<T>{
- if(token&&Date.now()>expiresAt-60000){const r=await fetch(`https://securetoken.googleapis.com/v1/token?key=${encodeURIComponent(config.firebaseApiKey)}`,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({grant_type:'refresh_token',refresh_token:refreshToken})});const d=await r.json() as {id_token:string;refresh_token:string;expires_in:string};if(!r.ok){signOut();throw new TokenRefreshRejectedError();}token=d.id_token;refreshToken=d.refresh_token;expiresAt=Date.now()+Number(d.expires_in)*1000;}
+ if(token&&Date.now()>expiresAt-60000){const r=await fetch(`https://securetoken.googleapis.com/v1/token?key=${encodeURIComponent(config.firebaseApiKey)}`,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams({grant_type:'refresh_token',refresh_token:refreshToken})});const d=await r.json() as {id_token:string;refresh_token:string;expires_in:string};if(!r.ok){signOut();tokenRefreshRejectedHandler?.();throw new TokenRefreshRejectedError();}token=d.id_token;refreshToken=d.refresh_token;expiresAt=Date.now()+Number(d.expires_in)*1000;}
  const r=await fetch(`${config.apiUrl}/api/v1${path}`,{...options,headers:{'Content-Type':'application/json',...(token?{Authorization:`Bearer ${token}`} :{}),...options.headers}});const d=await r.json() as T & {detail?:unknown};if(!r.ok)throw Error(typeof d.detail==='string'?d.detail:'We could not save that. Please check your entries.');return d;
 }
