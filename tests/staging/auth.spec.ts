@@ -38,10 +38,10 @@ async function expireTokenAfterAccountLoad(page: Page) {
   });
 }
 
-test('staging runtime config matches allowlist', async ({ page }) => {
-  await page.goto('/');
-  const response = await page.request.get('/api/config');
-
+async function assertStagingRuntimeConfig(page: Page) {
+  const configUrl = new URL('/api/config', staging.baseURL).toString();
+  const response = await page.request.get(configUrl, { maxRedirects: 0 });
+  expect(response.url()).toBe(configUrl);
   expect(response.ok()).toBeTruthy();
   const runtimeConfig = await response.json() as {
     apiUrl?: unknown;
@@ -49,6 +49,14 @@ test('staging runtime config matches allowlist', async ({ page }) => {
   };
   expect(runtimeConfig.apiUrl).toBe(staging.apiOrigin);
   expect(runtimeConfig.firebaseApiKey).toBe(staging.firebaseWebApiKey);
+}
+
+test.beforeEach(async ({ page }) => {
+  await assertStagingRuntimeConfig(page);
+});
+
+test('staging runtime config matches allowlist', async ({ page }) => {
+  await assertStagingRuntimeConfig(page);
 });
 
 test('guardian signs in and loads account', async ({ page }) => {
@@ -147,6 +155,36 @@ test('later refresh rejection clears family state before learner write', async (
       status: 400,
       contentType: 'application/json',
       body: JSON.stringify({ error: { message: 'TOKEN_EXPIRED' } }),
+    });
+  });
+  await expireTokenAfterAccountLoad(page);
+
+  await page.getByRole('button', { name: 'Add a learner' }).click();
+  await page.getByLabel('First name or nickname').fill('Staging learner');
+  await page.getByRole('button', { name: 'Add learner', exact: true }).click();
+
+  await expect(page.getByRole('alert')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Sign out' })).toHaveCount(0);
+  await page.getByRole('button', { name: 'Close' }).click();
+  await expect(page.getByRole('heading', { name: 'Your family’s next chapter starts here.' })).toBeVisible();
+  expect(learnerWrites).toBe(0);
+});
+
+test('non-JSON refresh failure clears family state before learner write', async ({ page }) => {
+  await page.goto('/parents');
+  await signInAndLoadAccount(page);
+  await expect(page.getByRole('button', { name: 'Add a learner' })).toBeVisible();
+
+  let learnerWrites = 0;
+  await page.route('**/api/v1/students', async (route) => {
+    if (route.request().method() === 'POST') learnerWrites += 1;
+    await route.continue();
+  });
+  await page.route('https://securetoken.googleapis.com/**', async (route) => {
+    await route.fulfill({
+      status: 503,
+      contentType: 'text/plain',
+      body: 'Service unavailable',
     });
   });
   await expireTokenAfterAccountLoad(page);
