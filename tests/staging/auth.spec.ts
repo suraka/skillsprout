@@ -30,6 +30,13 @@ async function expireTokenAfterAuthenticatedMe(page: Page) {
   });
 }
 
+async function expireTokenAfterAccountLoad(page: Page) {
+  await page.evaluate(() => {
+    const currentTime = Date.now.bind(Date);
+    Date.now = () => currentTime() + 3_541_000;
+  });
+}
+
 test('staging runtime config matches allowlist', async ({ page }) => {
   await page.goto('/');
   const response = await page.request.get('/api/config');
@@ -91,7 +98,11 @@ test('ordinary API failures preserve private state', async ({ page }) => {
 test('refresh rejection clears private state', async ({ page }) => {
   await expireTokenAfterAuthenticatedMe(page);
   await page.route('https://securetoken.googleapis.com/**', async (route) => {
-    await route.abort('failed');
+    await route.fulfill({
+      status: 400,
+      contentType: 'application/json',
+      body: JSON.stringify({ error: { message: 'TOKEN_EXPIRED' } }),
+    });
   });
   await page.goto('/');
   const meResponse = page.waitForResponse((response) => (
@@ -103,6 +114,35 @@ test('refresh rejection clears private state', async ({ page }) => {
   await expect(page.getByRole('alert')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Sign out' })).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Parent sign in' })).toBeVisible();
+});
+
+test('later refresh rejection clears family state before learner write', async ({ page }) => {
+  await page.goto('/parents');
+  await signInAndLoadAccount(page);
+  await expect(page.getByRole('button', { name: 'Add a learner' })).toBeVisible();
+
+  let learnerWrites = 0;
+  await page.route('**/api/v1/students', async (route) => {
+    if (route.request().method() === 'POST') learnerWrites += 1;
+    await route.continue();
+  });
+  await page.route('https://securetoken.googleapis.com/**', async (route) => {
+    await route.fulfill({
+      status: 400,
+      contentType: 'application/json',
+      body: JSON.stringify({ error: { message: 'TOKEN_EXPIRED' } }),
+    });
+  });
+  await expireTokenAfterAccountLoad(page);
+
+  await page.getByRole('button', { name: 'Add a learner' }).click();
+  await page.getByLabel('First name or nickname').fill('Staging learner');
+  await page.getByRole('button', { name: 'Add learner', exact: true }).click();
+
+  await expect(page.getByRole('alert')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Sign out' })).toHaveCount(0);
+  await expect(page.getByRole('heading', { name: 'Your family’s next chapter starts here.' })).toBeVisible();
+  expect(learnerWrites).toBe(0);
 });
 
 test('logout and reload clear family state', async ({ page }) => {
