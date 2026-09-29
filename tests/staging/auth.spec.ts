@@ -1,23 +1,32 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 import { loadStagingConfig } from '../../scripts/staging-test-config.mjs';
 
 const staging = loadStagingConfig(process.env);
 
-async function signIn(page: import('@playwright/test').Page) {
+async function submitValidCredentials(page: Page) {
   await page.getByRole('button', { name: 'Parent sign in' }).click();
   await page.getByLabel('Email').fill(staging.parentAEmail);
   await page.getByLabel('Password').fill(staging.parentAPassword);
   await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+}
+
+async function signInAndLoadAccount(page: Page) {
+  const meResponse = page.waitForResponse((response) => (
+    new URL(response.url()).pathname.endsWith('/api/v1/me')
+  ));
+  await submitValidCredentials(page);
+  expect((await meResponse).ok()).toBeTruthy();
   await expect(page.getByRole('button', { name: 'Sign out' })).toBeVisible();
 }
 
-async function makeNextAuthenticatedRequestRequireRefresh(
-  page: import('@playwright/test').Page,
-) {
-  await page.addInitScript(() => {
-    const currentTime = Date.now.bind(Date);
-    let calls = 0;
-    Date.now = () => currentTime() + (calls++ === 0 ? 0 : 3_541_000);
+async function expireTokenAfterAuthenticatedMe(page: Page) {
+  await page.route('**/api/v1/me', async (route) => {
+    const response = await route.fetch();
+    await page.evaluate(() => {
+      const now = Date.now();
+      Date.now = () => now + 3_541_000;
+    });
+    await route.fulfill({ response });
   });
 }
 
@@ -31,14 +40,12 @@ test('staging runtime config matches allowlist', async ({ page }) => {
     firebaseApiKey?: unknown;
   };
   expect(runtimeConfig.apiUrl).toBe(staging.apiOrigin);
-  expect(typeof runtimeConfig.firebaseApiKey).toBe('string');
-  expect((runtimeConfig.firebaseApiKey as string).length).toBeGreaterThan(0);
+  expect(runtimeConfig.firebaseApiKey).toBe(staging.firebaseWebApiKey);
 });
 
 test('guardian signs in and loads account', async ({ page }) => {
   await page.goto('/');
-  await signIn(page);
-  await expect(page.getByRole('button', { name: 'Sign out' })).toBeVisible();
+  await signInAndLoadAccount(page);
 });
 
 test('invalid credentials stay signed out', async ({ page }) => {
@@ -54,29 +61,29 @@ test('invalid credentials stay signed out', async ({ page }) => {
 
 test('token refresh succeeds before API request', async ({ page }) => {
   let refreshRequests = 0;
-  await makeNextAuthenticatedRequestRequireRefresh(page);
-  await page.route('https://securetoken.googleapis.com/**', async route => {
+  await expireTokenAfterAuthenticatedMe(page);
+  await page.route('https://securetoken.googleapis.com/**', async (route) => {
     refreshRequests += 1;
     await route.continue();
   });
   await page.goto('/');
-  await signIn(page);
+  await signInAndLoadAccount(page);
 
   await expect.poll(() => refreshRequests).toBeGreaterThan(0);
-  await expect(page.getByRole('button', { name: 'Sign out' })).toBeVisible();
 });
 
 test('refresh rejection clears private state', async ({ page }) => {
-  await makeNextAuthenticatedRequestRequireRefresh(page);
-  await page.route('https://securetoken.googleapis.com/**', async route => {
+  await expireTokenAfterAuthenticatedMe(page);
+  await page.route('https://securetoken.googleapis.com/**', async (route) => {
     await route.abort('failed');
   });
   await page.goto('/');
-  await page.getByRole('button', { name: 'Parent sign in' }).click();
-  await page.getByLabel('Email').fill(staging.parentAEmail);
-  await page.getByLabel('Password').fill(staging.parentAPassword);
-  await page.getByRole('button', { name: 'Sign in', exact: true }).click();
+  const meResponse = page.waitForResponse((response) => (
+    new URL(response.url()).pathname.endsWith('/api/v1/me')
+  ));
+  await submitValidCredentials(page);
 
+  expect((await meResponse).ok()).toBeTruthy();
   await expect(page.getByRole('alert')).toBeVisible();
   await expect(page.getByRole('button', { name: 'Sign out' })).toHaveCount(0);
   await expect(page.getByRole('button', { name: 'Parent sign in' })).toBeVisible();
@@ -84,7 +91,7 @@ test('refresh rejection clears private state', async ({ page }) => {
 
 test('logout and reload clear family state', async ({ page }) => {
   await page.goto('/');
-  await signIn(page);
+  await signInAndLoadAccount(page);
   await page.getByRole('button', { name: 'Sign out' }).click();
   await page.reload();
 

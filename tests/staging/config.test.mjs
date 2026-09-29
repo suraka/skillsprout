@@ -5,6 +5,7 @@ import { loadStagingConfig } from '../../scripts/staging-test-config.mjs';
 const password = 'synthetic-parent-password';
 const validEnv = Object.freeze({
   STAGING_FRONTEND_URL: 'https://staging.skillsprout.example',
+  STAGING_EXPECTED_FRONTEND_ORIGIN: 'https://staging.skillsprout.example',
   STAGING_API_ORIGIN: 'https://api.staging.skillsprout.example',
   STAGING_EXPECTED_API_ORIGIN: 'https://api.staging.skillsprout.example',
   STAGING_FIREBASE_WEB_API_KEY: 'public-staging-api-key',
@@ -25,11 +26,13 @@ function errorFrom(callback) {
   assert.fail('Expected configuration validation to throw');
 }
 
-test('accepts an exact HTTPS staging target', () => {
-  const config = loadStagingConfig(environment());
+test('accepts matching normalized HTTPS staging origins', () => {
+  const config = loadStagingConfig(environment({
+    STAGING_FRONTEND_URL: 'https://staging.skillsprout.example/',
+  }));
 
   assert.deepEqual(config, {
-    baseURL: validEnv.STAGING_FRONTEND_URL,
+    baseURL: validEnv.STAGING_EXPECTED_FRONTEND_ORIGIN,
     apiOrigin: validEnv.STAGING_API_ORIGIN,
     firebaseWebApiKey: validEnv.STAGING_FIREBASE_WEB_API_KEY,
     parentAEmail: validEnv.STAGING_PARENT_A_EMAIL,
@@ -80,6 +83,15 @@ test('rejects credentials and URL components that are not origins', () => {
       /STAGING_FRONTEND_URL must be an HTTPS origin/,
     );
   }
+});
+
+test('rejects frontend origin mismatches, including a production-looking target', () => {
+  assert.throws(
+    () => loadStagingConfig(environment({
+      STAGING_EXPECTED_FRONTEND_ORIGIN: 'https://production.skillsprout.example',
+    })),
+    /STAGING_FRONTEND_URL must exactly match STAGING_EXPECTED_FRONTEND_ORIGIN/,
+  );
 });
 
 test('rejects API origin mismatches, including a production-looking target', () => {
