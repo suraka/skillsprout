@@ -69,7 +69,7 @@
 - Modify: components/skillsprout/provider.tsx only if shared API client needs typed methods
 
 **Interfaces:**
-- Consumes: GET /api/v1/admin/summary, /users, /users/{user_id}, /users/{user_id}/learning-history, /subscriptions from companion backend plans.
+- Consumes: GET /api/v1/admin/summary, GET /api/v1/admin/users, GET /api/v1/admin/users/{user_id}, GET /api/v1/admin/users/{user_id}/learning-history, GET /api/v1/admin/subscriptions from companion backend plans.
 - Produces: paginated Users and Subscriptions lists, per-account learning history, and safe settings page.
 
 - [ ] Render users and linked learner profile names/age bands/status only; use server pagination and search.
