@@ -1,7 +1,7 @@
 'use client';
 import {usePathname} from 'next/navigation';
 import React,{createContext,useContext,useEffect,useState} from 'react';
-import {Config,Course,Student,Enrollment,sampleCourses,request,signIn,signOut} from '@/lib/academy';
+import {Config,Course,Student,Enrollment,sampleCourses,request,signIn,signOut,setTokenRefreshRejectedHandler} from '@/lib/academy';
 type User={display_name:string;role:string};
 type State={config:Config|null;ready:boolean;demo:boolean;courses:Course[];students:Student[];enrollments:Enrollment[];user:User|null;error:string;setError:(s:string)=>void;login:(email:string,pw:string,signup:boolean)=>Promise<void>;logout:()=>void;addStudent:(name:string,age:string)=>Promise<void>;enroll:(student:string,course:string)=>Promise<Enrollment>;refresh:()=>Promise<void>;completed:Record<string,string[]>;complete:(e:Enrollment,l:string)=>Promise<void>;progress:(e:Enrollment)=>Promise<string[]>};
 let previewId=0;
@@ -17,6 +17,7 @@ function ConnectedAcademyProvider({children}:{children:React.ReactNode}){
  const [config,setConfig]=useState<Config|null>(null),[ready,setReady]=useState(false),[courses,setCourses]=useState<Course[]>([]),[students,setStudents]=useState<Student[]>([]),[enrollments,setEnrollments]=useState<Enrollment[]>([]),[user,setUser]=useState<User|null>(null),[error,setError]=useState(''),[completed,setCompleted]=useState<Record<string,string[]>>({});
  const demo=ready&&config!==null&&!config.apiUrl;
  useEffect(()=>{fetch('/api/config').then(r=>{if(!r.ok)throw Error('Configuration unavailable');return r.json() as Promise<Config>;}).then(async(c:Config)=>{setConfig(c);if(c.apiUrl){setCourses(await request<Course[]>(c,'/courses'));}else{setCourses(sampleCourses);setStudents([{id:'sample-learner',first_name:'Alex',age_band:'8-10'}]);}setReady(true);}).catch(()=>{setError('We could not connect. Please reload to try again.');setReady(true);});},[]);
+ useEffect(()=>setTokenRefreshRejectedHandler(logout),[]);
  async function refresh(){if(!config?.apiUrl)return;setCourses(await request<Course[]>(config,'/courses'));const s=await request<Student[]>(config,'/students');setStudents(s);const es=await Promise.all(s.map(x=>request<Enrollment[]>(config,`/students/${x.id}/enrollments`)));setEnrollments(es.flat());}
  async function login(email:string,pw:string,signup:boolean){if(!config?.apiUrl||!config.firebaseApiKey)throw Error('Parent accounts are not connected yet. You can explore the sample lessons.');await signIn(config,email,pw,signup);setUser(await request<User>(config,'/me'));await refresh();}
  function logout(){signOut();setUser(null);setStudents([]);setEnrollments([]);setCompleted({});}
