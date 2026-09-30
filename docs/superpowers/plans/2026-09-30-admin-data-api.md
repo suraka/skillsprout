@@ -74,6 +74,6 @@
 
 **Files:** None unless concrete failures require a change.
 
-- [ ] Run uv run pytest and uv run ruff check ..
+- [ ] Run uv run pytest and uv run ruff check .
 - [ ] Confirm parent/student/course/progress APIs and schema are unchanged.
 - [ ] Record results and commit on an isolated backend feature branch; do not deploy or merge.
