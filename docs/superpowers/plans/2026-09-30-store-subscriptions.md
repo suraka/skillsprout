@@ -84,7 +84,7 @@
 - [ ] Show only approved offers; never fabricate amounts or status.
 - [ ] Ensure active entitlements grant configured access; canceled/expired subscriptions end access as configured.
 - [ ] Keep Store browsing available without billing setup but disable checkout with clear availability.
-- [ ] Ensure admin subscription views read persisted status but never return payment credentials.
+- [ ] Add admin-only GET /api/v1/admin/subscriptions with bounded pagination, returning plan/status/period/cancellation fields only; test non-admin denial and ensure no payment credentials are returned.
 
 ### Task 5: Verify isolated billing behavior
 
