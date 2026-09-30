@@ -13,7 +13,7 @@
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "db:generate": "drizzle-kit generate",
     "test:staging-config": "node --test tests/staging/config.test.mjs",
-    "test:staging": "playwright test --config=playwright.staging.config.ts"
+    "test:staging": "playwright test --config=playwright.staging.config.ts",
     "test:runtime": "tsc -p tsconfig.runtime-tests.json && node --test tests/sorting-garden.test.mjs && tsc -p tsconfig.rainbow-tests.json && node --test tests/rainbow-habitat.test.mjs && tsc -p tsconfig.literacy-tests.json && node --test tests/literacy-foundation.test.mjs && tsc -p tsconfig.math-tests.json && node --test tests/number-garden.test.mjs",
     "test:browser": "playwright test"
   },
