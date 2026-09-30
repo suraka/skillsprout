@@ -1,0 +1,1320 @@
+'use client';
+
+import { useState, useSyncExternalStore } from 'react';
+import Link from 'next/link';
+import {
+  amountAnswerIsCorrect,
+  changeAmount,
+  compareAnswerIsCorrect,
+  countAnswerIsCorrect,
+  countIsComplete,
+  equalShareAnswerIsCorrect,
+  equalFractionAnswerIsCorrect,
+  decimalTenthsAnswerIsCorrect,
+  isValidDecomposition,
+  markSeedCounted,
+  multiplicationAnswerIsCorrect,
+  placeValueAnswerIsCorrect,
+  percentOfEqualPartsAnswerIsCorrect,
+  fartherRightFractionAnswerIsCorrect,
+  shapeSidesAnswerIsCorrect,
+  longerScreenMeasureAnswerIsCorrect,
+  solidWithoutFlatFacesAnswerIsCorrect,
+  unitCubeVolumeAnswerIsCorrect,
+  wholeHourAnswerIsCorrect,
+  heavierBalanceSideAnswerIsCorrect,
+  pretendTokenAmountAnswerIsCorrect,
+  pretendTokenPurseWithMorePointsAnswerIsCorrect,
+  mostSproutsBedAnswerIsCorrect,
+  nextAlternatingShapeAnswerIsCorrect,
+  alternatingShapeRuleAnswerIsCorrect,
+  usMoneyValueAnswerIsCorrect,
+  usMoneyTotalAnswerIsCorrect,
+  unitCubeVolumeComparisonAnswerIsCorrect,
+  quarterTurnDirectionAnswerIsCorrect,
+  rectanglePerimeterAnswerIsCorrect,
+  modelRulerLengthAnswerIsCorrect,
+  elapsedWholeHoursAnswerIsCorrect,
+  equalUnitMassAnswerIsCorrect,
+  moreLikelyOutcomeAnswerIsCorrect,
+  equivalentRatioAnswerIsCorrect,
+  additionFunctionOutputAnswerIsCorrect,
+  additionFunctionRuleAnswerIsCorrect,
+  sproutChartAnswerIsCorrect,
+  sproutClaimAnswerIsCorrect,
+  nextNumberAfterIsCorrect,
+  seedSet,
+  zeroAnswerIsCorrect,
+} from '@/lib/math/number-garden';
+import './number-garden.css';
+
+const subscribe = () => () => {};
+const clientReady = () => true;
+const serverReady = () => false;
+
+function Seeds({ count, label }: { count: number; label: string }) {
+  return <div className="ng-seeds" role="img" aria-label={`${label}: ${count} seeds`}>
+    {Array.from({ length: count }, (_, index) => <span className={`ng-seed ng-seed-${index % 3}`} key={index} aria-hidden="true">✿</span>)}
+  </div>;
+}
+
+function NumeralChoices({ onChoose, disabled = false, values = [2, 3, 4, 5] }: { onChoose: (value: number) => void; disabled?: boolean; values?: number[] }) {
+  return <div className="ng-numerals" role="group" aria-label="Choose a number">
+    {values.map((value) => <button type="button" className="ng-numeral" disabled={disabled} key={value} onClick={() => onChoose(value)} aria-label={`${value} seeds`}>
+      <span aria-hidden="true">{value}</span><small>{value === 1 ? 'seed' : 'seeds'}</small>
+    </button>)}
+  </div>;
+}
+
+function FractionChoices({ onChoose }: { onChoose: (answer: string) => void }) {
+  return <div className="ng-split-choices" role="group" aria-label="Choose the fraction">
+    {['1/4', '1/2', '3/4'].map((value) => <button type="button" className="ng-button ng-split-choice" key={value} onClick={() => onChoose(value)}>{value}</button>)}
+  </div>;
+}
+
+function TextChoices({ label, choices, onChoose, disabled = false }: { label: string; choices: string[]; onChoose: (answer: string) => void; disabled?: boolean }) {
+  return <div className="ng-split-choices" role="group" aria-label={label}>
+    {choices.map((choice) => <button type="button" className="ng-button ng-split-choice" key={choice} disabled={disabled} onClick={() => onChoose(choice)}>{choice}</button>)}
+  </div>;
+}
+
+function PercentChoices({ onChoose, disabled = false }: { onChoose: (answer: number) => void; disabled?: boolean }) {
+  return <div className="ng-numerals" role="group" aria-label="Choose the percent">
+    {[20, 50, 80].map((value) => <button type="button" className="ng-numeral" disabled={disabled} key={value} onClick={() => onChoose(value)}>
+      <span>{value}%</span>
+    </button>)}
+  </div>;
+}
+
+function FractionCompareChoices({ onChoose }: { onChoose: (answer: string) => void }) {
+  return <div className="ng-split-choices" role="group" aria-label="Choose the fraction farther right">
+    {['1/4', '3/4'].map((value) => <button type="button" className="ng-button ng-split-choice" key={value} onClick={() => onChoose(value)}>{value}</button>)}
+  </div>;
+}
+
+function ShapeChoices({ onChoose, disabled = false }: { onChoose: (answer: string) => void; disabled?: boolean }) {
+  return <div className="ng-shape-choices" role="group" aria-label="Choose the shape with three straight sides">
+    {(['triangle', 'square', 'circle'] as const).map((shape) => <button type="button" className="ng-shape-choice" key={shape} disabled={disabled} onClick={() => onChoose(shape)} aria-label={shape[0].toUpperCase() + shape.slice(1)}>
+      <svg viewBox="0 0 80 80" aria-hidden="true" focusable="false">
+        {shape === 'triangle' && <polygon points="40,9 72,68 8,68"/>}
+        {shape === 'square' && <rect x="12" y="12" width="56" height="56"/>}
+        {shape === 'circle' && <circle cx="40" cy="40" r="28"/>}
+      </svg>
+      <span>{shape[0].toUpperCase() + shape.slice(1)}</span>
+    </button>)}
+  </div>;
+}
+
+function SolidChoices({ onChoose, disabled = false }: { onChoose: (answer: string) => void; disabled?: boolean }) {
+  return <div className="ng-shape-choices" role="group" aria-label="Choose the solid with no flat faces">
+    {(['cube', 'sphere', 'cylinder'] as const).map((solid) => <button type="button" className="ng-shape-choice" key={solid} disabled={disabled} onClick={() => onChoose(solid)} aria-label={solid[0].toUpperCase() + solid.slice(1)}>
+      <svg viewBox="0 0 80 80" aria-hidden="true" focusable="false">
+        {solid === 'cube' && <><polygon points="40,8 68,24 40,40 12,24"/><polygon points="12,24 40,40 40,70 12,54"/><polygon points="40,40 68,24 68,54 40,70"/></>}
+        {solid === 'sphere' && <circle cx="40" cy="40" r="29"/>}
+        {solid === 'cylinder' && <><path d="M14 20 C14 8 66 8 66 20 L66 60 C66 72 14 72 14 60 Z"/><ellipse cx="40" cy="20" rx="26" ry="11"/><path d="M14 60 C14 72 66 72 66 60" fill="none"/></>}
+      </svg>
+      <span>{solid[0].toUpperCase() + solid.slice(1)}</span>
+    </button>)}
+  </div>;
+}
+
+function UnitCubeLayers() {
+  return <div className="ng-cube-layers" role="img" aria-label="A box with two layers of unit cubes, four cubes in each layer">
+    {[1, 2].map((layer) => <div className="ng-cube-layer" key={layer}>
+      <strong>Layer {layer}</strong>
+      <div>{Array.from({ length: 4 }, (_, index) => <svg viewBox="0 0 48 48" key={index} aria-hidden="true"><polygon points="24,3 44,14 24,25 4,14"/><polygon points="4,14 24,25 24,46 4,35"/><polygon points="24,25 44,14 44,35 24,46"/></svg>)}</div>
+    </div>)}
+  </div>;
+}
+
+function ScreenMeasureBar({ units, label }: { units: number; label: string }) {
+  return <div className="ng-measure-bar" role="img" aria-label={`${label}: ${units} equal screen units`}>
+    {Array.from({ length: units }, (_, index) => <span key={index} aria-hidden="true"/>)}
+  </div>;
+}
+
+function MeasureChoices({ onChoose, disabled = false }: { onChoose: (answer: 'left' | 'right') => void; disabled?: boolean }) {
+  return <div className="ng-compare-grid" role="group" aria-label="Choose the strip with more screen units">
+    <button type="button" className="ng-measure-choice" disabled={disabled} onClick={() => onChoose('left')} aria-label="Three screen units"><ScreenMeasureBar units={3} label="First strip"/><strong>First strip</strong></button>
+    <button type="button" className="ng-measure-choice" disabled={disabled} onClick={() => onChoose('right')} aria-label="Five screen units"><ScreenMeasureBar units={5} label="Second strip"/><strong>Second strip</strong></button>
+  </div>;
+}
+
+function UnitCubeChoices({ onChoose, disabled = false }: { onChoose: (answer: number) => void; disabled?: boolean }) {
+  return <div className="ng-numerals" role="group" aria-label="Choose the number of unit cubes">
+    {[6, 8, 10, 12].map((value) => <button type="button" className="ng-numeral" disabled={disabled} key={value} onClick={() => onChoose(value)} aria-label={`${value} unit cubes`}>
+      <span>{value}</span><small>unit cubes</small>
+    </button>)}
+  </div>;
+}
+
+function ClockFace() {
+  return <svg className="ng-clock-face" viewBox="0 0 160 160" role="img" aria-label="Clock showing three o’clock">
+    <circle cx="80" cy="80" r="68" />
+    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((hour) => {
+      const angle = (hour * 30 - 90) * Math.PI / 180;
+      return <text key={hour} x={80 + Math.cos(angle) * 51} y={80 + Math.sin(angle) * 51 + 6} textAnchor="middle">{hour}</text>;
+    })}
+    <line x1="80" y1="80" x2="80" y2="28" className="ng-clock-minute" />
+    <line x1="80" y1="80" x2="125" y2="80" className="ng-clock-hour" />
+    <circle cx="80" cy="80" r="4" className="ng-clock-pin" />
+  </svg>;
+}
+
+function TimeChoices({ onChoose, disabled = false }: { onChoose: (hour: number) => void; disabled?: boolean }) {
+  return <div className="ng-numerals" role="group" aria-label="Choose the time shown">
+    {[2, 3, 6].map((hour) => <button type="button" className="ng-numeral" disabled={disabled} key={hour} onClick={() => onChoose(hour)} aria-label={`${hour} o’clock`}>
+      <span>{hour}:00</span><small>o’clock</small>
+    </button>)}
+  </div>;
+}
+
+function BalanceModel() {
+  return <svg className="ng-balance-model" viewBox="0 0 200 150" role="img" aria-label="Balance model: the left pan is lower and holds three identical unit weights; the right pan holds two">
+    <path d="M100 25 L100 113 L72 143 L128 143 Z" className="ng-balance-support" />
+    <line x1="35" y1="82" x2="165" y2="52" className="ng-balance-beam" />
+    <line x1="38" y1="82" x2="38" y2="112" className="ng-balance-string" />
+    <line x1="162" y1="53" x2="162" y2="83" className="ng-balance-string" />
+    <path d="M13 112 Q38 132 63 112" className="ng-balance-pan" />
+    <path d="M137 83 Q162 103 187 83" className="ng-balance-pan" />
+    {[0, 1, 2].map((index) => <rect key={`left-${index}`} x={22 + index * 11} y="94" width="9" height="13" rx="2" className="ng-balance-weight" />)}
+    {[0, 1].map((index) => <rect key={`right-${index}`} x={150 + index * 11} y="65" width="9" height="13" rx="2" className="ng-balance-weight" />)}
+  </svg>;
+}
+
+const sampleSproutData = [
+  { bed: 'Bean bed', sprouts: 4 },
+  { bed: 'Sunflower bed', sprouts: 2 },
+  { bed: 'Basil bed', sprouts: 3 },
+] as const;
+
+function SproutDataTable() {
+  return <table className="ng-data-table" aria-label="Made-up number of sprouts in three pretend garden beds">
+    <caption>Made-up practice data · sprouts in pretend beds</caption>
+    <thead><tr><th scope="col">Pretend bed</th><th scope="col">Sprouts</th></tr></thead>
+    <tbody>{sampleSproutData.map(({ bed, sprouts }) => <tr key={bed}><th scope="row">{bed}</th><td>{sprouts}</td></tr>)}</tbody>
+  </table>;
+}
+
+function UsMoneyValueChoices({ onChoose, disabled = false }: { onChoose: (valueCents: number) => void; disabled?: boolean }) {
+  const choices = [
+    { value: 100, label: '100 cents' },
+    { value: 50, label: '50 cents' },
+    { value: 25, label: '25 cents' },
+  ];
+  return <div className="ng-split-choices" role="group" aria-label="Choose the value in cents">
+    {choices.map(({ value, label }) => <button type="button" className="ng-button ng-split-choice" key={value} disabled={disabled} onClick={() => onChoose(value)}>{label}</button>)}
+  </div>;
+}
+
+function UsMoneyTotalChoices({ onChoose, disabled = false }: { onChoose: (valueCents: number) => void; disabled?: boolean }) {
+  return <div className="ng-split-choices" role="group" aria-label="Choose the total amount">
+    {[150, 105, 125].map((value) => <button type="button" className="ng-button ng-split-choice" key={value} disabled={disabled} onClick={() => onChoose(value)}>{`$${(value / 100).toFixed(2)}`}</button>)}
+  </div>;
+}
+
+function UsMoneyDisplay({ money, label }: { money: readonly { value: string; spokenValue: string; kind: 'bill' | 'coin' }[]; label: string }) {
+  return <ul className="ng-coin-row" aria-label={label}>
+    {money.map(({ value, spokenValue, kind }, index) => <li className="ng-coin" key={`${value}-${index}`} aria-label={`${spokenValue} ${kind}`}>
+      <strong>{value}</strong><span>{kind}</span>
+    </li>)}
+  </ul>;
+}
+
+function UnitCubeBoxComparison() {
+  return <div className="ng-box-comparison">
+    {[{ name: 'First box', layers: 1 }, { name: 'Second box', layers: 2 }].map(({ name, layers }) => <figure className="ng-box-model" key={name}>
+      <figcaption>{name}: 2 × 2 × {layers}</figcaption>
+      {Array.from({ length: layers }, (_, layer) => <div className="ng-box-layer" key={layer} aria-label={`Layer ${layer + 1}`}>
+        {Array.from({ length: 4 }, (_, cube) => <span key={cube} aria-hidden="true">■</span>)}
+      </div>)}
+      <strong>{layers * 4} unit cubes</strong>
+    </figure>)}
+  </div>;
+}
+
+function SproutChartBuilder({ onSubmit, disabled = false }: { onSubmit: (values: readonly (number | null)[]) => void; disabled?: boolean }) {
+  const [values, setValues] = useState<(number | null)[]>([null, null, null]);
+  return <div className="ng-chart-builder">
+    <div className="ng-chart-rows" aria-label="Set the sprouts bar for each bed">
+      {sampleSproutData.map(({ bed }, index) => <fieldset className="ng-chart-row" key={bed}>
+        <legend>{bed}: choose the number of sprouts</legend>
+        <div className="ng-chart-values" role="group" aria-label={`${bed} sprouts`}>
+          {[0, 1, 2, 3, 4, 5].map((value) => <button type="button" className="ng-chart-value" key={value} disabled={disabled} aria-pressed={values[index] === value} onClick={() => setValues((current) => current.map((item, itemIndex) => itemIndex === index ? value : item))}>{value}</button>)}
+        </div>
+        <div className="ng-chart-bar-track" role="img" aria-label={`${bed}: ${values[index] ?? 'no value selected'} sprouts`}>
+          <span style={{ width: `${((values[index] ?? 0) / 5) * 100}%` }} />
+        </div>
+      </fieldset>)}
+    </div>
+    <button type="button" className="ng-button primary" disabled={disabled || values.some((value) => value === null)} onClick={() => onSubmit(values)}>Check my chart</button>
+  </div>;
+}
+
+function TokenPurseModel({ values, label }: { values: number[]; label: string }) {
+  return <div className="ng-token-purse" role="img" aria-label={label}>
+    {values.map((value, index) => <span className="ng-token" key={`${value}-${index}`}>{value} {value === 1 ? 'point' : 'points'}</span>)}
+  </div>;
+}
+
+function TokenPurseChoices({ onChoose, disabled = false }: { onChoose: (answer: 'left' | 'right') => void; disabled?: boolean }) {
+  return <div className="ng-compare-grid" role="group" aria-label="Choose the purse with more pretend points">
+    <button type="button" className="ng-measure-choice" disabled={disabled} onClick={() => onChoose('left')} aria-label="First purse, 3 pretend points">
+      <TokenPurseModel values={[2, 1]} label="First pretend purse: one token worth 2 points and one token worth 1 point, 3 points total"/><strong>First purse</strong>
+    </button>
+    <button type="button" className="ng-measure-choice" disabled={disabled} onClick={() => onChoose('right')} aria-label="Second purse, 2 pretend points">
+      <TokenPurseModel values={[1, 1]} label="Second pretend purse: two tokens worth 1 point each, 2 points total"/><strong>Second purse</strong>
+    </button>
+  </div>;
+}
+
+function BalanceChoices({ onChoose, disabled = false }: { onChoose: (side: 'left' | 'right') => void; disabled?: boolean }) {
+  return <div className="ng-split-choices" role="group" aria-label="Choose the heavier balance pan">
+    {(['left', 'right'] as const).map((side) => <button type="button" className="ng-button ng-split-choice" key={side} disabled={disabled} onClick={() => onChoose(side)}>{side === 'left' ? 'Left pan' : 'Right pan'}</button>)}
+  </div>;
+}
+
+export function NumberGarden() {
+  // Keep the server-rendered start control inert until React has attached its
+  // event handlers. This prevents an early tap from being lost during hydration.
+  const ready = useSyncExternalStore(subscribe, clientReady, serverReady);
+  const [step, setStep] = useState(0);
+  const [counted, setCounted] = useState<string[]>([]);
+  const [added, setAdded] = useState(false);
+  const [removed, setRemoved] = useState(false);
+  const [paused, setPaused] = useState(false);
+  const [feedback, setFeedback] = useState('Choose a small garden challenge when you are ready.');
+
+  function home() {
+    setStep(0);
+    setCounted([]);
+    setAdded(false);
+    setRemoved(false);
+    setPaused(false);
+    setFeedback('Choose a small garden challenge when you are ready.');
+  }
+
+  function chooseSeed(seedId: string) {
+    if (paused) return;
+    if (counted.includes(seedId)) {
+      setFeedback('You already counted that seed. Find one you have not tapped yet.');
+      return;
+    }
+    const next = markSeedCounted(counted, seedId);
+    setCounted(next);
+    setFeedback(countIsComplete(next)
+      ? 'You touched each seed once. Now choose the number that tells how many.'
+      : 'Nice careful counting. Keep looking for a seed that has not been counted.');
+  }
+
+  function chooseCount(value: number) {
+    if (paused) return;
+    if (!countIsComplete(counted)) {
+      setFeedback('Tap each seed once before choosing how many there are.');
+      return;
+    }
+    if (!countAnswerIsCorrect(value)) {
+      setFeedback('That number does not match this group yet. Count each seed once and try again.');
+      return;
+    }
+    setStep(2);
+    setFeedback('You counted the group. Next, notice what zero means.');
+  }
+
+  function chooseGroup(side: 'left' | 'right') {
+    if (paused) return;
+    if (!compareAnswerIsCorrect(side)) {
+      setFeedback('Take another look. You can count the seeds in each group, one at a time.');
+      return;
+    }
+    setStep(8);
+    setFeedback('You completed the three number lessons. Optional garden changes are next.');
+  }
+
+  function chooseChange(value: number, expected: number, label: string) {
+    if (paused) return;
+    if (!amountAnswerIsCorrect(value, expected)) {
+      setFeedback(`That number is not the amount after we ${label} yet. Count the visible seeds and try again.`);
+      return;
+    }
+    if (step === 5) {
+      setStep(6);
+      setFeedback('You counted after adding one. Now see what happens when one is taken away.');
+    } else {
+      setStep(7);
+      setFeedback('You counted the seeds after one was taken away. This was practice in this visit.');
+    }
+  }
+
+  function addOne() {
+    if (paused || added) return;
+    try {
+      changeAmount(2, 1);
+      setAdded(true);
+      setFeedback('One seed joined the two. Choose how many seeds are here now.');
+    } catch {
+      setFeedback('Please try the garden again.');
+    }
+  }
+
+  function takeOne() {
+    if (paused || removed) return;
+    try {
+      changeAmount(4, -1);
+      setRemoved(true);
+      setFeedback('One seed left the four. Choose how many seeds remain.');
+    } catch {
+      setFeedback('Please try the garden again.');
+    }
+  }
+
+  return <div className="number-garden">
+    <header className="ng-header">
+      <Link className="ng-brand" href="/" aria-label="SkillSprout home">SkillSprout <span>· Number Garden</span></Link>
+      <a className="ng-grownup" href="#ng-grownup-note">For grown-ups</a>
+    </header>
+    <main className="ng-main">
+        <p className="ng-kicker">EARLY MATHEMATICS · DRAFT · REVIEW STATUS IN NOTES</p>
+      <h1>Number Garden</h1>
+        <p className="ng-intro">Count a group, notice zero and number order, then compare two small groups. Optional previews explore operations, geometry, measurement, data, and patterns.</p>
+      <aside className="ng-review" aria-label="Draft content review status">
+        <strong>Draft preview</strong>
+        <p>The user reports reviewing Number Garden prompts through version 17, plus source material for further MATH-05 lessons. Version 20 uses U.S. dollars and cents; geometry, measurement, and MATH-06 reasoning remain draft practice. A grown-up can read every prompt aloud. This visit does not measure lasting math ability.</p>
+      </aside>
+
+      {step === 0 && <section className="ng-panel" aria-labelledby="ng-start-title">
+        <p className="ng-step">THREE SHORT NUMBER LESSONS · OPTIONAL GARDEN CHANGES</p>
+        <h2 id="ng-start-title">Count, notice zero, and compare groups.</h2>
+        <ol className="ng-lessons">
+          <li><span>1</span><div><strong>Count a group</strong><small>Tap each illustrated seed once and choose how many.</small></div></li>
+          <li><span>2</span><div><strong>Notice zero and number order</strong><small>Match an empty garden to zero; find what comes after three.</small></div></li>
+          <li><span>3</span><div><strong>Compare groups</strong><small>Look closely or count together to find which has more.</small></div></li>
+        </ol>
+        <p className="ng-recap"><strong>Optional practice · MATH-02 operations</strong><br/>Bring groups together, split a group in different ways, add one, and take one away.</p>
+        <p className="ng-recap"><strong>Optional preview · MATH-03 groups and sharing</strong><br/>Explore equal groups, rows, and fair sharing. This new preview is still draft content.</p>
+        <p className="ng-recap"><strong>Optional preview · MATH-04 place value and fractions</strong><br/>Build a two-digit number from tens and ones, then read a fraction made from equal parts. This new preview is still draft content.</p>
+        <p className="ng-recap"><strong>Optional preview · MATH-04 tenths and percent</strong><br/>Connect five tenths, 0.5, and 50% using the same ten-part bar. This new preview is still draft content.</p>
+        <p className="ng-recap"><strong>Optional preview · MATH-04 fractions on a number line</strong><br/>Compare one quarter and three quarters using their positions from zero to one.</p>
+        <p className="ng-recap"><strong>Optional preview · MATH-05 shapes and measurement</strong><br/>Find a three-sided shape and compare two strips using equal on-screen units. The display is a learning model, not a real ruler.</p>
+        <p className="ng-recap"><strong>Optional preview · MATH-05 solids and volume</strong><br/>Recognize a sphere and count unit cubes across two layers.</p>
+        <p className="ng-recap"><strong>Optional preview · MATH-05 telling time</strong><br/>Read a clock when the minute hand points to 12. The user reports reviewing this prompt.</p>
+        <p className="ng-recap"><strong>Optional preview · MATH-05 comparing mass</strong><br/>Compare identical unit weights on a balance; the user reports reviewing this prompt.</p>
+        <p className="ng-recap"><strong>U.S. money example · MATH-05</strong><br/>Match a $1 bill to 100 cents, then add a quarter (25 cents) to one dollar. No cash handling or purchase is involved.</p>
+        <p className="ng-recap"><strong>Further preview · MATH-05 volume</strong><br/>Compare two boxes made from drawn unit cubes. The drawings are models, not physical measurements.</p>
+        <p className="ng-recap"><strong>New preview · MATH-05 pretend tokens</strong><br/>Add make-believe token values; the user reports reviewing this prompt. These are not real money or local currency.</p>
+        <p className="ng-recap"><strong>Preview · MATH-05 comparing pretend points</strong><br/>Compare two make-believe purses with token points; the user reports reviewing this prompt. It does not use real currency.</p>
+        <p className="ng-recap"><strong>Draft preview · MATH-06 data detective</strong><br/>Read a small made-up table and find which pretend garden bed has the most sprouts; the user reports reviewing this prompt.</p>
+        <p className="ng-recap"><strong>New draft · MATH-06 shape pattern</strong><br/>Use a repeating circle-and-triangle pattern to choose what comes next; the user reports reviewing this prompt.</p>
+        <p className="ng-recap"><strong>Draft sequence · MATH-06 data and patterns</strong><br/>Build a chart from the made-up table, check a claim against it, then describe the repeating shape rule.</p>
+        <p className="ng-recap"><strong>Draft preview · MATH-05 geometry and measurement</strong><br/>Turn an arrow, find a rectangle&apos;s perimeter, read a drawn inch ruler, compare whole-hour duration, and measure mass using equal model units.</p>
+        <p className="ng-recap"><strong>Older-learner drafts · MATH-06 reasoning</strong><br/>Compare which made-up outcome is more likely, find an equivalent ratio, and identify an add-three function rule.</p>
+        <div className="ng-actions">
+          <button className="ng-button primary" disabled={!ready} onClick={() => { setStep(1); setFeedback('Tap each seed once, then choose how many there are.'); }}>Begin Number Garden</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(11); setFeedback('MATH-03 draft preview: look at the equal groups.'); }}>Explore equal groups and sharing</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(15); setFeedback('MATH-04 draft preview: look at the tens and ones.'); }}>Explore tens and fractions</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(18); setFeedback('MATH-04 draft preview: count the shaded tenths.'); }}>Explore tenths and percent</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(21); setFeedback('MATH-04 draft preview: compare the fraction positions.'); }}>Explore fractions on a number line</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(23); setFeedback('MATH-05 draft preview: look for a shape with three straight sides.'); }}>Explore shapes and screen units</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(26); setFeedback('MATH-05 draft preview: look for the solid with no flat faces.'); }}>Explore solids and volume</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(29); setFeedback('MATH-05 time draft: look at both clock hands.'); }}>Explore telling time</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(31); setFeedback('MATH-05 mass preview: compare the identical unit weights.'); }}>Explore comparing mass</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(41); setFeedback('MATH-05 U.S. money example: match the dollar value to cents. No cash is needed.'); }}>Explore U.S. dollars and cents</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(44); setFeedback('MATH-05 volume preview: compare the unit-cube boxes.'); }}>Compare unit-cube volume</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(33); setFeedback('MATH-05 pretend-token preview: add the point values.'); }}>Explore pretend tokens</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(35); setFeedback('MATH-05 preview: compare the points in both pretend purses.'); }}>Compare pretend purses</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(37); setFeedback('MATH-06 draft: read the made-up sprout data.'); }}>Explore MATH-06 data and patterns</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(39); setFeedback('MATH-06 draft: notice how the two shapes repeat.'); }}>Explore shape pattern</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(52); setFeedback('MATH-05 geometry: picture the arrow turning clockwise.'); }}>Explore shape turns and perimeter</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(56); setFeedback('MATH-05 measurement: read the model ruler from its marks.'); }}>Measure a length on a model ruler</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(58); setFeedback('MATH-05 time: find how many whole hours pass.'); }}>Measure elapsed time</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(60); setFeedback('MATH-05 mass: count the equal units shown on the balance.'); }}>Measure mass in equal units</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(62); setFeedback('MATH-06 chance: compare the counts in this made-up bag.'); }}>Explore chance</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(64); setFeedback('MATH-06 ratio: find an equal ratio.'); }}>Explore equivalent ratios</button>
+          <button className="ng-button" disabled={!ready} onClick={() => { setStep(66); setFeedback('MATH-06 algebra: find the rule in the function table.'); }}>Explore a function rule</button>
+        </div>
+      </section>}
+
+      {step === 1 && <section className="ng-panel" aria-labelledby="ng-count-title">
+        <p className="ng-step">LESSON 1 OF 3 · ONE-TO-ONE COUNTING</p>
+        <h2 id="ng-count-title">Tap each seed once. How many are there?</h2>
+        <p>Each seed stays in the same place. If you tap one twice, it still counts as just one seed.</p>
+        <div className="ng-seed-row" role="group" aria-label="Five seeds to count">
+          {seedSet.map((seed, index) => <button key={seed.id} type="button" className={`ng-seed-button ${counted.includes(seed.id) ? 'counted' : ''}`} aria-pressed={counted.includes(seed.id)} aria-label={counted.includes(seed.id) ? 'Seed counted' : 'Seed not counted'} onClick={() => chooseSeed(seed.id)}>
+            <span aria-hidden="true" className={`ng-seed ng-seed-${index % 3}`}>✿</span>
+          </button>)}
+        </div>
+        <p className="ng-count-help" aria-live="polite">{counted.length} of {seedSet.length} seeds touched once</p>
+        <NumeralChoices onChoose={chooseCount} disabled={paused}/>
+      </section>}
+
+      {step === 2 && <section className="ng-panel" aria-labelledby="ng-zero-title">
+        <p className="ng-step">LESSON 2 OF 3 · ZERO AND QUANTITY</p>
+        <h2 id="ng-zero-title">The garden is empty. How many seeds are here?</h2>
+        <Seeds count={0} label="Empty garden" />
+        <p>An empty group has no seeds. Choose the number that tells us there are none.</p>
+        <NumeralChoices values={[0, 2, 3, 4]} onChoose={(value) => {
+          if (paused) return;
+          if (!zeroAnswerIsCorrect(value)) {
+            setFeedback('Look at the empty garden. Choose the number for no seeds.');
+            return;
+          }
+          setStep(3);
+          setFeedback('That is zero. Now put the numbers in order.');
+        }} disabled={paused} />
+      </section>}
+
+      {step === 3 && <section className="ng-panel" aria-labelledby="ng-order-title">
+        <p className="ng-step">LESSON 2 OF 3 · NUMBER ORDER</p>
+        <h2 id="ng-order-title">Which number comes after three?</h2>
+        <ol className="ng-number-line" aria-label="Numbers in order from zero to five">{[0, 1, 2, 3, 4, 5].map((number) => <li key={number}>{number}</li>)}</ol>
+        <p>Follow the numbers from left to right. Choose the next number after three.</p>
+        <NumeralChoices onChoose={(value) => {
+          if (paused) return;
+          if (!nextNumberAfterIsCorrect(3, value)) {
+            setFeedback('Follow the number path one step after three, then try again.');
+            return;
+          }
+          setStep(4);
+          setFeedback('Four comes after three. Now compare two gardens.');
+        }} disabled={paused} />
+      </section>}
+
+      {step === 4 && <section className="ng-panel" aria-labelledby="ng-compare-title">
+        <p className="ng-step">LESSON 3 OF 3 · COMPARE QUANTITIES</p>
+        <h2 id="ng-compare-title">Which group has more seeds?</h2>
+        <p>A grown-up can read the question aloud. You can also count the visible seeds in each group.</p>
+        <div className="ng-compare-grid">
+          <button className="ng-group" type="button" onClick={() => chooseGroup('left')} aria-label="Choose group of 3 seeds">
+            <Seeds count={3} label="First group"/><span>3 seeds</span>
+          </button>
+          <button className="ng-group" type="button" onClick={() => chooseGroup('right')} aria-label="Choose group of 4 seeds">
+            <Seeds count={4} label="Second group"/><span>4 seeds</span>
+          </button>
+        </div>
+      </section>}
+
+      {step === 8 && <section className="ng-panel" aria-labelledby="ng-path-finish-title">
+        <p className="ng-step">THREE NUMBER LESSONS COMPLETE · NO SCORE SAVED</p>
+        <h2 id="ng-path-finish-title">You counted, noticed zero, and compared groups.</h2>
+        <p>This describes practice in this visit. It is not a score or a measure of lasting math skill.</p>
+        <div className="ng-actions">
+          <button className="ng-button primary" onClick={home}>Finish these number lessons</button>
+          <button className="ng-button" onClick={() => { setStep(9); setFeedback('Optional operations practice: join two small groups.'); }}>Try optional operations practice</button>
+          <button className="ng-button" onClick={() => { setStep(11); setFeedback('MATH-03 draft preview: look at the equal groups.'); }}>Explore equal groups and sharing</button>
+        </div>
+      </section>}
+
+      {step === 9 && <section className="ng-panel" aria-labelledby="ng-compose-title">
+        <p className="ng-step">OPTIONAL PRACTICE · MATH-02 · COMPOSE AMOUNTS</p>
+        <h2 id="ng-compose-title">Two groups join the garden. How many seeds are there altogether?</h2>
+        <div className="ng-operation-groups" role="group" aria-label="Two groups to join">
+          <div className="ng-operation-group"><Seeds count={2} label="First group"/><strong>2 seeds</strong></div>
+          <span aria-hidden="true" className="ng-operation-sign">+</span>
+          <div className="ng-operation-group"><Seeds count={3} label="Second group"/><strong>3 seeds</strong></div>
+        </div>
+        <p>Count both groups together, or count on from two.</p>
+        <NumeralChoices values={[2, 3, 4, 5]} onChoose={(value) => {
+          if (paused) return;
+          if (!amountAnswerIsCorrect(value, 5)) {
+            setFeedback('Count the two groups together and try again.');
+            return;
+          }
+          setStep(10);
+          setFeedback('Five seeds altogether. Now find a way to split five into two groups.');
+        }} disabled={paused} />
+      </section>}
+
+      {step === 10 && <section className="ng-panel" aria-labelledby="ng-decompose-title">
+        <p className="ng-step">OPTIONAL PRACTICE · MATH-02 · DECOMPOSE AMOUNTS</p>
+        <h2 id="ng-decompose-title">Which two groups can make five seeds?</h2>
+        <Seeds count={5} label="Five seeds to split" />
+        <p>There can be more than one way. Choose a pair that makes five altogether.</p>
+        <div className="ng-split-choices" role="group" aria-label="Choose two groups that make five">
+          {[[1, 4], [2, 3], [2, 4]].map(([first, second]) => <button className="ng-button ng-split-choice" key={`${first}-${second}`} onClick={() => {
+            if (paused) return;
+            if (!isValidDecomposition(5, first, second)) {
+              setFeedback('Those groups do not make five yet. Try another pair.');
+              return;
+            }
+            setStep(5);
+            setFeedback('That pair makes five. One amount can be split in different ways. Next, add one seed.');
+          }}>{first} + {second}</button>)}
+        </div>
+      </section>}
+
+      {step === 11 && <section className="ng-panel" aria-labelledby="ng-equal-groups-title">
+        <p className="ng-step">OPTIONAL PREVIEW · MATH-03 · EQUAL GROUPS</p>
+        <h2 id="ng-equal-groups-title">There are three equal groups with two seeds in each. How many seeds altogether?</h2>
+        <div className="ng-equal-groups" role="group" aria-label="Three equal groups of two seeds">
+          {[0, 1, 2].map((group) => <div className="ng-operation-group" key={group}><Seeds count={2} label={`Group ${group + 1}`}/><strong>2 seeds</strong></div>)}
+        </div>
+        <p>You can count every seed, or count two, four, six as you move from group to group.</p>
+        <NumeralChoices values={[4, 5, 6, 7]} onChoose={(value) => {
+          if (paused) return;
+          if (!multiplicationAnswerIsCorrect(value, 3, 2)) {
+            setFeedback('Count the seeds in all three groups and try again.');
+            return;
+          }
+          setStep(12);
+          setFeedback('Three groups of two make six. Now look at six seeds arranged in rows.');
+        }} disabled={paused} />
+      </section>}
+
+      {step === 12 && <section className="ng-panel" aria-labelledby="ng-array-title">
+        <p className="ng-step">OPTIONAL PREVIEW · MATH-03 · ARRAYS</p>
+        <h2 id="ng-array-title">This array has two rows with three seeds in each row. How many seeds altogether?</h2>
+        <div className="ng-array" role="img" aria-label="Array with two rows and three seeds in each row">
+          {Array.from({ length: 6 }, (_, index) => <span className={`ng-seed ng-seed-${index % 3}`} key={index} aria-hidden="true">✿</span>)}
+        </div>
+        <p>Count across each row, or count all the seeds.</p>
+        <NumeralChoices values={[4, 5, 6, 7]} onChoose={(value) => {
+          if (paused) return;
+          if (!multiplicationAnswerIsCorrect(value, 2, 3)) {
+            setFeedback('Count both rows and try again.');
+            return;
+          }
+          setStep(13);
+          setFeedback('The two rows hold six seeds. Now share six fairly between two beds.');
+        }} disabled={paused} />
+      </section>}
+
+      {step === 13 && <section className="ng-panel" aria-labelledby="ng-sharing-title">
+        <p className="ng-step">OPTIONAL PREVIEW · MATH-03 · FAIR SHARING</p>
+        <h2 id="ng-sharing-title">Share six seeds equally between two garden beds. How many seeds go in each bed?</h2>
+        <Seeds count={6} label="Six seeds to share" />
+        <div className="ng-sharing-beds" role="group" aria-label="Two empty garden beds">
+          <div className="ng-sharing-bed" aria-label="First garden bed"><strong>Bed 1</strong></div>
+          <div className="ng-sharing-bed" aria-label="Second garden bed"><strong>Bed 2</strong></div>
+        </div>
+        <p>Imagine placing one seed in each bed, then repeating until all six are shared.</p>
+        <NumeralChoices onChoose={(value) => {
+          if (paused) return;
+          if (!equalShareAnswerIsCorrect(value, 6, 2)) {
+            setFeedback('Share the seeds one at a time between the two beds, then try again.');
+            return;
+          }
+          setStep(14);
+          setFeedback('Each bed gets three seeds when six are shared equally between two beds.');
+        }} disabled={paused} />
+      </section>}
+
+      {step === 14 && <section className="ng-panel" aria-labelledby="ng-math03-finish-title">
+        <p className="ng-step">MATH-03 DRAFT PREVIEW COMPLETE · NO SCORE SAVED</p>
+        <h2 id="ng-math03-finish-title">You explored equal groups, rows, and fair sharing.</h2>
+        <p>This describes practice in this visit. It is not a score or a measure of lasting math skill.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 15 && <section className="ng-panel" aria-labelledby="ng-place-value-title">
+        <p className="ng-step">OPTIONAL PREVIEW · MATH-04 · PLACE VALUE</p>
+        <h2 id="ng-place-value-title">There is 1 ten and 4 ones. What number do they make?</h2>
+        <div className="ng-place-value" role="group" aria-label="One bundle of ten and four single seeds">
+          <div className="ng-ten-bundle" role="img" aria-label="One bundle of ten seeds"><strong>1 ten</strong><span aria-hidden="true">|||||<br/>|||||</span></div>
+          <span className="ng-operation-sign" aria-hidden="true">+</span>
+          <div className="ng-ones" role="img" aria-label="Four single seeds">{Array.from({ length: 4 }, (_, index) => <span key={index} aria-hidden="true">✿</span>)}<strong>4 ones</strong></div>
+        </div>
+        <p>One ten means ten ones. Count ten, then four more.</p>
+        <NumeralChoices values={[13, 14, 15, 24]} onChoose={(value) => {
+          if (paused) return;
+          if (!placeValueAnswerIsCorrect(value, 1, 4)) {
+            setFeedback('A ten is ten ones. Add the four single seeds and try again.');
+            return;
+          }
+          setStep(16);
+          setFeedback('One ten and four ones make fourteen. Now look at four equal parts.');
+        }} disabled={paused} />
+      </section>}
+
+      {step === 16 && <section className="ng-panel" aria-labelledby="ng-fraction-title">
+        <p className="ng-step">OPTIONAL PREVIEW · MATH-04 · FRACTIONS AS EQUAL PARTS</p>
+        <h2 id="ng-fraction-title">Two of these four equal parts are shaded. What fraction is shaded?</h2>
+        <div className="ng-fraction-shape" role="img" aria-label="A shape split into four equal parts, with two parts shaded">
+          {[true, true, false, false].map((shaded, index) => <span className={shaded ? 'shaded' : ''} key={index} aria-hidden="true" />)}
+        </div>
+        <p>The shape is split into four same-size parts. Two parts are shaded.</p>
+        <FractionChoices onChoose={(answer) => {
+          if (paused) return;
+          if (!equalFractionAnswerIsCorrect(answer, 2, 4)) {
+            setFeedback('Count the shaded parts and all the equal parts, then try again.');
+            return;
+          }
+          setStep(17);
+          setFeedback('Two of four equal parts are shaded. This fraction can also be written as one half.');
+        }} />
+      </section>}
+
+      {step === 17 && <section className="ng-panel" aria-labelledby="ng-math04-finish-title">
+        <p className="ng-step">MATH-04 DRAFT PREVIEW COMPLETE · NO SCORE SAVED</p>
+        <h2 id="ng-math04-finish-title">You explored tens, ones, and equal parts.</h2>
+        <p>This describes practice in this visit. It is not a score or a measure of lasting math skill.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 18 && <section className="ng-panel" aria-labelledby="ng-decimal-title">
+        <p className="ng-step">OPTIONAL PREVIEW · MATH-04 · DECIMALS AND TENTHS</p>
+        <h2 id="ng-decimal-title">Five of ten equal parts are shaded. Which decimal shows five tenths?</h2>
+        <div className="ng-tenths-bar" role="img" aria-label="Ten equal parts, with five shaded">
+          {Array.from({ length: 10 }, (_, index) => <span className={index < 5 ? 'shaded' : ''} key={index} aria-hidden="true" />)}
+        </div>
+        <p>Five tenths is one half. On this number line, it is halfway from zero to one.</p>
+        <div className="ng-decimal-line" role="img" aria-label="Number line from zero to one with the midpoint marked zero point five">
+          <span>0</span><i aria-hidden="true"/><strong>0.5</strong><i aria-hidden="true"/><span>1</span>
+        </div>
+        <TextChoices label="Choose the decimal" choices={['0.2', '0.5', '0.8']} onChoose={(answer) => {
+          if (paused) return;
+          if (!decimalTenthsAnswerIsCorrect(answer, 5, 10)) {
+            setFeedback('Count five shaded parts out of ten. Five tenths is halfway from zero to one.');
+            return;
+          }
+          setStep(19);
+          setFeedback('Five tenths is 0.5. Now connect the same amount to percent.');
+        }} />
+      </section>}
+
+      {step === 19 && <section className="ng-panel" aria-labelledby="ng-percent-title">
+        <p className="ng-step">OPTIONAL PREVIEW · MATH-04 · PERCENT</p>
+        <h2 id="ng-percent-title">Five of ten equal parts are shaded. What percent is shaded?</h2>
+        <div className="ng-tenths-bar" role="img" aria-label="Ten equal parts, with five shaded">
+          {Array.from({ length: 10 }, (_, index) => <span className={index < 5 ? 'shaded' : ''} key={index} aria-hidden="true" />)}
+        </div>
+        <p>Five out of ten is one half, or 0.5. A whole bar is 100 percent.</p>
+        <PercentChoices onChoose={(value) => {
+          if (paused) return;
+          if (!percentOfEqualPartsAnswerIsCorrect(value, 5, 10)) {
+            setFeedback('Five of ten equal parts is one half of the bar. Try again.');
+            return;
+          }
+          setStep(20);
+          setFeedback('Five tenths, 0.5, and 50 percent name the same amount.');
+        }} disabled={paused} />
+      </section>}
+
+      {step === 20 && <section className="ng-panel" aria-labelledby="ng-math04-rational-finish-title">
+        <p className="ng-step">MATH-04 DRAFT PREVIEW COMPLETE · NO SCORE SAVED</p>
+        <h2 id="ng-math04-rational-finish-title">You connected equal parts, decimals, and percent.</h2>
+        <p>Five tenths, 0.5, and 50% describe the same amount. This describes practice in this visit, not lasting math skill.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 21 && <section className="ng-panel" aria-labelledby="ng-fraction-line-title">
+        <p className="ng-step">OPTIONAL PREVIEW · MATH-04 · FRACTIONS ON A NUMBER LINE</p>
+        <h2 id="ng-fraction-line-title">Which fraction is farther right: one quarter or three quarters?</h2>
+        <div className="ng-fraction-number-line" role="img" aria-label="Number line from zero to one, marked at one quarter, one half, and three quarters">
+          <div className="ng-fraction-line-track" aria-hidden="true"><i/><i/><i/><i/><i/></div>
+          <div className="ng-fraction-line-labels"><span>0</span><span>1/4</span><span>1/2</span><span>3/4</span><span>1</span></div>
+        </div>
+        <p>Fractions farther to the right name greater amounts on this number line.</p>
+        <FractionCompareChoices onChoose={(answer) => {
+          if (paused) return;
+          if (!fartherRightFractionAnswerIsCorrect(answer, 1, 4, 3, 4)) {
+            setFeedback('Look for the fraction farther along the line from zero, then try again.');
+            return;
+          }
+          setStep(22);
+          setFeedback('Three quarters is farther right than one quarter, so it is the greater amount.');
+        }} />
+      </section>}
+
+      {step === 22 && <section className="ng-panel" aria-labelledby="ng-math04-numberline-finish-title">
+        <p className="ng-step">MATH-04 DRAFT PREVIEW COMPLETE · NO SCORE SAVED</p>
+        <h2 id="ng-math04-numberline-finish-title">You compared fractions on a number line.</h2>
+        <p>This describes practice in this visit. It is not a score or a measure of lasting math skill.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 23 && <section className="ng-panel" aria-labelledby="ng-shape-title">
+        <p className="ng-step">OPTIONAL PREVIEW · MATH-05 · 2D SHAPES</p>
+        <h2 id="ng-shape-title">Which shape has three straight sides?</h2>
+        <ShapeChoices disabled={paused} onChoose={(shape) => {
+          if (paused) return;
+          if (!shapeSidesAnswerIsCorrect(shape, 3)) {
+            setFeedback('Count only the straight sides. Try another shape.');
+            return;
+          }
+          setStep(24);
+          setFeedback('A triangle has three straight sides. Now compare two measured strips.');
+        }} />
+      </section>}
+
+      {step === 24 && <section className="ng-panel" aria-labelledby="ng-measure-title">
+        <p className="ng-step">OPTIONAL PREVIEW · MATH-05 · MEASURING LENGTH</p>
+        <h2 id="ng-measure-title">Which strip is longer when each equal block is one screen unit?</h2>
+        <p>Both strips start at the same place. Count the equal blocks. These are screen units, not real-world measurement units.</p>
+        <MeasureChoices disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          if (!longerScreenMeasureAnswerIsCorrect(answer, 3, 5)) {
+            setFeedback('Count the equal blocks from the shared starting point. Try again.');
+            return;
+          }
+          setStep(25);
+          setFeedback('The second strip covers five screen units, so it is longer than the three-unit strip.');
+        }} />
+      </section>}
+
+      {step === 25 && <section className="ng-panel" aria-labelledby="ng-math05-finish-title">
+        <p className="ng-step">MATH-05 DRAFT PREVIEW COMPLETE · NO SCORE SAVED</p>
+        <h2 id="ng-math05-finish-title">You found a triangle and compared measured lengths.</h2>
+        <p>The strip model uses equal on-screen units. It is not a calibrated real-world measuring tool.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 26 && <section className="ng-panel" aria-labelledby="ng-solid-title">
+        <p className="ng-step">OPTIONAL PREVIEW · MATH-05 · 3D SOLIDS</p>
+        <h2 id="ng-solid-title">Which solid has no flat faces?</h2>
+        <SolidChoices disabled={paused} onChoose={(solid) => {
+          if (paused) return;
+          if (!solidWithoutFlatFacesAnswerIsCorrect(solid)) {
+            setFeedback('Look for the solid with a completely curved surface. Try again.');
+            return;
+          }
+          setStep(27);
+          setFeedback('A sphere has no flat faces. Next, count unit cubes in two layers.');
+        }} />
+      </section>}
+
+      {step === 27 && <section className="ng-panel" aria-labelledby="ng-volume-title">
+        <p className="ng-step">OPTIONAL PREVIEW · MATH-05 · VOLUME WITH UNIT CUBES</p>
+        <h2 id="ng-volume-title">A box has two layers. Each layer has four unit cubes. How many cubes fill the box?</h2>
+        <UnitCubeLayers />
+        <p>Count four cubes in each layer, then count both layers. These are drawn unit cubes, not a real container measurement.</p>
+        <UnitCubeChoices onChoose={(value) => {
+          if (paused) return;
+          if (!unitCubeVolumeAnswerIsCorrect(value, 2, 2, 2)) {
+            setFeedback('There are two layers with four unit cubes in each. Count both layers and try again.');
+            return;
+          }
+          setStep(28);
+          setFeedback('Two layers of four make eight unit cubes altogether.');
+        }} disabled={paused} />
+      </section>}
+
+      {step === 28 && <section className="ng-panel" aria-labelledby="ng-math05-volume-finish-title">
+        <p className="ng-step">MATH-05 DRAFT PREVIEW COMPLETE · NO SCORE SAVED</p>
+        <h2 id="ng-math05-volume-finish-title">You explored a sphere and volume with unit cubes.</h2>
+        <p>The cube drawing is a learning model. Other 3D shapes and measurement topics need more lessons.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 29 && <section className="ng-panel" aria-labelledby="ng-time-title">
+        <p className="ng-step">NEW DRAFT PREVIEW · MATH-05 · TELLING TIME</p>
+        <h2 id="ng-time-title">The garden break starts at the time shown. What time is it?</h2>
+        <ClockFace />
+        <p>The long hand points to 12, so it is an exact hour. Look where the short hand points.</p>
+        <TimeChoices disabled={paused} onChoose={(hour) => {
+          if (paused) return;
+          if (!wholeHourAnswerIsCorrect(hour, 3)) {
+            setFeedback('The long hand points to 12. Read the number where the short hand points, then try again.');
+            return;
+          }
+          setStep(30);
+          setFeedback('The short hand points to 3 and the long hand points to 12, so the clock shows three o’clock.');
+        }} />
+      </section>}
+
+      {step === 30 && <section className="ng-panel" aria-labelledby="ng-math05-time-finish-title">
+        <p className="ng-step">MATH-05 TIME DRAFT PREVIEW · NO SCORE SAVED</p>
+        <h2 id="ng-math05-time-finish-title">You read an exact hour on a clock.</h2>
+        <p>This is one short time-reading example. Other time and measurement topics need separate lessons.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 31 && <section className="ng-panel" aria-labelledby="ng-mass-title">
+        <p className="ng-step">OPTIONAL PREVIEW · MATH-05 · COMPARING MASS</p>
+        <h2 id="ng-mass-title">Each block has the same mass. Which balance pan is heavier?</h2>
+        <BalanceModel />
+        <p>Look at the balance and compare the identical unit weights. The lower pan carries more mass.</p>
+        <BalanceChoices disabled={paused} onChoose={(side) => {
+          if (paused) return;
+          if (!heavierBalanceSideAnswerIsCorrect(side, 3, 2)) {
+            setFeedback('Look for the pan that hangs lower. Try again.');
+            return;
+          }
+          setStep(32);
+          setFeedback('The left pan hangs lower, so its three identical unit weights have more mass than the two on the right.');
+        }} />
+      </section>}
+
+      {step === 32 && <section className="ng-panel" aria-labelledby="ng-math05-mass-finish-title">
+        <p className="ng-step">MATH-05 MASS DRAFT PREVIEW · NO SCORE SAVED</p>
+        <h2 id="ng-math05-mass-finish-title">You compared mass using identical unit weights.</h2>
+        <p>This balance drawing is a learning model, not a calibrated measuring instrument.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 33 && <section className="ng-panel" aria-labelledby="ng-money-title">
+        <p className="ng-step">OPTIONAL PREVIEW · MATH-05 · PRETEND TOKEN VALUES</p>
+        <h2 id="ng-money-title">These are make-believe shop tokens. How many points are in this purse?</h2>
+        <p>Each token shows its point value. Add the two values: 2 points and 1 point.</p>
+        <div className="ng-token-purse" role="img" aria-label="Make-believe purse with one token worth 2 points and one token worth 1 point">
+          <span className="ng-token">2 points</span><span className="ng-token">1 point</span>
+        </div>
+        <p>These learning tokens are not real money, prices, or local currency.</p>
+        <NumeralChoices values={[2, 3, 4, 5]} disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          if (!pretendTokenAmountAnswerIsCorrect(answer, [2, 1])) {
+            setFeedback('Count the points shown on both tokens, then try again.');
+            return;
+          }
+          setStep(34);
+          setFeedback('Two points and one point make three pretend points.');
+        }} />
+      </section>}
+
+      {step === 34 && <section className="ng-panel" aria-labelledby="ng-money-finish-title">
+        <p className="ng-step">MATH-05 PRETEND TOKEN PREVIEW · NO SCORE SAVED</p>
+        <h2 id="ng-money-finish-title">Two points and one point make three pretend points.</h2>
+        <p>This is a make-believe counting example, not a lesson about real prices or currency.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 35 && <section className="ng-panel" aria-labelledby="ng-token-compare-title">
+        <p className="ng-step">NEW DRAFT PREVIEW · MATH-05 · COMPARING PRETEND POINTS</p>
+        <h2 id="ng-token-compare-title">Which pretend purse has more points?</h2>
+        <p>Look at the point values on the tokens. You can count the points together.</p>
+        <TokenPurseChoices disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          if (!pretendTokenPurseWithMorePointsAnswerIsCorrect(answer, [2, 1], [1, 1])) {
+            setFeedback('Count the point values in each purse, then choose the one with more.');
+            return;
+          }
+          setStep(36);
+          setFeedback('The first purse has 3 pretend points. The second has 2. Three is more than two.');
+        }} />
+        <p>These make-believe learning points are not real money, prices, or local currency.</p>
+      </section>}
+
+      {step === 36 && <section className="ng-panel" aria-labelledby="ng-token-compare-finish-title">
+        <p className="ng-step">MATH-05 PRETEND-POINT DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-token-compare-finish-title">The first purse has more pretend points.</h2>
+        <p>Three pretend points are more than two. This example does not teach real prices or currency.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 37 && <section className="ng-panel" aria-labelledby="ng-data-title">
+        <p className="ng-step">NEW DRAFT PREVIEW · MATH-06 · READING A DATA TABLE</p>
+        <h2 id="ng-data-title">Which pretend bed has the most sprouts?</h2>
+        <p>This is a small made-up example. Read the number in each row and compare.</p>
+        <SproutDataTable />
+        <TextChoices label="Choose the pretend bed with the most sprouts" choices={sampleSproutData.map((entry) => entry.bed)} disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          if (!mostSproutsBedAnswerIsCorrect(answer, sampleSproutData)) {
+            setFeedback('Look at the three numbers and choose the largest one. Try again.');
+            return;
+          }
+          setStep(38);
+          setFeedback('Four is the greatest number in this made-up table, so the bean bed has the most sprouts.');
+        }} />
+      </section>}
+
+      {step === 38 && <section className="ng-panel" aria-labelledby="ng-data-finish-title">
+        <p className="ng-step">MATH-06 DATA DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-data-finish-title">The bean bed has the most sprouts in this example.</h2>
+        <p>The table uses made-up practice data. It does not describe a real garden or predict how plants grow.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={() => { setStep(46); setFeedback('Build a bar chart that matches the made-up table.'); }}>Continue to build a chart</button><button className="ng-button" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 39 && <section className="ng-panel" aria-labelledby="ng-pattern-title">
+        <p className="ng-step">NEW DRAFT PREVIEW · MATH-06 · REPEATING SHAPE PATTERN</p>
+        <h2 id="ng-pattern-title">Which shape comes next?</h2>
+        <p>Look at the shapes in order. Notice how the two-shape pattern repeats.</p>
+        <ol className="ng-shape-pattern" aria-label="Pattern sequence: circle, triangle, circle, triangle, circle, then a blank space">
+          {['circle', 'triangle', 'circle', 'triangle', 'circle'].map((shape, index) => <li key={`${shape}-${index}`}>
+            <span className={`ng-pattern-shape ng-pattern-${shape}`} aria-hidden="true">{shape === 'circle' ? '●' : '▲'}</span>
+            <span>{shape === 'circle' ? 'Circle' : 'Triangle'}</span>
+          </li>)}
+          <li><span className="ng-pattern-blank" aria-hidden="true">?</span><span>Next</span></li>
+        </ol>
+        <TextChoices label="Choose the next shape in the repeating pattern" choices={['Circle', 'Triangle', 'Square']} disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          if (!nextAlternatingShapeAnswerIsCorrect(answer.toLowerCase(), ['circle', 'triangle', 'circle', 'triangle', 'circle'])) {
+            setFeedback('The circle and triangle take turns. Which one comes after the last circle?');
+            return;
+          }
+          setStep(40);
+          setFeedback('The shapes take turns: circle, triangle, circle, triangle, circle, then triangle.');
+        }} />
+      </section>}
+
+      {step === 40 && <section className="ng-panel" aria-labelledby="ng-pattern-finish-title">
+        <p className="ng-step">MATH-06 PATTERN DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-pattern-finish-title">Triangle comes next in this repeating pattern.</h2>
+        <p>The two shapes take turns. This is a small pattern example, not a claim about every pattern.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={() => { setStep(50); setFeedback('Choose the rule that describes the whole repeating pattern.'); }}>Continue to choose the rule</button><button className="ng-button" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 41 && <section className="ng-panel" aria-labelledby="ng-us-money-title">
+        <p className="ng-step">MATH-05 · U.S. DOLLAR AND CENTS EXAMPLE</p>
+        <h2 id="ng-us-money-title">A $1 bill is worth how many cents?</h2>
+        <UsMoneyDisplay money={[{ value: '$1', spokenValue: 'one U.S. dollar', kind: 'bill' }]} label="One U.S. one-dollar bill" />
+        <p>One U.S. dollar is 100 cents. Read the bill value, then choose the matching amount in cents.</p>
+        <UsMoneyValueChoices disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          if (!usMoneyValueAnswerIsCorrect(answer, 100)) {
+            setFeedback('One U.S. dollar is 100 cents. Try again.');
+            return;
+          }
+          setStep(42);
+          setFeedback('One U.S. dollar equals 100 cents. Next, add a dollar and a quarter.');
+        }} />
+        <p className="ng-disclaimer">This U.S. money example uses text labels only. No cash is needed and nothing is for sale.</p>
+      </section>}
+
+      {step === 42 && <section className="ng-panel" aria-labelledby="ng-us-money-total-title">
+        <p className="ng-step">MATH-05 · ADDING U.S. MONEY VALUES</p>
+        <h2 id="ng-us-money-total-title">How much are a $1 bill and one 25-cent quarter together?</h2>
+        <UsMoneyDisplay money={[{ value: '$1', spokenValue: 'one U.S. dollar', kind: 'bill' }, { value: '25¢', spokenValue: 'twenty-five cents', kind: 'coin' }]} label="One U.S. one-dollar bill and one 25-cent quarter" />
+        <p>One dollar is 100 cents. Add the quarter&apos;s 25 cents, then choose the total in dollars.</p>
+        <UsMoneyTotalChoices disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          if (!usMoneyTotalAnswerIsCorrect(answer, [100, 25])) {
+            setFeedback('Start with 100 cents, then add 25 cents. Try again.');
+            return;
+          }
+          setStep(43);
+          setFeedback('100 cents plus 25 cents is 125 cents, or $1.25.');
+        }} />
+        <p className="ng-disclaimer">This example uses U.S. dollar values and a U.S. quarter. It does not use exchange rates.</p>
+      </section>}
+
+      {step === 43 && <section className="ng-panel" aria-labelledby="ng-us-money-finish-title">
+        <p className="ng-step">MATH-05 U.S. MONEY DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-us-money-finish-title">You matched a dollar to cents and added a quarter.</h2>
+        <p>One dollar plus 25 cents is $1.25. This is a math example, not shopping advice; no money is needed.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 44 && <section className="ng-panel" aria-labelledby="ng-volume-compare-title">
+        <p className="ng-step">FURTHER PREVIEW · MATH-05 · COMPARING VOLUME</p>
+        <h2 id="ng-volume-compare-title">Which box holds more unit cubes?</h2>
+        <UnitCubeBoxComparison />
+        <p>Each little cube is one equal unit. These drawings help compare the amount of space filled; they are not real containers.</p>
+        <div className="ng-split-choices" role="group" aria-label="Choose the box with more unit cubes">
+          {(['left', 'right'] as const).map((side) => <button key={side} type="button" className="ng-button ng-split-choice" disabled={paused} onClick={() => {
+            if (paused) return;
+            if (!unitCubeVolumeComparisonAnswerIsCorrect(side, [2, 2, 1], [2, 2, 2])) {
+              setFeedback('Count each box: the first has four cubes and the second has eight. Try again.');
+              return;
+            }
+            setStep(45);
+            setFeedback('Eight unit cubes fill more space than four.');
+          }}>{side === 'left' ? 'First box' : 'Second box'}</button>)}
+        </div>
+      </section>}
+
+      {step === 45 && <section className="ng-panel" aria-labelledby="ng-volume-compare-finish-title">
+        <p className="ng-step">MATH-05 VOLUME DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-volume-compare-finish-title">The second box has more unit cubes.</h2>
+        <p>Four cubes compared with eight cubes is a model of volume. It does not measure a real object.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 46 && <section className="ng-panel" aria-labelledby="ng-chart-title">
+        <p className="ng-step">MATH-06 · BUILD A CHART FROM MADE-UP DATA</p>
+        <h2 id="ng-chart-title">Use the table to set a bar for each pretend bed.</h2>
+        <SproutDataTable />
+        <p>Choose the number of sprouts in each row. The bars will show the chart you build.</p>
+        <SproutChartBuilder disabled={paused} onSubmit={(values) => {
+          if (paused) return;
+          if (!sproutChartAnswerIsCorrect(values, sampleSproutData)) {
+            setFeedback('Check each bar against the matching row in the table, then try again.');
+            return;
+          }
+          setStep(47);
+          setFeedback('Each bar now matches its row in the made-up table.');
+        }} />
+        <p className="ng-disclaimer">The counts are invented for this practice activity. They are not measurements of real plants.</p>
+      </section>}
+
+      {step === 47 && <section className="ng-panel" aria-labelledby="ng-chart-finish-title">
+        <p className="ng-step">MATH-06 CHART DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-chart-finish-title">You built a bar chart from the table.</h2>
+        <p>Each bar matches one made-up count. Next, check a claim using the data.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={() => { setStep(48); setFeedback('Compare the sunflower claim with all three table values.'); }}>Continue to check a claim</button><button className="ng-button" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 48 && <section className="ng-panel" aria-labelledby="ng-claim-title">
+        <p className="ng-step">MATH-06 · CHECK A CLAIM AGAINST THE DATA</p>
+        <h2 id="ng-claim-title">Claim: “The sunflower bed has the most sprouts.” Is this supported by the table?</h2>
+        <SproutDataTable />
+        <TextChoices label="Choose whether the data supports the claim" choices={['Supported', 'Not supported']} disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          const choice = answer === 'Supported' ? 'supported' : 'not-supported';
+          if (!sproutClaimAnswerIsCorrect(choice, 'Sunflower bed', sampleSproutData)) {
+            setFeedback('Compare the sunflower count with the other rows. Two is less than four. Try again.');
+            return;
+          }
+          setStep(49);
+          setFeedback('The claim is not supported: the sunflower bed has two, while the bean bed has four.');
+        }} />
+        <p className="ng-disclaimer">This conclusion is only about the invented numbers shown here, not real plants.</p>
+      </section>}
+
+      {step === 49 && <section className="ng-panel" aria-labelledby="ng-claim-finish-title">
+        <p className="ng-step">MATH-06 CLAIM CHECK · NO SCORE SAVED</p>
+        <h2 id="ng-claim-finish-title">You checked the claim against the data.</h2>
+        <p>The table does not support “sunflower has the most” because its count is two and the bean count is four.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={() => { setStep(39); setFeedback('Find what comes next in the made-up shape pattern.'); }}>Continue to the shape pattern</button><button className="ng-button" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 50 && <section className="ng-panel" aria-labelledby="ng-pattern-rule-title">
+        <p className="ng-step">MATH-06 · DESCRIBE A PATTERN RULE</p>
+        <h2 id="ng-pattern-rule-title">Which rule describes circle, triangle, circle, triangle?</h2>
+        <p>Choose a rule that can make the whole repeating sequence.</p>
+        <TextChoices label="Choose the repeating shape rule" choices={['Circle, triangle, repeat', 'Circle, triangle, square, repeat', 'Add one triangle each time']} disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          const rule = answer === 'Circle, triangle, repeat' ? 'first-shape-second-shape-repeat' : answer;
+          if (!alternatingShapeRuleAnswerIsCorrect(rule, ['circle', 'triangle', 'circle', 'triangle', 'circle'])) {
+            setFeedback('Check whether the same two shapes take turns each time. Try again.');
+            return;
+          }
+          setStep(51);
+          setFeedback('The rule is: circle, triangle, then repeat.');
+        }} />
+      </section>}
+
+      {step === 51 && <section className="ng-panel" aria-labelledby="ng-math06-sequence-finish-title">
+        <p className="ng-step">MATH-06 DRAFT SEQUENCE COMPLETE · NO SCORE SAVED</p>
+        <h2 id="ng-math06-sequence-finish-title">You read a table, built a chart, checked a claim, and described a pattern rule.</h2>
+        <p>The examples use invented data and a small repeating shape pattern. This draft does not cover every data, chance, ratio, or algebra outcome in MATH-06.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 52 && <section className="ng-panel" aria-labelledby="ng-turn-title">
+        <p className="ng-step">MATH-05 GEOMETRY · QUARTER TURNS</p>
+        <h2 id="ng-turn-title">An arrow points up. Turn it one quarter-turn clockwise. Which way does it point?</h2>
+        <p className="ng-turn-model" role="img" aria-label="An arrow points up before it turns">↑</p>
+        <TextChoices label="Choose the arrow's new direction" choices={['Up', 'Right', 'Down', 'Left']} disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          if (!quarterTurnDirectionAnswerIsCorrect(answer.toLowerCase(), 'up', 1)) {
+            setFeedback('A clockwise quarter-turn moves to the next direction: up, right, down, left. Try again.');
+            return;
+          }
+          setStep(53);
+          setFeedback('After one clockwise quarter-turn, the arrow points right.');
+        }} />
+      </section>}
+
+      {step === 53 && <section className="ng-panel" aria-labelledby="ng-turn-finish-title">
+        <p className="ng-step">MATH-05 GEOMETRY DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-turn-finish-title">The arrow points right after a quarter-turn clockwise.</h2>
+        <p>A turn changes orientation. The arrow keeps the same shape and size.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={() => { setStep(54); setFeedback('Count the outside unit edges around the rectangle.'); }}>Continue to perimeter</button><button className="ng-button" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 54 && <section className="ng-panel" aria-labelledby="ng-perimeter-title">
+        <p className="ng-step">MATH-05 MEASUREMENT · PERIMETER MODEL</p>
+        <h2 id="ng-perimeter-title">This garden bed is 3 units long and 2 units wide. How many unit edges go around its outside?</h2>
+        <div className="ng-grid-model" role="img" aria-label="A rectangle with two rows and three columns of equal square units">
+          {Array.from({ length: 6 }, (_, i) => <span key={i} aria-hidden="true" />)}
+        </div>
+        <p>Count only the outside edges. Each edge is one equal model unit.</p>
+        <TextChoices label="Choose the perimeter in unit edges" choices={['8 unit edges', '10 unit edges', '12 unit edges']} disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          const n = Number(answer.match(/^\d+/)?.[0]);
+          if (!rectanglePerimeterAnswerIsCorrect(n, 2, 3)) {
+            setFeedback('Follow the outside boundary and count each unit edge once. Try again.');
+            return;
+          }
+          setStep(55);
+          setFeedback('The outside boundary has ten unit edges.');
+        }} />
+      </section>}
+
+      {step === 55 && <section className="ng-panel" aria-labelledby="ng-perimeter-finish-title">
+        <p className="ng-step">MATH-05 MEASUREMENT DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-perimeter-finish-title">The rectangle&apos;s perimeter is 10 unit edges.</h2>
+        <p>Two rows of three squares make a 3-by-2 rectangle. The outside edges total 2 × (3 + 2) = 10.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 56 && <section className="ng-panel" aria-labelledby="ng-ruler-title">
+        <p className="ng-step">MATH-05 MEASUREMENT · U.S. CUSTOMARY MODEL</p>
+        <h2 id="ng-ruler-title">The drawn leaf begins at 1 inch and ends at 5 inches. How long is it?</h2>
+        <svg className="ng-ruler" viewBox="0 0 360 100" role="img" aria-labelledby="ng-ruler-svg-title ng-ruler-svg-desc">
+          <title id="ng-ruler-svg-title">Illustrated ruler and leaf</title>
+          <desc id="ng-ruler-svg-desc">The leaf starts at the one inch mark and ends at the five inch mark. Each interval is one inch.</desc>
+          <path d="M48 54H318" stroke="#526c55" strokeWidth="3" />
+          {Array.from({ length: 7 }, (_, i) => <g key={i}><path d={`M${48 + i * 45} 54v${i % 2 === 0 ? 22 : 14}`} stroke="#526c55" strokeWidth="2" /><text x={48 + i * 45} y="94" textAnchor="middle">{i}</text></g>)}
+          <text x="338" y="94" textAnchor="end">in.</text>
+          <path d="M93 37c32-22 103-22 180 0-77 23-148 23-180 0Z" fill="#8dbb82" stroke="#315842" strokeWidth="2" />
+          <path d="M93 37l180 0" stroke="#315842" strokeWidth="2" />
+        </svg>
+        <p>This is an illustration. The on-screen drawing is not a calibrated ruler; use the labeled marks in this question.</p>
+        <TextChoices label="Choose the leaf length" choices={['3 inches', '4 inches', '5 inches']} disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          const n = Number(answer.match(/^\d+/)?.[0]);
+          if (!modelRulerLengthAnswerIsCorrect(n, 1, 5)) {
+            setFeedback('The object starts after zero, so find the difference between the two marks. Try again.');
+            return;
+          }
+          setStep(57);
+          setFeedback('Five minus one is four, so the drawn leaf is four inches long.');
+        }} />
+      </section>}
+
+      {step === 57 && <section className="ng-panel" aria-labelledby="ng-ruler-finish-title">
+        <p className="ng-step">MATH-05 MEASUREMENT DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-ruler-finish-title">The drawn leaf is 4 inches long.</h2>
+        <p>Read the start and end marks: 5 inches − 1 inch = 4 inches. A real ruler must be used for a real object&apos;s length.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 58 && <section className="ng-panel" aria-labelledby="ng-elapsed-title">
+        <p className="ng-step">MATH-05 MEASUREMENT · WHOLE-HOUR DURATION</p>
+        <h2 id="ng-elapsed-title">Garden time begins at 2 o&apos;clock and ends at 5 o&apos;clock on the same day. How many whole hours pass?</h2>
+        <p>These are example times, not a schedule. Count forward from 2 to 5.</p>
+        <TextChoices label="Choose the elapsed time" choices={['2 hours', '3 hours', '4 hours']} disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          const n = Number(answer.match(/^\d+/)?.[0]);
+          if (!elapsedWholeHoursAnswerIsCorrect(n, 2, 5)) {
+            setFeedback('Count each step: 2 to 3, 3 to 4, and 4 to 5. Try again.');
+            return;
+          }
+          setStep(59);
+          setFeedback('Three whole hours pass from 2 o’clock to 5 o’clock.');
+        }} />
+      </section>}
+
+      {step === 59 && <section className="ng-panel" aria-labelledby="ng-elapsed-finish-title">
+        <p className="ng-step">MATH-05 MEASUREMENT DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-elapsed-finish-title">Three whole hours pass.</h2>
+        <p>This short example stays within one day and uses exact hours; it does not cover minutes or crossing midnight.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 60 && <section className="ng-panel" aria-labelledby="ng-mass-units-title">
+        <p className="ng-step">MATH-05 MEASUREMENT · MASS MODEL</p>
+        <h2 id="ng-mass-units-title">A balance is level when this object is compared with three identical unit weights. What is its mass in those model units?</h2>
+        <div className="ng-mass-model" role="img" aria-label="A level balance with one object on the left and three identical unit weights on the right">
+          <span aria-hidden="true">●</span><span aria-hidden="true">● ● ●</span>
+        </div>
+        <p>This model compares equal units. It does not show grams or measure a real object&apos;s mass.</p>
+        <TextChoices label="Choose the mass in model units" choices={['2 units', '3 units', '4 units']} disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          const n = Number(answer.match(/^\d+/)?.[0]);
+          if (!equalUnitMassAnswerIsCorrect(n, 3)) {
+            setFeedback('Count the identical unit weights on the balanced side. Try again.');
+            return;
+          }
+          setStep(61);
+          setFeedback('The object matches three equal model mass units.');
+        }} />
+      </section>}
+
+      {step === 61 && <section className="ng-panel" aria-labelledby="ng-mass-units-finish-title">
+        <p className="ng-step">MATH-05 MEASUREMENT DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-mass-units-finish-title">The object balances with three equal model units.</h2>
+        <p>A real mass needs a suitable calibrated scale and unit. The picture is only a model.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 62 && <section className="ng-panel" aria-labelledby="ng-chance-title">
+        <p className="ng-step">MATH-06 OLDER-LEARNER PREVIEW · CHANCE</p>
+        <h2 id="ng-chance-title">A made-up bag has 3 leaf tiles and 1 flower tile. If one tile is picked without looking, which kind is more likely?</h2>
+        <p>The counts are shown; no random draw happens. More likely does not mean certain.</p>
+        <div className="ng-chance-model" role="img" aria-label="Three leaf tiles and one flower tile in a pretend bag"><span>Leaf</span><span>Leaf</span><span>Leaf</span><span>Flower</span></div>
+        <TextChoices label="Choose the more likely tile" choices={['Leaf is more likely', 'Flower is more likely', 'They are equally likely']} disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          const choice = answer.startsWith('Leaf') ? 'first-more-likely' : 'second-more-likely';
+          if (answer === 'They are equally likely' || !moreLikelyOutcomeAnswerIsCorrect(choice, 3, 1)) {
+            setFeedback('There are more leaf tiles, so leaf is more likely, but a flower tile could still be picked. Try again.');
+            return;
+          }
+          setStep(63);
+          setFeedback('Leaf is more likely, but it is not guaranteed.');
+        }} />
+      </section>}
+
+      {step === 63 && <section className="ng-panel" aria-labelledby="ng-chance-finish-title">
+        <p className="ng-step">MATH-06 CHANCE DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-chance-finish-title">Leaf is more likely, but not certain.</h2>
+        <p>Three of the four pretend tiles are leaves. This is a small chance comparison, not a prediction about real events.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 64 && <section className="ng-panel" aria-labelledby="ng-ratio-title">
+        <p className="ng-step">MATH-06 OLDER-LEARNER PREVIEW · EQUIVALENT RATIOS</p>
+        <h2 id="ng-ratio-title">Two green seedlings grow beside three purple seedlings. Which pair shows the same green-to-purple ratio after both groups double?</h2>
+        <p>The starting ratio is 2 to 3. Keep the order green first, purple second.</p>
+        <TextChoices label="Choose the equivalent green-to-purple ratio" choices={['4 to 6', '4 to 5', '6 to 4']} disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          const match = /^(\d+) to (\d+)$/.exec(answer);
+          const first = match ? Number(match[1]) : 0;
+          const second = match ? Number(match[2]) : 0;
+          if (!equivalentRatioAnswerIsCorrect(first, second, 2, 3)) {
+            setFeedback('Double both parts and keep green first: 2 to 3 becomes 4 to 6. Try again.');
+            return;
+          }
+          setStep(65);
+          setFeedback('Both parts doubled, so 4 to 6 has the same ratio as 2 to 3.');
+        }} />
+      </section>}
+
+      {step === 65 && <section className="ng-panel" aria-labelledby="ng-ratio-finish-title">
+        <p className="ng-step">MATH-06 RATIO DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-ratio-finish-title">The equivalent ratio is 4 to 6.</h2>
+        <p>Multiplying both parts of 2 to 3 by the same number keeps the relationship equivalent. These are example counts, not growing instructions.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 66 && <section className="ng-panel" aria-labelledby="ng-function-title">
+        <p className="ng-step">MATH-06 OLDER-LEARNER PREVIEW · ALGEBRAIC RULE</p>
+        <h2 id="ng-function-title">A function machine follows one rule for every input. Which rule matches this table?</h2>
+        <table className="ng-function-table"><caption>Example input and output pairs</caption><thead><tr><th scope="col">Input</th><th scope="col">Output</th></tr></thead><tbody><tr><td>2</td><td>5</td></tr><tr><td>4</td><td>7</td></tr><tr><td>6</td><td>9</td></tr></tbody></table>
+        <p>Choose one rule that works for every row.</p>
+        <TextChoices label="Choose the function rule" choices={['Add 2', 'Add 3', 'Multiply by 3']} disabled={paused} onChoose={(answer) => {
+          if (paused) return;
+          const rule = answer === 'Add 3' ? 'add-constant' : answer;
+          if (!additionFunctionRuleAnswerIsCorrect(rule, [2, 4, 6], [5, 7, 9], 3)) {
+            setFeedback('Check every row. The output is three more than its input each time. Try again.');
+            return;
+          }
+          setStep(67);
+          setFeedback('The rule is add three. For input five, the output would be eight.');
+        }} />
+      </section>}
+
+      {step === 67 && <section className="ng-panel" aria-labelledby="ng-function-finish-title">
+        <p className="ng-step">MATH-06 ALGEBRA DRAFT · NO SCORE SAVED</p>
+        <h2 id="ng-function-finish-title">The function rule is “add 3.”</h2>
+        <p>For a new input of 5, the rule gives 5 + 3 = {additionFunctionOutputAnswerIsCorrect(8, 5, 3) ? '8' : '—'}. The same rule fits each pair in the table.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {step === 5 && <section className="ng-panel" aria-labelledby="ng-add-title">
+        <p className="ng-step">OPTIONAL PRACTICE · MATH-02 · ADD ONE</p>
+        <h2 id="ng-add-title">Two seeds are here. Add one more.</h2>
+        <Seeds count={added ? 3 : 2} label="Garden after adding one"/>
+        <div className="ng-actions"><button className="ng-button" disabled={added || paused} onClick={addOne}>Add one seed</button></div>
+        <p>Look at the group, then choose how many seeds are here now.</p>
+        <NumeralChoices onChoose={(value) => chooseChange(value, changeAmount(2, 1), 'added one')} disabled={!added || paused}/>
+      </section>}
+
+      {step === 6 && <section className="ng-panel" aria-labelledby="ng-take-title">
+        <p className="ng-step">OPTIONAL PRACTICE · MATH-02 · TAKE ONE AWAY</p>
+        <h2 id="ng-take-title">Four seeds are here. Take one away.</h2>
+        <Seeds count={removed ? 3 : 4} label="Garden after taking one away"/>
+        <div className="ng-actions"><button className="ng-button" disabled={removed || paused} onClick={takeOne}>Take one seed away</button></div>
+        <p>Look at the group, then choose how many seeds remain.</p>
+        <NumeralChoices onChoose={(value) => chooseChange(value, changeAmount(4, -1), 'took one away')} disabled={!removed || paused}/>
+      </section>}
+
+      {step === 7 && <section className="ng-panel" aria-labelledby="ng-finish-title">
+        <p className="ng-step">OPTIONAL PRACTICE COMPLETE · NO SCORE SAVED</p>
+        <h2 id="ng-finish-title">You explored number groups and changes.</h2>
+        <p>You practiced touching each object once, noticing zero, ordering numbers, comparing groups, joining and splitting amounts, adding one, and taking one away.</p>
+        <Seeds count={3} label="Three seeds in the garden"/>
+        <div className="ng-recap"><strong>Try it away from the screen</strong><p>With a grown-up, count a few safe household objects. Add one, take one away, and talk about what changed.</p></div>
+        <p className="ng-disclaimer">This describes practice in this visit. It is not a score or a measure of lasting math skill.</p>
+        <div className="ng-actions"><button className="ng-button primary" onClick={home}>Finish and clear this visit</button></div>
+      </section>}
+
+      {paused && <section className="ng-panel ng-paused" aria-labelledby="ng-paused-title"><h2 id="ng-paused-title">Paused</h2><p>Take a break. Nothing from this visit is saved.</p><div className="ng-actions"><button className="ng-button primary" onClick={() => setPaused(false)}>Resume</button></div></section>}
+
+      {step > 0 && <><p className="ng-feedback" role="status" aria-live="polite">{feedback}</p><nav className="ng-session-controls" aria-label="Activity controls">{!paused && <button className="ng-button" onClick={() => setPaused(true)}>Pause</button>}<button className="ng-button" onClick={home}>Home</button><button className="ng-button" onClick={home}>Restart</button></nav></>}
+
+      <details className="ng-grownup-note" id="ng-grownup-note"><summary>Grown-up notes and offline idea</summary><p>This draft uses fixed, local examples and offers feedback after wrong answers. Adult read-aloud is optional; no audio is included. The offline idea is optional and should use only safe objects nearby. Version 20 uses U.S. dollars and cents and U.S. customary inches in its illustrated ruler example. No cash handling or purchase is involved. New money wording and rendering still need recorded content review. On-screen units, cubes, clock, and balance are learning models. No score, profile, or progress record is made.</p></details>
+    </main>
+    <footer className="ng-footer">Practice for this visit only · no account · no saved child data</footer>
+  </div>;
+}
