@@ -65,7 +65,7 @@
 - Test: tests/test_billing_api.py
 
 **Interfaces:**
-- Produces: GET /api/v1/billing/plans, POST /checkout-session, POST /customer-portal, POST /webhook. Parent routes use parent_user; webhook verifies raw request body and provider signature.
+- Produces: GET /api/v1/billing/plans, POST /api/v1/billing/checkout-session, POST /api/v1/billing/customer-portal, POST /api/v1/billing/webhook. Parent routes use parent_user; webhook verifies raw request body and provider signature.
 
 - [ ] Add Stripe SDK/config validation and fail closed when secrets, approved price mappings, or return URLs are missing.
 - [ ] Create hosted sessions server-side without storing card data.
