@@ -12,6 +12,7 @@ test('home hero fills the space below the header across device widths', async ({
   ]) {
     await page.setViewportSize(viewport);
     await page.goto('/');
+    await expect(page.getByTestId('hero-scene')).toHaveAttribute('data-motion', 'scroll');
     const layout = await page.evaluate(() => {
       const hero = document.querySelector('.hero');
       const header = document.querySelector('.site-header');
@@ -71,7 +72,7 @@ test('home navigation labels, destinations, icons, and motion work at each viewp
     await page.setViewportSize(viewport);
     await page.goto('/');
     await expect(page.getByTestId('hero-scene')).toHaveAttribute('data-motion', 'scroll');
-    if (viewport.width <= 740) await page.getByRole('button', { name: 'Open menu' }).click();
+    if (viewport.width <= 740) await page.locator('details.mobile-menu > summary').click();
     const nav = page.getByRole('navigation', { name: 'Main navigation' });
     for (const label of ['Home', 'Learn & play', 'Explore topics', 'Parents & teachers', 'Support', 'Join for free', 'Sign in']) {
       await expect(nav.getByRole('link', { name: label })).toHaveCount(label === 'Join for free' || label === 'Sign in' ? 0 : 1);
@@ -119,14 +120,15 @@ test('phone navigation starts collapsed and centers menu items when opened', asy
   for (const width of [360, 390, 430]) {
     await page.setViewportSize({ width, height: 844 });
     await page.goto('/');
-    const toggle = page.getByRole('button', { name: 'Open menu' });
+    const menu = page.locator('details.mobile-menu');
+    const toggle = menu.locator('summary');
     const nav = page.getByRole('navigation', { name: 'Main navigation' });
     await expect(toggle).toBeVisible();
-    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    await expect(menu).not.toHaveAttribute('open', '');
     await expect(nav).toBeHidden();
     await expect(page.getByTestId('hero-scene')).toHaveAttribute('data-motion', 'scroll');
     await toggle.click();
-    await expect(page.getByRole('button', { name: 'Close menu' })).toHaveAttribute('aria-expanded', 'true');
+    await expect(menu).toHaveAttribute('open', '');
     await expect(nav).toBeVisible();
     await expect.poll(() => page.evaluate(() => {
       const hero = document.querySelector('.hero')!.getBoundingClientRect().height;
@@ -160,7 +162,8 @@ test('phone navigation starts collapsed and centers menu items when opened', asy
       expect(item.bounds.x + item.bounds.width).toBeLessThanOrEqual(centered.navBounds.x + centered.navBounds.width + 1);
     }
     expect(centered.scrollWidth).toBeLessThanOrEqual(centered.viewportWidth);
-    await page.getByRole('button', { name: 'Close menu' }).click();
+    await toggle.click();
+    await expect(menu).not.toHaveAttribute('open', '');
     await expect(nav).toBeHidden();
   }
 });
