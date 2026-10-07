@@ -202,3 +202,11 @@ Provider rollback controls, previous production deployment IDs, available backup
 **Status: Implemented; automated Chromium verification passed on the draft PR branch.** The homepage hero fills the first viewport below the measured responsive header. A single original SkillSprout scene travels from the hero into a reserved landing band before the course catalog. Preview links remain visible. Scroll listeners use passive events and animation-frame updates; the scene does not intercept input. Reduced-motion mode keeps the scene static and reports zero scroll progress.
 
 **Verification evidence:** GitHub Actions run [37648362097](https://github.com/suraka/skillsprout/actions/runs/37648362097) passed TypeScript, staging config, runtime tests, 40 Chromium browser tests, and production build. Cloudflare Workers Build check also passed for commit `7918048da37e3ef9d65448cc75111328b5b40ba4`. Browser coverage includes viewport checks at 1440×900, 768×1024, and 360×800; scene travel and reduced-motion checks at 390×844; and horizontal overflow assertions. These are automated Chromium viewport checks, not physical-device or human visual-review evidence. The change is in draft PR #6; no production deployment is claimed.
+
+
+## Homepage navigation and scene follow-up — 7 October 2026
+
+- Implemented in draft PR #7 on `codex/skillsprout-kids-nav-motion`: requested seven primary actions, icons on the first five, accessible active state without an underline, and subtle icon motion with a reduced-motion fallback.
+- Fixed scene stacking so the single carried illustration renders above the trust strip and welcome band; trust copy remains above the illustration.
+- Browser acceptance tests added for the nav labels/icons, join/sign-in dialog state, scene layer order, viewport widths and horizontal overflow. CI/browser execution is pending; do not treat added tests as passed evidence.
+- No deployment or merge performed.

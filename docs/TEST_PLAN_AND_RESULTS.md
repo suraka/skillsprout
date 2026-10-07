@@ -225,3 +225,10 @@ Provider rollback controls, previous production deployment IDs, available backup
 - Cloudflare Workers Build status for the same commit: PASS.
 - Browser scenarios: desktop 1440×900, tablet 768×1024, mobile 360×800; mobile scene motion/reduced-motion at 390×844; no horizontal overflow; the existing home preview links and course navigation remain covered by the full browser suite.
 - Scope: CI runs the app locally under Chromium with viewport emulation. No physical-device or manual visual screenshot review was performed. No production deploy or merge occurred; PR #6 remains draft.
+
+
+## Homepage navigation and scene follow-up — 7 October 2026
+
+- Added Playwright coverage for the requested navigation labels and icons, Join for free and Sign in dialog mode, active underline removal, scene visibility/layer order, and 1440×900, 768×1024, and 360×800 overflow checks.
+- Test execution on the implementation branch is pending. Prior hero-only browser results do not verify these new behaviors.
+- No manual physical-device or screenshot review performed; no production deployment.
