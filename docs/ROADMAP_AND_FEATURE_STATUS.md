@@ -215,3 +215,8 @@ Provider rollback controls, previous production deployment IDs, available backup
 ## Mobile navigation follow-up — 7 October 2026
 
 Implemented in draft PR #8: phone navigation starts collapsed, uses a native disclosure control, centers menu entries, and overlays below the header to keep the hero from shifting. Verification is recorded in `docs/verification/2026-10-07-mobile-navigation.md`; no production deployment.
+
+
+## Mobile menu and homepage hero follow-up — 7 October 2026
+
+Draft PR #9 replaces the menu text with open/close icons, verifies that tapping the X closes it, centers larger navigation entries in one row per item, and removes the four preview links from the hero. Draft course routes remain accessible directly. Verification: `docs/verification/2026-10-07-mobile-navigation.md` and GitHub Actions run 37675511310. No production deployment.
