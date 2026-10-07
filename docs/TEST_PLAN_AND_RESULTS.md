@@ -232,3 +232,10 @@ Provider rollback controls, previous production deployment IDs, available backup
 - Added Playwright coverage for the requested navigation labels and icons, Join for free and Sign in dialog mode, active underline removal, scene visibility/layer order, and 1440×900, 768×1024, and 360×800 overflow checks.
 - Test execution on the implementation branch is pending. Prior hero-only browser results do not verify these new behaviors.
 - No manual physical-device or screenshot review performed; no production deployment.
+
+
+## Mobile navigation follow-up — 7 October 2026
+
+- GitHub Actions [run 37669647960](https://github.com/suraka/skillsprout/actions/runs/37669647960) passed at code commit `e66e89979d7acbf48af4187757fca2ee3c566c30`: TypeScript, staging config, runtime tests, browser suite, and production build.
+- Chromium tested 360px, 390px, and 430px widths. The new test verifies collapsed default, native open/close, centered entries, no horizontal overflow, and hero viewport fill.
+- Automated Chromium only; no physical-device review. No production deployment.
