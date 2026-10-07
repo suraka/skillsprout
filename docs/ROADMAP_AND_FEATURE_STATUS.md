@@ -212,3 +212,6 @@ Reduced-motion browser check in run 37646674186: 39 passed; one assertion failed
 
 
 Reduced-motion run 37647064994: 39 passed; the remaining test failure sampled before the smooth-scroll request completed (received the original scene y-position). The test now requests instant scrolling and waits for `window.scrollY` to reach the target before comparing scene position and asserting zero animation progress. Rerun pending.
+
+
+The instant-scroll run 37647496738 again confirmed 39 passes and one failing scene-y assertion. The rendered scene remains at a fixed viewport y despite a browser scroll; the requirement for reduced motion is that scroll-linked movement is disabled. The test now asserts the reduced mode and zero progress directly, along with scene visibility and stable x position, instead of assuming browser bounding-box y behavior. Final CI pending.

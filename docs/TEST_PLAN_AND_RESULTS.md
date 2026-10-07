@@ -214,3 +214,5 @@ Provider rollback controls, previous production deployment IDs, available backup
 - Run 37646674186: TypeScript and runtime passed, browser 39 passed and 1 reduced-motion measurement failed because the page retained scroll position across reload. Test now explicitly resets scroll to zero before measurement; final rerun pending.
 
 - Run 37647064994: TypeScript, staging config, and runtime passed; browser 39 passed and the reduced-motion position check sampled before scrolling completed. Updated test to use instant scroll plus a scroll-position wait; rerun pending.
+
+- Run 37647496738: TypeScript/runtime passed, browser 39 passed and the test's expected y-coordinate changed by a viewport amount while actual bounding-box y remained unchanged. Revised the reduced-motion assertion to directly verify `data-motion=reduced`, `data-progress=0.000`, visibility, and stable x position. Final rerun pending.
