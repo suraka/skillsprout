@@ -131,8 +131,8 @@ test('phone navigation starts collapsed and centers menu items when opened', asy
     await expect(menu).toHaveAttribute('open', '');
     await expect(nav).toBeVisible();
     await expect(toggle).toHaveText('');
-    await expect(toggle.locator('svg.menu-icon-open')).toBeVisible();
-    await expect(toggle.locator('svg.menu-icon-close')).toBeHidden();
+    await expect(toggle.locator('svg.menu-icon-open')).toBeHidden();
+    await expect(toggle.locator('svg.menu-icon-close')).toBeVisible();
     await expect.poll(() => page.evaluate(() => {
       const hero = document.querySelector('.hero')!.getBoundingClientRect().height;
       const header = document.querySelector('.site-header')!.getBoundingClientRect().height;
