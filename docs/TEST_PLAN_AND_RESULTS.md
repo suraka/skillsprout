@@ -210,3 +210,5 @@ Provider rollback controls, previous production deployment IDs, available backup
 - No final pass claim: after the fix, wait for all browser, typecheck, and build jobs and record exact results here.
 
 - Corrected run 37646254726: TypeScript/runtime passed; browser 39 passed, 1 failed due to a test-side Node `window` reference in the reduced-motion assertion. Fixed in the next commit; rerun pending. The separate Cloudflare Workers build check passed for this branch revision.
+
+- Run 37646674186: TypeScript and runtime passed, browser 39 passed and 1 reduced-motion measurement failed because the page retained scroll position across reload. Test now explicitly resets scroll to zero before measurement; final rerun pending.

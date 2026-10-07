@@ -206,3 +206,6 @@ Latest PR #6 browser run (37645709299): 36 tests passed; 2 existing homepage pre
 
 
 Corrected browser run 37646254726: 39 passed, one new reduced-motion assertion failed because the test referenced `window` from the Node test process. The production motion checks and all prior preview-link tests passed. The assertion now reads the scroll distance in the browser context. A measured header-height update was also added so the viewport-height hero adapts to actual responsive navigation height.
+
+
+Reduced-motion browser check in run 37646674186: 39 passed; one assertion failed because a page reload preserved the prior test's scroll offset. The test now explicitly returns to the top before recording the static position. Product motion and the responsive viewport checks passed. Rerun pending.
