@@ -12,7 +12,7 @@ function Link({
 }: AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }) {
   return <a href={href} {...props} />;
 }
-import {Sprout,ArrowRight,ArrowLeft,Search,Bot,Code2,Palette,ShieldCheck,Sparkles,BookOpen,Clock,Check,Plus,Users,LogOut,Play,GraduationCap,House,Gamepad2,Compass,CircleHelp} from 'lucide-react';
+import {Sprout,ArrowRight,ArrowLeft,Search,Bot,Code2,Palette,ShieldCheck,Sparkles,BookOpen,Clock,Check,Plus,Users,LogOut,Play,GraduationCap,House,Gamepad2,Compass,CircleHelp,Menu,X} from 'lucide-react';
 import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog';
 import {Select,SelectTrigger,SelectValue,SelectContent,SelectItem} from '@/components/ui/select';
 import {Progress} from '@/components/ui/progress';
@@ -23,8 +23,8 @@ const icons={Bot,Code2,Palette,ShieldCheck,Sparkles,BookOpen};
 export function CourseIcon({course}:{course:Course}){const Icon=icons[course.icon as keyof typeof icons]||BookOpen;return <Icon aria-hidden size={35} strokeWidth={1.7}/>;}
 export function Picker({value,onChange,options,label}:{value:string;onChange:(s:string)=>void;options:{value:string;label:string}[];label:string}){return <Select value={value} onValueChange={onChange}><SelectTrigger className="picker" aria-label={label}><SelectValue placeholder={label}/></SelectTrigger><SelectContent>{options.map(o=><SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}</SelectContent></Select>;}
 export function Shell({children,active='Explore'}:{children:React.ReactNode;active?:string}){
- const a=useAcademy();const [auth,setAuth]=useState(false),[signup,setSignup]=useState(false),[email,setEmail]=useState(''),[pw,setPw]=useState(''),[busy,setBusy]=useState(false),[err,setErr]=useState('');
- return <><a className="skip" href="#main">Skip to content</a><header className="site-header"><div className="header-inner"><Link href="/" className="brand" aria-label="SkillSprout home"><span className="brand-mark"><Sprout size={27}/></span>Skill<span>Sprout</span><span className="academy">ACADEMY</span></Link><nav className="main-nav" aria-label="Main navigation">
+ const a=useAcademy();const [menuOpen,setMenuOpen]=useState(false);const [auth,setAuth]=useState(false),[signup,setSignup]=useState(false),[email,setEmail]=useState(''),[pw,setPw]=useState(''),[busy,setBusy]=useState(false),[err,setErr]=useState('');
+ return <><a className="skip" href="#main">Skip to content</a><header className="site-header"><div className="header-inner"><Link href="/" className="brand" aria-label="SkillSprout home"><span className="brand-mark"><Sprout size={27}/></span>Skill<span>Sprout</span><span className="academy">ACADEMY</span></Link><button type="button" className="mobile-menu-toggle" aria-label={menuOpen?'Close menu':'Open menu'} aria-expanded={menuOpen} aria-controls="primary-menu" onClick={()=>setMenuOpen(open=>!open)}><span>{menuOpen?'Close':'Menu'}</span>{menuOpen?<X size={20} aria-hidden/>:<Menu size={20} aria-hidden/>}</button><nav id="primary-menu" className={`main-nav${menuOpen?' is-open':''}`} aria-label="Main navigation">
  <Link className={active==='Home'?'active':''} aria-current={active==='Home'?'page':undefined} href="/"><span className="nav-icon"><House size={18}/></span>Home</Link>
  <Link className={active==='Learning'?'active':''} aria-current={active==='Learning'?'page':undefined} href="/learning"><span className="nav-icon"><Gamepad2 size={18}/></span>Learn &amp; play</Link>
  <Link className={active==='Explore'?'active':''} aria-current={active==='Explore'?'page':undefined} href="/#courses"><span className="nav-icon"><Compass size={18}/></span>Explore topics</Link>
