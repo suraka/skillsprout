@@ -204,6 +204,7 @@
 .mobile-menu>summary{list-style:none}
 .mobile-menu>summary::-webkit-details-marker{display:none}
 @media(max-width:740px){
+ .site-header{position:relative;z-index:30}
  .site-header .desktop-nav{display:none}
  .site-header .mobile-menu{display:block;order:2;position:static;flex:none}
  .site-header .mobile-menu>summary{display:flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 12px;border:1px solid #d8e5d8;border-radius:10px;background:#fff;color:#176e4b;font-size:14px;font-weight:750;cursor:pointer}
