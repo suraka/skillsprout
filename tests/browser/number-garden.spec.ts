@@ -2,9 +2,8 @@ import { expect, test } from 'playwright/test';
 
 const route = '/learning/number-garden';
 
-test('EDU-MB00: Explore links to the clearly labeled Number Garden draft', async ({ page }) => {
-  await page.goto('/');
-  await page.getByRole('link', { name: 'Number Garden · maths draft preview' }).click();
+test('EDU-MB00: the Number Garden draft route remains available without a hero preview link', async ({ page }) => {
+  await page.goto(route);
   await expect(page.getByRole('heading', { name: 'Number Garden' })).toBeVisible();
   await expect(page.getByText('EARLY MATHEMATICS · DRAFT · REVIEW STATUS IN NOTES')).toBeVisible();
 });
