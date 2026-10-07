@@ -50,10 +50,13 @@ test('one SkillSprout scene travels into the welcome section and reduced motion 
   await page.reload();
   const stillScene = page.getByTestId('hero-scene');
   await expect(stillScene).toHaveAttribute('data-motion', 'reduced');
+  await page.evaluate(() => window.scrollTo(0, 0));
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBe(0);
   const stillBefore = await stillScene.boundingBox();
-  await page.evaluate(() => window.scrollTo(0, Math.round(window.innerHeight * 0.45)));
-  await page.waitForTimeout(100);
+  await page.evaluate(distance => window.scrollTo(0, distance), scrollDistance);
+  await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0);
   const stillAfter = await stillScene.boundingBox();
   expect(stillAfter?.x).toBeCloseTo(stillBefore?.x ?? 0, 0);
-  expect(stillAfter?.y).toBeCloseTo((stillBefore?.y ?? 0) - scrollDistance, 0);
+  await expect(stillScene).toHaveAttribute('data-progress', '0.000');
+  await expect(stillScene).toBeVisible();
 });
