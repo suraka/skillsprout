@@ -196,3 +196,9 @@ Provider rollback controls, previous production deployment IDs, available backup
 - [ ] Inspect backup schedule/retention and record the newest successful backup ID.
 - [ ] Restore a backup to isolated PostgreSQL and validate schema/catalog without touching live data.
 - [ ] Confirm provider-specific code rollback while retaining the database and learner writes.
+
+## HOME-01 — Responsive hero and continuous scene
+
+**Status: Implemented; automated Chromium verification passed on the draft PR branch.** The homepage hero fills the first viewport below the measured responsive header. A single original SkillSprout scene travels from the hero into a reserved landing band before the course catalog. Preview links remain visible. Scroll listeners use passive events and animation-frame updates; the scene does not intercept input. Reduced-motion mode keeps the scene static and reports zero scroll progress.
+
+**Verification evidence:** GitHub Actions run [37648362097](https://github.com/suraka/skillsprout/actions/runs/37648362097) passed TypeScript, staging config, runtime tests, 40 Chromium browser tests, and production build. Cloudflare Workers Build check also passed for commit `7918048da37e3ef9d65448cc75111328b5b40ba4`. Browser coverage includes viewport checks at 1440×900, 768×1024, and 360×800; scene travel and reduced-motion checks at 390×844; and horizontal overflow assertions. These are automated Chromium viewport checks, not physical-device or human visual-review evidence. The change is in draft PR #6; no production deployment is claimed.
