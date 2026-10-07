@@ -60,3 +60,54 @@ test('one SkillSprout scene travels into the welcome section and reduced motion 
   await expect(stillScene).toHaveAttribute('data-progress', '0.000');
   await expect(stillScene).toBeVisible();
 });
+
+
+test('home navigation labels, destinations, icons, and motion work at each viewport', async ({ page }) => {
+  for (const viewport of [
+    { width: 1440, height: 900 },
+    { width: 768, height: 1024 },
+    { width: 360, height: 800 },
+  ]) {
+    await page.setViewportSize(viewport);
+    await page.goto('/');
+    const nav = page.getByRole('navigation', { name: 'Main navigation' });
+    for (const label of ['Home', 'Learn & play', 'Explore topics', 'Parents & teachers', 'Support', 'Join for free', 'Sign in']) {
+      await expect(nav.getByRole('link', { name: label })).toHaveCount(label === 'Join for free' || label === 'Sign in' ? 0 : 1);
+    }
+    for (const label of ['Home', 'Learn & play', 'Explore topics', 'Parents & teachers', 'Support']) {
+      await expect(nav.getByRole('link', { name: label }).locator('svg')).toHaveCount(1);
+    }
+    await expect(nav.getByRole('link', { name: 'Home' })).toHaveAttribute('aria-current', 'page');
+    await expect(nav.getByRole('link', { name: 'Home' })).toHaveCSS('box-shadow', 'none');
+    const sizes = await page.evaluate(() => ({ width: document.documentElement.scrollWidth, viewport: innerWidth }));
+    expect(sizes.width).toBeLessThanOrEqual(sizes.viewport);
+  }
+  const nav = page.getByRole('navigation', { name: 'Main navigation' });
+  await nav.getByRole('button', { name: 'Join for free' }).click();
+  await expect(page.getByRole('dialog')).toContainText('Start your family');
+  await page.getByRole('button', { name: /Already have an account/ }).click();
+  await expect(page.getByRole('dialog')).toContainText('Welcome back');
+  await page.getByRole('button', { name: 'Close' }).click();
+  await nav.getByRole('button', { name: 'Sign in' }).hover();
+  await expect(nav.getByRole('button', { name: 'Sign in' })).toBeVisible();
+});
+
+test('scene stays above the section surfaces as it enters the welcome band', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto('/');
+  await page.evaluate(() => window.scrollTo(0, Math.round(innerHeight * 0.45)));
+  const stack = await page.evaluate(() => {
+    const scene = document.querySelector<HTMLElement>('[data-testid="hero-scene"]')!;
+    const landing = document.querySelector<HTMLElement>('[data-testid="scene-landing"]')!;
+    const strip = document.querySelector<HTMLElement>('.trust-strip')!;
+    return {
+      sceneZ: Number(getComputedStyle(scene).zIndex),
+      landingZ: Number(getComputedStyle(landing).zIndex),
+      stripZ: Number(getComputedStyle(strip).zIndex),
+      sceneVisible: scene.getBoundingClientRect().width > 0 && getComputedStyle(scene).visibility === 'visible',
+    };
+  });
+  expect(stack.sceneVisible).toBe(true);
+  expect(stack.sceneZ).toBeGreaterThan(stack.landingZ);
+  expect(stack.sceneZ).toBeGreaterThan(stack.stripZ);
+});
