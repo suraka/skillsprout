@@ -217,3 +217,16 @@
  .site-header .mobile-menu>.main-nav>.nav-action{width:100%;min-height:46px;max-width:200px;justify-self:center;align-self:center;justify-content:center;padding:8px 10px;text-align:center;white-space:normal}
  .site-header .mobile-menu>.main-nav>:last-child:nth-child(odd){grid-column:1/-1;width:min(100%,200px)}
 }
+
+
+/* One centered row per menu item; switch the icon as native details opens. */
+@media(max-width:740px){
+ .site-header .mobile-menu>summary{width:46px;height:46px;min-height:46px;padding:0}
+ .site-header .mobile-menu>summary svg{display:block}
+ .site-header .mobile-menu .menu-icon-close{display:none}
+ .site-header .mobile-menu[open] .menu-icon-open{display:none}
+ .site-header .mobile-menu[open] .menu-icon-close{display:block}
+ .site-header .mobile-menu>.main-nav{grid-template-columns:minmax(0,1fr);gap:3px;width:100%;padding:12px 20px 16px}
+ .site-header .mobile-menu>.main-nav>a{flex-direction:row;justify-content:center;min-height:54px;gap:10px;font-size:17px}
+ .site-header .mobile-menu>.main-nav>.nav-action{min-height:50px;font-size:16px}
+}

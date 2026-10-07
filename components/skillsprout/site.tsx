@@ -34,7 +34,7 @@ export function Shell({children,active='Explore'}:{children:React.ReactNode;acti
  <button className="nav-action nav-join" onClick={()=>{setSignup(true);setAuth(true);}}>Join for free</button>
  <button className="nav-action nav-signin" onClick={()=>{setSignup(false);setAuth(true);}}>Sign in</button>
  {a.user&&<button className="nav-action nav-signout" onClick={a.logout}><LogOut size={16}/> Sign out</button>}
- </nav><details className="mobile-menu"><summary aria-label="Toggle navigation menu"><span className="menu-open-label">Menu</span><span className="menu-close-label">Close</span><Menu className="menu-icon-open" size={20} aria-hidden/><X className="menu-icon-close" size={20} aria-hidden/></summary><nav id="primary-menu" className="main-nav mobile-nav" aria-label="Main navigation">
+ </nav><details className="mobile-menu"><summary aria-label="Toggle navigation"><Menu className="menu-icon-open" size={22} aria-hidden/><X className="menu-icon-close" size={22} aria-hidden/></summary><nav id="primary-menu" className="main-nav mobile-nav" aria-label="Main navigation">
  <Link className={active==='Home'?'active':''} aria-current={active==='Home'?'page':undefined} href="/"><span className="nav-icon"><House size={18}/></span>Home</Link>
  <Link className={active==='Learning'?'active':''} aria-current={active==='Learning'?'page':undefined} href="/learning"><span className="nav-icon"><Gamepad2 size={18}/></span>Learn &amp; play</Link>
  <Link className={active==='Explore'?'active':''} aria-current={active==='Explore'?'page':undefined} href="/#courses"><span className="nav-icon"><Compass size={18}/></span>Explore topics</Link>
@@ -101,12 +101,6 @@ export function Explore(){
      <h1>A little curiosity.<br/>A world of <span>possibilities.</span></h1>
      <p>Discover AI, create with code, and bring bright ideas to life. Playful digital adventures for your growing mind.</p>
      <a className="button dark" href="#courses">Find your next adventure <ArrowRight size={19}/></a>
-     <div className="hero-more-links" aria-label="More learning previews">
-      <a className="text-button" href="/demo/sorting-garden">Try Sorting Garden · guest preview <ArrowRight size={18}/></a>
-      <a className="text-button" href="/little-explorers">Explore Little Explorers · ages 2–4 with a grown-up <ArrowRight size={18}/></a>
-      <a className="text-button" href="/learning/letters-and-sounds">Letters &amp; Sounds · English draft preview <ArrowRight size={18}/></a>
-      <Link className="text-button" href="/learning/number-garden">Number Garden · maths draft preview <ArrowRight size={18}/></Link>
-     </div>
      <div className="hero-details"><span><Check size={16}/> Ages 5–13</span><span><Check size={16}/> Learn at your pace</span></div>
     </div>
     <div className="hero-art" ref={artRef} data-testid="hero-art" aria-hidden="true">

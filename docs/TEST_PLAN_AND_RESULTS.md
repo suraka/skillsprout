@@ -239,3 +239,10 @@ Provider rollback controls, previous production deployment IDs, available backup
 - GitHub Actions [run 37669647960](https://github.com/suraka/skillsprout/actions/runs/37669647960) passed at code commit `e66e89979d7acbf48af4187757fca2ee3c566c30`: TypeScript, staging config, runtime tests, browser suite, and production build.
 - Chromium tested 360px, 390px, and 430px widths. The new test verifies collapsed default, native open/close, centered entries, no horizontal overflow, and hero viewport fill.
 - Automated Chromium only; no physical-device review. No production deployment.
+
+
+## Mobile menu and homepage hero follow-up — 7 October 2026
+
+- GitHub Actions [run 37675511310](https://github.com/suraka/skillsprout/actions/runs/37675511310) passed at code commit `93d9170f64e38db9dfc4e5016bf7e2bd4b8da1e9`: TypeScript, staging configuration, runtime tests, all 44 Chromium browser tests, and production build.
+- Browser coverage includes the icon-only menu toggle; tapping X to close and reopen; one centered item per row with 17px link text; 360/390/430px widths and no horizontal overflow; removal of the four hero preview links; direct availability of the Letters & Sounds and Number Garden routes.
+- No physical-device review or production deployment.

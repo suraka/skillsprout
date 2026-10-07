@@ -2,9 +2,8 @@ import { expect, test } from 'playwright/test';
 
 const route = '/learning/letters-and-sounds';
 
-test('EDU-B00: the existing home page links to the clearly labeled draft preview', async ({ page }) => {
-  await page.goto('/');
-  await page.getByRole('link', { name: 'Letters & Sounds · English draft preview' }).click();
+test('EDU-B00: the English draft route remains available without a hero preview link', async ({ page }) => {
+  await page.goto(route);
   await expect(page.getByRole('heading', { name: 'Letters & Sounds' })).toBeVisible();
   await expect(page.getByText('ENGLISH DRAFT · HUMAN REVIEW PENDING')).toBeVisible();
 });
