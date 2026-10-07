@@ -216,3 +216,12 @@ Provider rollback controls, previous production deployment IDs, available backup
 - Run 37647064994: TypeScript, staging config, and runtime passed; browser 39 passed and the reduced-motion position check sampled before scrolling completed. Updated test to use instant scroll plus a scroll-position wait; rerun pending.
 
 - Run 37647496738: TypeScript/runtime passed, browser 39 passed and the test's expected y-coordinate changed by a viewport amount while actual bounding-box y remained unchanged. Revised the reduced-motion assertion to directly verify `data-motion=reduced`, `data-progress=0.000`, visibility, and stable x position. Final rerun pending.
+
+
+## Final homepage hero verification — 7 October 2026
+
+- Draft PR #6, final tested commit: `7918048da37e3ef9d65448cc75111328b5b40ba4`.
+- GitHub Actions run [37648362097](https://github.com/suraka/skillsprout/actions/runs/37648362097): PASS. TypeScript, staging config, runtime tests, Chromium browser suite (40 passed), and production build all completed successfully.
+- Cloudflare Workers Build status for the same commit: PASS.
+- Browser scenarios: desktop 1440×900, tablet 768×1024, mobile 360×800; mobile scene motion/reduced-motion at 390×844; no horizontal overflow; the existing home preview links and course navigation remain covered by the full browser suite.
+- Scope: CI runs the app locally under Chromium with viewport emulation. No physical-device or manual visual screenshot review was performed. No production deploy or merge occurred; PR #6 remains draft.
