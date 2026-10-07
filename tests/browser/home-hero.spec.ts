@@ -120,17 +120,17 @@ test('phone navigation starts collapsed and centers menu items when opened', asy
   for (const width of [360, 390, 430]) {
     await page.setViewportSize({ width, height: 844 });
     await page.goto('/');
-    const menu = page.locator('details.mobile-menu');
-    const toggle = menu.locator('summary');
+    const menu = page.locator('.mobile-menu');
+    const toggle = menu.getByRole('button');
     const nav = page.getByRole('navigation', { name: 'Main navigation' });
     await expect(toggle).toBeVisible();
-    await expect(menu).not.toHaveAttribute('open', '');
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
     await expect(nav).toBeHidden();
     await expect(page.getByTestId('hero-scene')).toHaveAttribute('data-motion', 'scroll');
     await toggle.click();
-    await expect(menu).toHaveAttribute('open', '');
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
     await expect(nav).toBeVisible();
-    await expect(toggle).toHaveText('');
+    await expect(toggle).toHaveAccessibleName('Close navigation');
     await expect(toggle.locator('svg.menu-icon-open')).toBeHidden();
     await expect(toggle.locator('svg.menu-icon-close')).toBeVisible();
     await expect.poll(() => page.evaluate(() => {
@@ -138,7 +138,7 @@ test('phone navigation starts collapsed and centers menu items when opened', asy
       const header = document.querySelector('.site-header')!.getBoundingClientRect().height;
       return Math.abs(hero + header - innerHeight);
     })).toBeLessThanOrEqual(2);
-    for (const label of ['Home', 'Learn & play', 'Explore topics', 'Parents & teachers', 'Support', 'Join for free', 'Sign in']) {
+    for (const label of ['Home', 'Learn & Play', 'Explore Topics', 'Parents & Teachers', 'Support', 'Join for Free', 'Sign In']) {
       await expect(nav.getByText(label, { exact: true })).toBeVisible();
     }
     const centered = await page.evaluate(() => {
@@ -154,6 +154,8 @@ test('phone navigation starts collapsed and centers menu items when opened', asy
           bounds: item.getBoundingClientRect().toJSON(),
         })),
         navBounds: nav.getBoundingClientRect().toJSON(),
+        join: nav.querySelector<HTMLElement>('.nav-join')!.getBoundingClientRect().toJSON(),
+        signIn: nav.querySelector<HTMLElement>('.nav-signin')!.getBoundingClientRect().toJSON(),
         scrollWidth: document.documentElement.scrollWidth,
         viewportWidth: innerWidth,
       };
@@ -168,14 +170,16 @@ test('phone navigation starts collapsed and centers menu items when opened', asy
     }
     expect(centered.scrollWidth).toBeLessThanOrEqual(centered.viewportWidth);
     expect(new Set(centered.items.map(item => Math.round(item.bounds.y))).size).toBe(centered.items.length);
+    expect(centered.signIn.y - centered.join.y - centered.join.height).toBeGreaterThanOrEqual(8);
     await expect(toggle.locator('svg.menu-icon-close')).toBeVisible();
     await toggle.locator('svg.menu-icon-close').click();
-    await expect(menu).not.toHaveAttribute('open', '');
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
     await expect(nav).toBeHidden();
     await toggle.click();
-    await expect(menu).toHaveAttribute('open', '');
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
     await toggle.locator('svg.menu-icon-close').click();
-    await expect(menu).not.toHaveAttribute('open', '');
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    await expect(nav).toBeHidden();
   }
 });
 
