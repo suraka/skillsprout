@@ -209,3 +209,6 @@ Corrected browser run 37646254726: 39 passed, one new reduced-motion assertion f
 
 
 Reduced-motion browser check in run 37646674186: 39 passed; one assertion failed because a page reload preserved the prior test's scroll offset. The test now explicitly returns to the top before recording the static position. Product motion and the responsive viewport checks passed. Rerun pending.
+
+
+Reduced-motion run 37647064994: 39 passed; the remaining test failure sampled before the smooth-scroll request completed (received the original scene y-position). The test now requests instant scrolling and waits for `window.scrollY` to reach the target before comparing scene position and asserting zero animation progress. Rerun pending.
