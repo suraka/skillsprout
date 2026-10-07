@@ -79,15 +79,12 @@ export function Explore(){
      <h1>A little curiosity.<br/>A world of <span>possibilities.</span></h1>
      <p>Discover AI, create with code, and bring bright ideas to life. Playful digital adventures for your growing mind.</p>
      <a className="button dark" href="#courses">Find your next adventure <ArrowRight size={19}/></a>
-     <details className="hero-more-links">
-      <summary>Explore more learning previews</summary>
-      <div>
-       <a className="text-button" href="/demo/sorting-garden">Try Sorting Garden · guest preview <ArrowRight size={18}/></a>
-       <a className="text-button" href="/little-explorers">Explore Little Explorers · ages 2–4 with a grown-up <ArrowRight size={18}/></a>
-       <a className="text-button" href="/learning/letters-and-sounds">Letters &amp; Sounds · English draft preview <ArrowRight size={18}/></a>
-       <Link className="text-button" href="/learning/number-garden">Number Garden · maths draft preview <ArrowRight size={18}/></Link>
-      </div>
-     </details>
+     <div className="hero-more-links" aria-label="More learning previews">
+      <a className="text-button" href="/demo/sorting-garden">Try Sorting Garden · guest preview <ArrowRight size={18}/></a>
+      <a className="text-button" href="/little-explorers">Explore Little Explorers · ages 2–4 with a grown-up <ArrowRight size={18}/></a>
+      <a className="text-button" href="/learning/letters-and-sounds">Letters &amp; Sounds · English draft preview <ArrowRight size={18}/></a>
+      <Link className="text-button" href="/learning/number-garden">Number Garden · maths draft preview <ArrowRight size={18}/></Link>
+     </div>
      <div className="hero-details"><span><Check size={16}/> Ages 5–13</span><span><Check size={16}/> Learn at your pace</span></div>
     </div>
     <div className="hero-art" ref={artRef} data-testid="hero-art" aria-hidden="true">

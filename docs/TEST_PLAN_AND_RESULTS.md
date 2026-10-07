@@ -204,5 +204,7 @@ Provider rollback controls, previous production deployment IDs, available backup
 
 - Draft PR #6: https://github.com/suraka/skillsprout/pull/6
 - Added Playwright acceptance coverage first for viewport-height layout, mobile/tablet/desktop overflow, one continuous scene, scroll movement, and reduced-motion behavior.
-- The baseline run completed TypeScript, staging config, and runtime checks successfully. Chromium installation is still in progress; the browser test has not yet produced a baseline result.
+- Initial CI run 37645709299: 36 browser cases passed and 2 existing home-preview-link cases failed because the links became hidden in a closed details element. This is a regression; the links are being restored as visible compact shortcuts. The home-hero test was missing from that commit’s tree and is being restored.
 - Implementation and final CI/browser evidence are pending. No live production page was changed or inspected in this run.
+
+- No final pass claim: after the fix, wait for all browser, typecheck, and build jobs and record exact results here.

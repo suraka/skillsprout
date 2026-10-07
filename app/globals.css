@@ -107,10 +107,9 @@
 .hero-copy{max-width:580px;padding:38px 0 34px;z-index:2}
 .hero h1{font-size:clamp(2.55rem,5.2vw,4.6rem);line-height:1.06;max-width:680px}
 .hero-copy>p{max-width:490px}
-.hero-more-links{margin-top:16px;max-width:430px}
-.hero-more-links summary{color:#28714d;font-size:14px;font-weight:700;cursor:pointer;padding:5px 0}
-.hero-more-links>div{display:grid;gap:5px;padding:8px 0 3px 10px}
-.hero-more-links .text-button{margin-top:0}
+.hero-more-links{margin-top:14px;max-width:540px;display:flex;flex-wrap:wrap;gap:2px 15px}
+.hero-more-links .text-button{margin-top:0;font-size:13px;gap:4px}
+.hero-more-links .text-button svg{width:15px;height:15px}
 .hero-art{min-height:300px;height:min(44vh,430px);position:relative;overflow:hidden;border-radius:30px;background:radial-gradient(ellipse at center,#fff9 0%,#fff0 68%)}
 .hero-art .art-caption{z-index:2}
 .travel-scene{position:absolute;z-index:1;display:block;object-fit:contain;max-width:none;pointer-events:none;user-select:none;will-change:left,top,width,height}
