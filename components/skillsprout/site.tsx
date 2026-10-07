@@ -41,6 +41,8 @@ export function Explore(){
   const preference=window.matchMedia('(prefers-reduced-motion: reduce)');
   let frame=0;
   const update=()=>{
+   const header=document.querySelector<HTMLElement>('.site-header');
+   if(header)stage.style.setProperty('--homepage-header-height',`${header.getBoundingClientRect().height}px`);
    const stageBox=stage.getBoundingClientRect(),artBox=art.getBoundingClientRect(),landingBox=landing.getBoundingClientRect(),heroBox=hero.getBoundingClientRect();
    const startScroll=window.scrollY+stageBox.top;
    const landingScroll=window.scrollY+heroBox.bottom-window.innerHeight*.68;

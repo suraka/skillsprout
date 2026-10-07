@@ -208,3 +208,5 @@ Provider rollback controls, previous production deployment IDs, available backup
 - Implementation and final CI/browser evidence are pending. No live production page was changed or inspected in this run.
 
 - No final pass claim: after the fix, wait for all browser, typecheck, and build jobs and record exact results here.
+
+- Corrected run 37646254726: TypeScript/runtime passed; browser 39 passed, 1 failed due to a test-side Node `window` reference in the reduced-motion assertion. Fixed in the next commit; rerun pending. The separate Cloudflare Workers build check passed for this branch revision.

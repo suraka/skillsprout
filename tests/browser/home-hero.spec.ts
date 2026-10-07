@@ -37,7 +37,8 @@ test('one SkillSprout scene travels into the welcome section and reduced motion 
   await expect(scene).toHaveCount(1);
   await expect(page.getByTestId('scene-landing')).toBeVisible();
   const before = await scene.boundingBox();
-  await page.evaluate(() => window.scrollTo(0, Math.round(window.innerHeight * 0.45)));
+  const scrollDistance = await page.evaluate(() => Math.round(window.innerHeight * 0.45));
+  await page.evaluate(distance => window.scrollTo(0, distance), scrollDistance);
   await expect.poll(async () => Number(await scene.getAttribute('data-progress'))).toBeGreaterThan(0);
   const during = await scene.boundingBox();
   expect(during).not.toBeNull();
@@ -54,5 +55,5 @@ test('one SkillSprout scene travels into the welcome section and reduced motion 
   await page.waitForTimeout(100);
   const stillAfter = await stillScene.boundingBox();
   expect(stillAfter?.x).toBeCloseTo(stillBefore?.x ?? 0, 0);
-  expect(stillAfter?.y).toBeCloseTo((stillBefore?.y ?? 0) - Math.round(window.innerHeight * 0.45), 0);
+  expect(stillAfter?.y).toBeCloseTo((stillBefore?.y ?? 0) - scrollDistance, 0);
 });

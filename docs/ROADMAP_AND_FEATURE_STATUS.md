@@ -199,7 +199,10 @@ Provider rollback controls, previous production deployment IDs, available backup
 
 ## HOME-01 — Responsive hero and continuous scene
 
-**Status: PARTIAL — implementation in draft PR #6; browser regression detected, fix and rerun pending.** The approved requirement is a viewport-height homepage hero for desktop, tablet, and mobile; an original SkillSprout learner scene that travels into a reserved first-section landing area; readable course content; responsive scroll; and a static, attractive reduced-motion state. The test-first Playwright coverage is in `tests/browser/home-hero.spec.ts`. Do not mark verified until PR CI confirms browser tests, typecheck, and build. No production deployment is authorized or claimed.
+**Status: PARTIAL — implementation in draft PR #6; visible-link regression fixed, reduced-motion test harness failure is being fixed and rerun is pending.** The approved requirement is a viewport-height homepage hero for desktop, tablet, and mobile; an original SkillSprout learner scene that travels into a reserved first-section landing area; readable course content; responsive scroll; and a static, attractive reduced-motion state. The test-first Playwright coverage is in `tests/browser/home-hero.spec.ts`. Do not mark verified until PR CI confirms browser tests, typecheck, and build. No production deployment is authorized or claimed.
 
 
 Latest PR #6 browser run (37645709299): 36 tests passed; 2 existing homepage preview-link tests failed because the first implementation collapsed their links on load. This is a regression and is being fixed. The new hero acceptance spec was accidentally absent from the generated commit tree; it is being restored before the next CI run. Build and responsive visual review remain pending.
+
+
+Corrected browser run 37646254726: 39 passed, one new reduced-motion assertion failed because the test referenced `window` from the Node test process. The production motion checks and all prior preview-link tests passed. The assertion now reads the scroll distance in the browser context. A measured header-height update was also added so the viewport-height hero adapts to actual responsive navigation height.
