@@ -12,7 +12,7 @@ function Link({
 }: AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }) {
   return <a href={href} {...props} />;
 }
-import {Sprout,ArrowRight,ArrowLeft,Search,Bot,Code2,Palette,ShieldCheck,Sparkles,BookOpen,Clock,Check,Plus,Users,LogOut,Play,GraduationCap,House,Gamepad2,Compass,CircleHelp} from 'lucide-react';
+import {Sprout,ArrowRight,ArrowLeft,Search,Bot,Code2,Palette,ShieldCheck,Sparkles,BookOpen,Clock,Check,Plus,Users,LogOut,Play,GraduationCap,House,Gamepad2,Compass,CircleHelp,Menu,X} from 'lucide-react';
 import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog';
 import {Select,SelectTrigger,SelectValue,SelectContent,SelectItem} from '@/components/ui/select';
 import {Progress} from '@/components/ui/progress';
@@ -24,7 +24,7 @@ export function CourseIcon({course}:{course:Course}){const Icon=icons[course.ico
 export function Picker({value,onChange,options,label}:{value:string;onChange:(s:string)=>void;options:{value:string;label:string}[];label:string}){return <Select value={value} onValueChange={onChange}><SelectTrigger className="picker" aria-label={label}><SelectValue placeholder={label}/></SelectTrigger><SelectContent>{options.map(o=><SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}</SelectContent></Select>;}
 export function Shell({children,active='Explore'}:{children:React.ReactNode;active?:string}){
  const a=useAcademy();const [auth,setAuth]=useState(false),[signup,setSignup]=useState(false),[email,setEmail]=useState(''),[pw,setPw]=useState(''),[busy,setBusy]=useState(false),[err,setErr]=useState('');
- return <><a className="skip" href="#main">Skip to content</a><header className="site-header"><div className="header-inner"><Link href="/" className="brand" aria-label="SkillSprout home"><span className="brand-mark"><Sprout size={27}/></span>Skill<span>Sprout</span><span className="academy">ACADEMY</span></Link><nav className="main-nav" aria-label="Main navigation">
+ return <><a className="skip" href="#main">Skip to content</a><header className="site-header"><div className="header-inner"><Link href="/" className="brand" aria-label="SkillSprout home"><span className="brand-mark"><Sprout size={27}/></span>Skill<span>Sprout</span><span className="academy">ACADEMY</span></Link><nav className="main-nav desktop-nav" aria-label="Main navigation">
  <Link className={active==='Home'?'active':''} aria-current={active==='Home'?'page':undefined} href="/"><span className="nav-icon"><House size={18}/></span>Home</Link>
  <Link className={active==='Learning'?'active':''} aria-current={active==='Learning'?'page':undefined} href="/learning"><span className="nav-icon"><Gamepad2 size={18}/></span>Learn &amp; play</Link>
  <Link className={active==='Explore'?'active':''} aria-current={active==='Explore'?'page':undefined} href="/#courses"><span className="nav-icon"><Compass size={18}/></span>Explore topics</Link>
@@ -34,7 +34,17 @@ export function Shell({children,active='Explore'}:{children:React.ReactNode;acti
  <button className="nav-action nav-join" onClick={()=>{setSignup(true);setAuth(true);}}>Join for free</button>
  <button className="nav-action nav-signin" onClick={()=>{setSignup(false);setAuth(true);}}>Sign in</button>
  {a.user&&<button className="nav-action nav-signout" onClick={a.logout}><LogOut size={16}/> Sign out</button>}
- </nav></div></header>
+ </nav><details className="mobile-menu"><summary aria-label="Toggle navigation menu"><span className="menu-open-label">Menu</span><span className="menu-close-label">Close</span><Menu className="menu-icon-open" size={20} aria-hidden/><X className="menu-icon-close" size={20} aria-hidden/></summary><nav id="primary-menu" className="main-nav mobile-nav" aria-label="Main navigation">
+ <Link className={active==='Home'?'active':''} aria-current={active==='Home'?'page':undefined} href="/"><span className="nav-icon"><House size={18}/></span>Home</Link>
+ <Link className={active==='Learning'?'active':''} aria-current={active==='Learning'?'page':undefined} href="/learning"><span className="nav-icon"><Gamepad2 size={18}/></span>Learn &amp; play</Link>
+ <Link className={active==='Explore'?'active':''} aria-current={active==='Explore'?'page':undefined} href="/#courses"><span className="nav-icon"><Compass size={18}/></span>Explore topics</Link>
+ <Link className={active==='Parents'?'active':''} aria-current={active==='Parents'?'page':undefined} href="/parents"><span className="nav-icon"><GraduationCap size={18}/></span>Parents &amp; teachers</Link>
+ <Link href="/parents#support"><span className="nav-icon"><CircleHelp size={18}/></span>Support</Link>
+ {a.user?.role==='admin'&&<Link href="/admin">Studio</Link>}
+ <button className="nav-action nav-join" onClick={()=>{setSignup(true);setAuth(true);}}>Join for free</button>
+ <button className="nav-action nav-signin" onClick={()=>{setSignup(false);setAuth(true);}}>Sign in</button>
+ {a.user&&<button className="nav-action nav-signout" onClick={a.logout}><LogOut size={16}/> Sign out</button>}
+ </nav></details></div></header>
  {a.error&&<div className="notice error" role="alert">{a.error}<button onClick={()=>a.setError('')} aria-label="Dismiss error">×</button></div>}
  <main id="main">{children}</main><footer><Link href="/" className="brand"><Sprout size={24}/>SkillSprout</Link><p>Little steps. Big possibilities.</p><Link href="/parents">Made for curious kids. Guided by you.</Link></footer>
  {a.demo&&<div className="demo-bar"><span>Preview mode</span> Explore sample lessons. Changes last for this visit only.</div>}

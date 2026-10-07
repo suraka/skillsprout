@@ -210,3 +210,8 @@ Provider rollback controls, previous production deployment IDs, available backup
 - Fixed scene stacking so the single carried illustration renders above the trust strip and welcome band; trust copy remains above the illustration.
 - Browser acceptance tests added for the nav labels/icons, join/sign-in dialog state, scene layer order, viewport widths and horizontal overflow. CI/browser execution is pending; do not treat added tests as passed evidence.
 - No deployment or merge performed.
+
+
+## Mobile navigation follow-up — 7 October 2026
+
+Implemented in draft PR #8: phone navigation starts collapsed, uses a native disclosure control, centers menu entries, and overlays below the header to keep the hero from shifting. Verification is recorded in `docs/verification/2026-10-07-mobile-navigation.md`; no production deployment.
