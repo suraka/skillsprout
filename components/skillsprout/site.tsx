@@ -27,7 +27,7 @@ export function Shell({children,active='Explore'}:{children:React.ReactNode;acti
  return <><a className="skip" href="#main">Skip to content</a><header className="site-header"><div className="header-inner"><Link href="/" className="brand" aria-label="SkillSprout home"><span className="brand-mark"><Sprout size={27}/></span>Skill<span>Sprout</span><span className="academy">ACADEMY</span></Link><nav className="main-nav" aria-label="Main navigation">
  <Link className={active==='Home'?'active':''} aria-current={active==='Home'?'page':undefined} href="/"><span className="nav-icon"><House size={18}/></span>Home</Link>
  <Link className={active==='Learning'?'active':''} aria-current={active==='Learning'?'page':undefined} href="/learning"><span className="nav-icon"><Gamepad2 size={18}/></span>Learn &amp; play</Link>
- <Link className={active==='Explore'||active==='Home'?'active':''} aria-current={active==='Explore'?'page':undefined} href="/#courses"><span className="nav-icon"><Compass size={18}/></span>Explore topics</Link>
+ <Link className={active==='Explore'?'active':''} aria-current={active==='Explore'?'page':undefined} href="/#courses"><span className="nav-icon"><Compass size={18}/></span>Explore topics</Link>
  <Link className={active==='Parents'?'active':''} aria-current={active==='Parents'?'page':undefined} href="/parents"><span className="nav-icon"><GraduationCap size={18}/></span>Parents &amp; teachers</Link>
  <Link href="/parents#support"><span className="nav-icon"><CircleHelp size={18}/></span>Support</Link>
  {a.user?.role==='admin'&&<Link href="/admin">Studio</Link>}

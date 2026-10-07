@@ -78,6 +78,7 @@ test('home navigation labels, destinations, icons, and motion work at each viewp
       await expect(nav.getByRole('link', { name: label }).locator('svg')).toHaveCount(1);
     }
     await expect(nav.getByRole('link', { name: 'Home' })).toHaveAttribute('aria-current', 'page');
+    await expect(nav.getByRole('link', { name: 'Explore topics' })).not.toHaveClass(/active/);
     await expect(nav.getByRole('link', { name: 'Home' })).toHaveCSS('box-shadow', 'none');
     const sizes = await page.evaluate(() => ({ width: document.documentElement.scrollWidth, viewport: innerWidth }));
     expect(sizes.width).toBeLessThanOrEqual(sizes.viewport);
