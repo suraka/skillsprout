@@ -70,6 +70,8 @@ test('home navigation labels, destinations, icons, and motion work at each viewp
   ]) {
     await page.setViewportSize(viewport);
     await page.goto('/');
+    await expect(page.getByTestId('hero-scene')).toHaveAttribute('data-motion', 'scroll');
+    if (viewport.width <= 740) await page.getByRole('button', { name: 'Open menu' }).click();
     const nav = page.getByRole('navigation', { name: 'Main navigation' });
     for (const label of ['Home', 'Learn & play', 'Explore topics', 'Parents & teachers', 'Support', 'Join for free', 'Sign in']) {
       await expect(nav.getByRole('link', { name: label })).toHaveCount(label === 'Join for free' || label === 'Sign in' ? 0 : 1);
@@ -122,9 +124,15 @@ test('phone navigation starts collapsed and centers menu items when opened', asy
     await expect(toggle).toBeVisible();
     await expect(toggle).toHaveAttribute('aria-expanded', 'false');
     await expect(nav).toBeHidden();
+    await expect(page.getByTestId('hero-scene')).toHaveAttribute('data-motion', 'scroll');
     await toggle.click();
     await expect(page.getByRole('button', { name: 'Close menu' })).toHaveAttribute('aria-expanded', 'true');
     await expect(nav).toBeVisible();
+    await expect.poll(() => page.evaluate(() => {
+      const hero = document.querySelector('.hero')!.getBoundingClientRect().height;
+      const header = document.querySelector('.site-header')!.getBoundingClientRect().height;
+      return Math.abs(hero + header - innerHeight);
+    })).toBeLessThanOrEqual(2);
     for (const label of ['Home', 'Learn & play', 'Explore topics', 'Parents & teachers', 'Support', 'Join for free', 'Sign in']) {
       await expect(nav.getByText(label, { exact: true })).toBeVisible();
     }

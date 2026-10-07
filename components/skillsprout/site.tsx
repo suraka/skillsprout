@@ -75,11 +75,14 @@ export function Explore(){
    scene.dataset.motion=preference.matches?'reduced':'scroll';
   };
   const schedule=()=>{if(!frame)frame=requestAnimationFrame(()=>{frame=0;update();});};
+  const header=document.querySelector<HTMLElement>('.site-header');
+  const headerObserver=new ResizeObserver(schedule);
+  if(header)headerObserver.observe(header);
   update();
   window.addEventListener('scroll',schedule,{passive:true});
   window.addEventListener('resize',schedule);
   preference.addEventListener('change',schedule);
-  return()=>{window.removeEventListener('scroll',schedule);window.removeEventListener('resize',schedule);preference.removeEventListener('change',schedule);if(frame)cancelAnimationFrame(frame);};
+  return()=>{window.removeEventListener('scroll',schedule);window.removeEventListener('resize',schedule);preference.removeEventListener('change',schedule);headerObserver.disconnect();if(frame)cancelAnimationFrame(frame);};
  },[]);
 
  return <Shell active="Home">

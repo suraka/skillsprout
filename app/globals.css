@@ -125,7 +125,7 @@
  .hero-art{height:min(38vh,350px);min-height:235px}
 }
 @media(max-width:740px){
- :root{--homepage-header-height:126px}
+ :root{--homepage-header-height:78px}
  .hero{min-height:calc(100vh - var(--homepage-header-height));min-height:calc(100svh - var(--homepage-header-height))}
  .hero-inner{grid-template-columns:1fr;grid-template-rows:auto 1fr;gap:0;padding-top:20px;padding-bottom:8px}
  .hero-copy{padding:14px 0 10px}
@@ -195,3 +195,5 @@
  .site-header .main-nav>.nav-action{width:100%;min-height:46px;max-width:200px;justify-self:center;align-self:center;justify-content:center;padding:8px 10px;text-align:center;white-space:normal}
  .site-header .main-nav>:last-child:nth-child(odd){grid-column:1/-1;width:min(100%,200px)}
 }
+
+@media(max-width:359px){:root{--homepage-header-height:126px}}
