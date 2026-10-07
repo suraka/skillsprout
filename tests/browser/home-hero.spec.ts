@@ -130,6 +130,9 @@ test('phone navigation starts collapsed and centers menu items when opened', asy
     await toggle.click();
     await expect(menu).toHaveAttribute('open', '');
     await expect(nav).toBeVisible();
+    await expect(toggle).toHaveText('');
+    await expect(toggle.locator('svg.menu-icon-open')).toBeVisible();
+    await expect(toggle.locator('svg.menu-icon-close')).toBeHidden();
     await expect.poll(() => page.evaluate(() => {
       const hero = document.querySelector('.hero')!.getBoundingClientRect().height;
       const header = document.querySelector('.site-header')!.getBoundingClientRect().height;
@@ -139,13 +142,14 @@ test('phone navigation starts collapsed and centers menu items when opened', asy
       await expect(nav.getByText(label, { exact: true })).toBeVisible();
     }
     const centered = await page.evaluate(() => {
-      const nav = document.querySelector<HTMLElement>('.main-nav')!;
+      const nav = document.querySelector<HTMLElement>('.mobile-nav')!;
       const links = Array.from(nav.querySelectorAll<HTMLElement>(':scope > a, :scope > button'));
       return {
         navTextAlign: getComputedStyle(nav).textAlign,
         navJustify: getComputedStyle(nav).justifyContent,
         items: links.map(item => ({
           textAlign: getComputedStyle(item).textAlign,
+          fontSize: parseFloat(getComputedStyle(item).fontSize),
           justifyContent: getComputedStyle(item).justifyContent,
           bounds: item.getBoundingClientRect().toJSON(),
         })),
@@ -157,13 +161,33 @@ test('phone navigation starts collapsed and centers menu items when opened', asy
     expect(centered.navTextAlign).toBe('center');
     for (const item of centered.items) {
       expect(item.textAlign).toBe('center');
+      expect(item.fontSize).toBeGreaterThanOrEqual(16);
       expect(['center', 'normal']).toContain(item.justifyContent);
       expect(item.bounds.x).toBeGreaterThanOrEqual(centered.navBounds.x - 1);
       expect(item.bounds.x + item.bounds.width).toBeLessThanOrEqual(centered.navBounds.x + centered.navBounds.width + 1);
     }
     expect(centered.scrollWidth).toBeLessThanOrEqual(centered.viewportWidth);
-    await toggle.click();
+    expect(new Set(centered.items.map(item => Math.round(item.bounds.y))).size).toBe(centered.items.length);
+    await expect(toggle.locator('svg.menu-icon-close')).toBeVisible();
+    await toggle.locator('svg.menu-icon-close').click();
     await expect(menu).not.toHaveAttribute('open', '');
     await expect(nav).toBeHidden();
+    await toggle.click();
+    await expect(menu).toHaveAttribute('open', '');
+    await toggle.locator('svg.menu-icon-close').click();
+    await expect(menu).not.toHaveAttribute('open', '');
+  }
+});
+
+test('homepage banner no longer includes the four extra preview links', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 });
+  await page.goto('/');
+  for (const label of [
+    /Try Sorting Garden · guest preview/,
+    /Explore Little Explorers · ages 2–4 with a grown-up/,
+    /Letters & Sounds · English draft preview/,
+    /Number Garden · maths draft preview/,
+  ]) {
+    await expect(page.getByRole('link', { name: label })).toHaveCount(0);
   }
 });
