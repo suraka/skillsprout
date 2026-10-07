@@ -196,3 +196,7 @@ Provider rollback controls, previous production deployment IDs, available backup
 - [ ] Inspect backup schedule/retention and record the newest successful backup ID.
 - [ ] Restore a backup to isolated PostgreSQL and validate schema/catalog without touching live data.
 - [ ] Confirm provider-specific code rollback while retaining the database and learner writes.
+
+## HOME-01 — Responsive hero and continuous scene
+
+**Status: PARTIAL — implementation and browser CI pending in draft PR #6.** The approved requirement is a viewport-height homepage hero for desktop, tablet, and mobile; an original SkillSprout learner scene that travels into a reserved first-section landing area; readable course content; responsive scroll; and a static, attractive reduced-motion state. The test-first Playwright coverage is in `tests/browser/home-hero.spec.ts`. Do not mark verified until PR CI confirms browser tests, typecheck, and build. No production deployment is authorized or claimed.

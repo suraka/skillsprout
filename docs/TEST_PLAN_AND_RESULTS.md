@@ -199,3 +199,10 @@ Provider rollback controls, previous production deployment IDs, available backup
 - [ ] Inspect backup schedule/retention and record the newest successful backup ID.
 - [ ] Restore a backup to isolated PostgreSQL and validate schema/catalog without touching live data.
 - [ ] Confirm provider-specific code rollback while retaining the database and learner writes.
+
+## Homepage hero scroll scene — 7 October 2026
+
+- Draft PR #6: https://github.com/suraka/skillsprout/pull/6
+- Added Playwright acceptance coverage first for viewport-height layout, mobile/tablet/desktop overflow, one continuous scene, scroll movement, and reduced-motion behavior.
+- The baseline run completed TypeScript, staging config, and runtime checks successfully. Chromium installation is still in progress; the browser test has not yet produced a baseline result.
+- Implementation and final CI/browser evidence are pending. No live production page was changed or inspected in this run.

@@ -2,6 +2,7 @@
 import {
   useEffect,
   useState,
+  useRef,
   type AnchorHTMLAttributes,
 } from 'react';
 
@@ -29,10 +30,79 @@ export function Shell({children,active='Explore'}:{children:React.ReactNode;acti
  {a.demo&&<div className="demo-bar"><span>Preview mode</span> Explore sample lessons. Changes last for this visit only.</div>}
  <Dialog open={auth} onOpenChange={setAuth}><DialogContent className="sprout-dialog"><DialogTitle>{signup?'Start your family’s adventure':'Welcome back, grown-up'}</DialogTitle><DialogDescription>{a.demo?'Parent accounts will open when the learning service is connected. Explore the sample family dashboard today.':'Sign in to manage your children’s learning.'}</DialogDescription>{a.demo?<Link className="button dark" href="/parents" onClick={()=>setAuth(false)}>Explore sample dashboard <ArrowRight size={18}/></Link>:<form className="form" onSubmit={async(e)=>{e.preventDefault();setBusy(true);setErr('');try{await a.login(email,pw,signup);setAuth(false);}catch(e){setErr((e as Error).message);}finally{setBusy(false);}}}><label>Email<input type="email" required value={email} onChange={e=>setEmail(e.target.value)} autoComplete="email"/></label><label>Password<input type="password" required minLength={8} value={pw} onChange={e=>setPw(e.target.value)} autoComplete={signup?'new-password':'current-password'}/></label>{signup&&<label className="consent"><input type="checkbox" required/> I am a parent or guardian aged 18 or older.</label>}{err&&<p role="alert" className="error">{err}</p>}<button className="button dark" disabled={busy}>{busy?'Please wait…':signup?'Create parent account':'Sign in'}</button><button type="button" className="text-button" onClick={()=>setSignup(!signup)}>{signup?'Already have an account? Sign in':'New here? Create a parent account'}</button></form>}</DialogContent></Dialog></>;
 }
-export function Explore(){const a=useAcademy();useCatalogTools(a.courses);const [category,setCategory]=useState('All adventures'),[age,setAge]=useState('all'),[query,setQuery]=useState('');const filtered=a.courses.filter(c=>(category==='All adventures'||c.category===category)&&(age==='all'||c.age_band===age)&&`${c.title} ${c.short_description}`.toLowerCase().includes(query.toLowerCase()));
- return <Shell><div className="container"><section className="hero"><div className="hero-copy"><span className="eyebrow"><Sparkles size={16}/> BIG IDEAS START SMALL</span><h1>A little curiosity.<br/>A world of <span>possibilities.</span></h1><p>Discover AI, create with code, and bring bright ideas to life. Playful digital adventures for your growing mind.</p><a className="button dark" href="#courses">Find your next adventure <ArrowRight size={19}/></a><p><a className="text-button" href="/demo/sorting-garden">Try Sorting Garden · guest preview <ArrowRight size={18}/></a></p><p><a className="text-button" href="/little-explorers">Explore Little Explorers · ages 2–4 with a grown-up <ArrowRight size={18}/></a></p><p><a className="text-button" href="/learning/letters-and-sounds">Letters &amp; Sounds · English draft preview <ArrowRight size={18}/></a></p><p><Link className="text-button" href="/learning/number-garden">Number Garden · maths draft preview <ArrowRight size={18}/></Link></p><div className="hero-details"><span><Check size={16}/> Ages 5–13</span><span><Check size={16}/> Learn at your pace</span></div></div><div className="hero-art"><img src="/sprout-hero.svg" alt="A cheerful sprout learning on a purple laptop with two little star friends" width={900} height={620}/><span className="art-caption"><Sprout size={18}/> A new skill is ready to sprout.</span></div></section>
- <div className="trust-strip"><span><ShieldCheck/>Parent-guided learning</span><span><Clock/>Little lessons, lasting skills</span><span><Palette/>Create something you’re proud of</span></div>
- <section id="courses" className="catalog"><div className="section-heading"><div><span className="eyebrow">GROW YOUR OWN WAY</span><h2>What will you discover today?</h2></div><span className="course-count">{a.courses.length} adventures to explore</span></div><div className="catalog-controls"><div className="category-list" aria-label="Course categories">{['All adventures','AI & discovery','Coding','Digital creativity','Digital safety'].map(c=><button key={c} aria-pressed={category===c} className={category===c?'category selected':'category'} onClick={()=>setCategory(c)}>{c}</button>)}</div><div className="search-row"><label className="search"><Search size={19}/><input aria-label="Search courses" placeholder="Find an adventure…" value={query} onChange={e=>setQuery(e.target.value)}/></label><Picker label="Age range" value={age} onChange={setAge} options={[{value:'all',label:'All ages'},...['5-7','8-10','11-13','14-17','adult'].map(x=>({value:x,label:x==='adult'?'Adults':`Ages ${x}`}))]}/></div></div><div className="course-grid">{filtered.map((c,i)=><Link key={c.id} href={`/courses/${c.slug}`} className={`course-card ${c.color||['purple','green','orange'][i%3]}`}><div className="course-cover"><span className="course-icon"><CourseIcon course={c}/></span><span className="cover-number">0{i+1}</span><span className="cover-label">{c.category}</span><span className="free-tag">{c.is_free?'Free adventure':'Member course'}</span></div><div className="course-copy"><div className="course-meta"><span>Ages {c.age_band}</span><span>{c.difficulty}</span></div><h3>{c.title}</h3><p>{c.short_description}</p><div className="card-bottom"><span><BookOpen size={15}/>{c.lessons.length} lessons <i>·</i> {c.lessons.reduce((s,l)=>s+l.estimated_minutes,0)} min</span><span className="circle-arrow"><ArrowRight size={19}/></span></div></div></Link>)}</div>{filtered.length===0&&<div className="empty"><Search/><h3>No adventures found</h3><p>Try another topic or age range.</p><button className="button dark" onClick={()=>{setQuery('');setAge('all');setCategory('All adventures');}}>Show all adventures</button></div>}</section><section className="parent-callout"><span className="parent-icon"><Users size={31}/></span><div><h2>Their big adventure. Your guiding hand.</h2><p>Choose a path, celebrate their progress, and discover what they can do.</p></div><Link className="button outline" href="/parents">Meet the parent space <ArrowRight size={18}/></Link></section></div></Shell>;
+export function Explore(){
+ const a=useAcademy();useCatalogTools(a.courses);
+ const [category,setCategory]=useState('All adventures'),[age,setAge]=useState('all'),[query,setQuery]=useState('');
+ const stageRef=useRef<HTMLDivElement|null>(null),artRef=useRef<HTMLDivElement|null>(null),landingRef=useRef<HTMLDivElement|null>(null),sceneRef=useRef<HTMLImageElement|null>(null);
+ const filtered=a.courses.filter(c=>(category==='All adventures'||c.category===category)&&(age==='all'||c.age_band===age)&&`${c.title} ${c.short_description}`.toLowerCase().includes(query.toLowerCase()));
+ useEffect(()=>{
+  const stage=stageRef.current,art=artRef.current,landing=landingRef.current,scene=sceneRef.current,hero=stage?.querySelector<HTMLElement>('.hero');
+  if(!stage||!art||!landing||!scene||!hero)return;
+  const preference=window.matchMedia('(prefers-reduced-motion: reduce)');
+  let frame=0;
+  const update=()=>{
+   const stageBox=stage.getBoundingClientRect(),artBox=art.getBoundingClientRect(),landingBox=landing.getBoundingClientRect(),heroBox=hero.getBoundingClientRect();
+   const startScroll=window.scrollY+stageBox.top;
+   const landingScroll=window.scrollY+heroBox.bottom-window.innerHeight*.68;
+   const endScroll=Math.max(startScroll+140,landingScroll);
+   const progress=preference.matches?0:Math.max(0,Math.min(1,(window.scrollY-startScroll)/(endScroll-startScroll)));
+   const eased=progress*progress*(3-2*progress);
+   const startWidth=artBox.width;
+   const startHeight=startWidth*620/900;
+   const endWidth=Math.min(stageBox.width-32,260,Math.max(138,window.innerWidth*.4));
+   const endHeight=endWidth*620/900;
+   const startX=artBox.left-stageBox.left;
+   const startY=artBox.top-stageBox.top+(artBox.height-startHeight)/2;
+   const endX=Math.max(16,stageBox.width-endWidth-24);
+   const endY=landingBox.top-stageBox.top+(landingBox.height-endHeight)/2;
+   scene.style.left=`${startX+(endX-startX)*eased}px`;
+   scene.style.top=`${startY+(endY-startY)*eased}px`;
+   scene.style.width=`${startWidth+(endWidth-startWidth)*eased}px`;
+   scene.style.height=`${startHeight+(endHeight-startHeight)*eased}px`;
+   scene.dataset.progress=progress.toFixed(3);
+   scene.dataset.motion=preference.matches?'reduced':'scroll';
+  };
+  const schedule=()=>{if(!frame)frame=requestAnimationFrame(()=>{frame=0;update();});};
+  update();
+  window.addEventListener('scroll',schedule,{passive:true});
+  window.addEventListener('resize',schedule);
+  preference.addEventListener('change',schedule);
+  return()=>{window.removeEventListener('scroll',schedule);window.removeEventListener('resize',schedule);preference.removeEventListener('change',schedule);if(frame)cancelAnimationFrame(frame);};
+ },[]);
+
+ return <Shell>
+ <div className="hero-stage" ref={stageRef}>
+  <section className="hero">
+   <div className="hero-inner container">
+    <div className="hero-copy">
+     <span className="eyebrow"><Sparkles size={16}/> BIG IDEAS START SMALL</span>
+     <h1>A little curiosity.<br/>A world of <span>possibilities.</span></h1>
+     <p>Discover AI, create with code, and bring bright ideas to life. Playful digital adventures for your growing mind.</p>
+     <a className="button dark" href="#courses">Find your next adventure <ArrowRight size={19}/></a>
+     <details className="hero-more-links">
+      <summary>Explore more learning previews</summary>
+      <div>
+       <a className="text-button" href="/demo/sorting-garden">Try Sorting Garden · guest preview <ArrowRight size={18}/></a>
+       <a className="text-button" href="/little-explorers">Explore Little Explorers · ages 2–4 with a grown-up <ArrowRight size={18}/></a>
+       <a className="text-button" href="/learning/letters-and-sounds">Letters &amp; Sounds · English draft preview <ArrowRight size={18}/></a>
+       <Link className="text-button" href="/learning/number-garden">Number Garden · maths draft preview <ArrowRight size={18}/></Link>
+      </div>
+     </details>
+     <div className="hero-details"><span><Check size={16}/> Ages 5–13</span><span><Check size={16}/> Learn at your pace</span></div>
+    </div>
+    <div className="hero-art" ref={artRef} data-testid="hero-art" aria-hidden="true">
+     <span className="art-caption"><Sprout size={18}/> A new skill is ready to sprout.</span>
+    </div>
+   </div>
+  </section>
+  <div className="trust-strip"><span><ShieldCheck/>Parent-guided learning</span><span><Clock/>Little lessons, lasting skills</span><span><Palette/>Create something you’re proud of</span></div>
+  <div className="scene-landing" ref={landingRef} data-testid="scene-landing">
+   <p><Sparkles size={18}/> Every big idea starts with a little try.</p>
+   <span className="scene-ground" aria-hidden="true"></span>
+  </div>
+  <img ref={sceneRef} className="travel-scene" data-testid="hero-scene" data-motion="scroll" data-progress="0" src="/home-hero-scene.svg" alt="Two child learners explore colorful coding blocks beside SkillSprout’s smiling sprout character." width="900" height="620"/>
+ </div>
+ <div className="container"><section id="courses" className="catalog"><div className="section-heading"><div><span className="eyebrow">GROW YOUR OWN WAY</span><h2>What will you discover today?</h2></div><span className="course-count">{a.courses.length} adventures to explore</span></div><div className="catalog-controls"><div className="category-list" aria-label="Course categories">{['All adventures','AI & discovery','Coding','Digital creativity','Digital safety'].map(c=><button key={c} aria-pressed={category===c} className={category===c?'category selected':'category'} onClick={()=>setCategory(c)}>{c}</button>)}</div><div className="search-row"><label className="search"><Search size={19}/><input aria-label="Search courses" placeholder="Find an adventure…" value={query} onChange={e=>setQuery(e.target.value)}/></label><Picker label="Age range" value={age} onChange={setAge} options={[{value:'all',label:'All ages'},...['5-7','8-10','11-13','14-17','adult'].map(x=>({value:x,label:x==='adult'?'Adults':`Ages ${x}`}))]}/></div></div><div className="course-grid">{filtered.map((c,i)=><Link key={c.id} href={`/courses/${c.slug}`} className={`course-card ${c.color||['purple','green','orange'][i%3]}`}><div className="course-cover"><span className="course-icon"><CourseIcon course={c}/></span><span className="cover-number">0{i+1}</span><span className="cover-label">{c.category}</span><span className="free-tag">{c.is_free?'Free adventure':'Member course'}</span></div><div className="course-copy"><div className="course-meta"><span>Ages {c.age_band}</span><span>{c.difficulty}</span></div><h3>{c.title}</h3><p>{c.short_description}</p><div className="card-bottom"><span><BookOpen size={15}/>{c.lessons.length} lessons <i>·</i> {c.lessons.reduce((s,l)=>s+l.estimated_minutes,0)} min</span><span className="circle-arrow"><ArrowRight size={19}/></span></div></div></Link>)}</div>{filtered.length===0&&<div className="empty"><Search/><h3>No adventures found</h3><p>Try another topic or age range.</p><button className="button dark" onClick={()=>{setQuery('');setAge('all');setCategory('All adventures');}}>Show all adventures</button></div>}</section><section className="parent-callout"><span className="parent-icon"><Users size={31}/></span><div><h2>Their big adventure. Your guiding hand.</h2><p>Choose a path, celebrate their progress, and discover what they can do.</p></div><Link className="button outline" href="/parents">Meet the parent space <ArrowRight size={18}/></Link></section></div></Shell>;
 }
 export function CoursePage({slug,learn=false}:{slug:string;learn?:boolean}){const a=useAcademy();const [course,setCourse]=useState<Course|null>(null),[student,setStudent]=useState(''),[index,setIndex]=useState(0),[busy,setBusy]=useState(false),[error,setError]=useState('');
  const enrollment=a.enrollments.find(e=>e.course_id===course?.id&&e.student_id===student);
