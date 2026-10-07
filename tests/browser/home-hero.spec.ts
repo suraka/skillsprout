@@ -72,7 +72,7 @@ test('home navigation labels, destinations, icons, and motion work at each viewp
     await page.setViewportSize(viewport);
     await page.goto('/');
     await expect(page.getByTestId('hero-scene')).toHaveAttribute('data-motion', 'scroll');
-    if (viewport.width <= 740) await page.locator('.mobile-menu-toggle').click();
+    if (viewport.width <= 740) await page.locator('details.mobile-menu > summary').click();
     const nav = page.getByRole('navigation', { name: 'Main navigation' });
     for (const label of ['Home', 'Learn & Play', 'Explore Topics', 'Parents & Teachers', 'Support', 'Join for Free', 'Sign In']) {
       await expect(nav.getByRole('link', { name: label })).toHaveCount(label === 'Join for Free' || label === 'Sign In' ? 0 : 1);
