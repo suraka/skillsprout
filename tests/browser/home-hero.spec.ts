@@ -112,3 +112,47 @@ test('scene stays above the section surfaces as it enters the welcome band', asy
   expect(stack.sceneZ).toBeGreaterThan(stack.landingZ);
   expect(stack.sceneZ).toBeGreaterThan(stack.stripZ);
 });
+
+test('phone navigation starts collapsed and centers menu items when opened', async ({ page }) => {
+  for (const width of [360, 390, 430]) {
+    await page.setViewportSize({ width, height: 844 });
+    await page.goto('/');
+    const toggle = page.getByRole('button', { name: 'Open menu' });
+    const nav = page.getByRole('navigation', { name: 'Main navigation' });
+    await expect(toggle).toBeVisible();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    await expect(nav).toBeHidden();
+    await toggle.click();
+    await expect(page.getByRole('button', { name: 'Close menu' })).toHaveAttribute('aria-expanded', 'true');
+    await expect(nav).toBeVisible();
+    for (const label of ['Home', 'Learn & play', 'Explore topics', 'Parents & teachers', 'Support', 'Join for free', 'Sign in']) {
+      await expect(nav.getByText(label, { exact: true })).toBeVisible();
+    }
+    const centered = await page.evaluate(() => {
+      const nav = document.querySelector<HTMLElement>('.main-nav')!;
+      const links = Array.from(nav.querySelectorAll<HTMLElement>(':scope > a, :scope > button'));
+      return {
+        navTextAlign: getComputedStyle(nav).textAlign,
+        navJustify: getComputedStyle(nav).justifyContent,
+        items: links.map(item => ({
+          textAlign: getComputedStyle(item).textAlign,
+          justifyContent: getComputedStyle(item).justifyContent,
+          bounds: item.getBoundingClientRect().toJSON(),
+        })),
+        navBounds: nav.getBoundingClientRect().toJSON(),
+        scrollWidth: document.documentElement.scrollWidth,
+        viewportWidth: innerWidth,
+      };
+    });
+    expect(centered.navTextAlign).toBe('center');
+    for (const item of centered.items) {
+      expect(item.textAlign).toBe('center');
+      expect(['center', 'normal']).toContain(item.justifyContent);
+      expect(item.bounds.x).toBeGreaterThanOrEqual(centered.navBounds.x - 1);
+      expect(item.bounds.x + item.bounds.width).toBeLessThanOrEqual(centered.navBounds.x + centered.navBounds.width + 1);
+    }
+    expect(centered.scrollWidth).toBeLessThanOrEqual(centered.viewportWidth);
+    await page.getByRole('button', { name: 'Close menu' }).click();
+    await expect(nav).toBeHidden();
+  }
+});
