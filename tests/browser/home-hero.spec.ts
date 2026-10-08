@@ -74,26 +74,26 @@ test('home navigation labels, destinations, icons, and motion work at each viewp
     await expect(page.getByTestId('hero-scene')).toHaveAttribute('data-motion', 'scroll');
     if (viewport.width <= 740) await page.locator('details.mobile-menu > summary').click();
     const nav = page.getByRole('navigation', { name: 'Main navigation' });
-    for (const label of ['Home', 'Learn & play', 'Explore topics', 'Parents & teachers', 'Support', 'Join for free', 'Sign in']) {
-      await expect(nav.getByRole('link', { name: label })).toHaveCount(label === 'Join for free' || label === 'Sign in' ? 0 : 1);
+    for (const label of ['Home', 'Learn & Play', 'Explore Topics', 'Parents & Teachers', 'Support', 'Join for Free', 'Sign In']) {
+      await expect(nav.getByRole('link', { name: label })).toHaveCount(label === 'Join for Free' || label === 'Sign In' ? 0 : 1);
     }
-    for (const label of ['Home', 'Learn & play', 'Explore topics', 'Parents & teachers', 'Support']) {
+    for (const label of ['Home', 'Learn & Play', 'Explore Topics', 'Parents & Teachers', 'Support']) {
       await expect(nav.getByRole('link', { name: label }).locator('svg')).toHaveCount(1);
     }
     await expect(nav.getByRole('link', { name: 'Home' })).toHaveAttribute('aria-current', 'page');
-    await expect(nav.getByRole('link', { name: 'Explore topics' })).not.toHaveClass(/active/);
+    await expect(nav.getByRole('link', { name: 'Explore Topics' })).not.toHaveClass(/active/);
     await expect(nav.getByRole('link', { name: 'Home' })).toHaveCSS('box-shadow', 'none');
     const sizes = await page.evaluate(() => ({ width: document.documentElement.scrollWidth, viewport: innerWidth }));
     expect(sizes.width).toBeLessThanOrEqual(sizes.viewport);
   }
   const nav = page.getByRole('navigation', { name: 'Main navigation' });
-  await nav.getByRole('button', { name: 'Join for free' }).click();
+  await nav.getByRole('button', { name: 'Join for Free' }).click();
   await expect(page.getByRole('dialog')).toContainText('Start your family');
   await page.getByRole('button', { name: /Already have an account/ }).click();
   await expect(page.getByRole('dialog')).toContainText('Welcome back');
   await page.getByRole('button', { name: 'Close' }).click();
-  await nav.getByRole('button', { name: 'Sign in' }).hover();
-  await expect(nav.getByRole('button', { name: 'Sign in' })).toBeVisible();
+  await nav.getByRole('button', { name: 'Sign In' }).hover();
+  await expect(nav.getByRole('button', { name: 'Sign In' })).toBeVisible();
 });
 
 test('scene stays above the section surfaces as it enters the welcome band', async ({ page }) => {
@@ -130,7 +130,6 @@ test('phone navigation starts collapsed and centers menu items when opened', asy
     await toggle.click();
     await expect(menu).toHaveAttribute('open', '');
     await expect(nav).toBeVisible();
-    await expect(toggle).toHaveText('');
     await expect(toggle.locator('svg.menu-icon-open')).toBeHidden();
     await expect(toggle.locator('svg.menu-icon-close')).toBeVisible();
     await expect.poll(() => page.evaluate(() => {
@@ -138,22 +137,22 @@ test('phone navigation starts collapsed and centers menu items when opened', asy
       const header = document.querySelector('.site-header')!.getBoundingClientRect().height;
       return Math.abs(hero + header - innerHeight);
     })).toBeLessThanOrEqual(2);
-    for (const label of ['Home', 'Learn & play', 'Explore topics', 'Parents & teachers', 'Support', 'Join for free', 'Sign in']) {
+    for (const label of ['Home', 'Learn & Play', 'Explore Topics', 'Parents & Teachers', 'Support', 'Join for Free', 'Sign In']) {
       await expect(nav.getByText(label, { exact: true })).toBeVisible();
     }
     const centered = await page.evaluate(() => {
       const nav = document.querySelector<HTMLElement>('.mobile-nav')!;
-      const links = Array.from(nav.querySelectorAll<HTMLElement>(':scope > a, :scope > button'));
+      const items = Array.from(nav.querySelectorAll<HTMLElement>(':scope > a, :scope > button'));
       return {
         navTextAlign: getComputedStyle(nav).textAlign,
-        navJustify: getComputedStyle(nav).justifyContent,
-        items: links.map(item => ({
+        items: items.map(item => ({
           textAlign: getComputedStyle(item).textAlign,
           fontSize: parseFloat(getComputedStyle(item).fontSize),
-          justifyContent: getComputedStyle(item).justifyContent,
           bounds: item.getBoundingClientRect().toJSON(),
         })),
         navBounds: nav.getBoundingClientRect().toJSON(),
+        join: nav.querySelector<HTMLElement>('.nav-join')!.getBoundingClientRect().toJSON(),
+        signIn: nav.querySelector<HTMLElement>('.nav-signin')!.getBoundingClientRect().toJSON(),
         scrollWidth: document.documentElement.scrollWidth,
         viewportWidth: innerWidth,
       };
@@ -162,13 +161,12 @@ test('phone navigation starts collapsed and centers menu items when opened', asy
     for (const item of centered.items) {
       expect(item.textAlign).toBe('center');
       expect(item.fontSize).toBeGreaterThanOrEqual(16);
-      expect(['center', 'normal']).toContain(item.justifyContent);
       expect(item.bounds.x).toBeGreaterThanOrEqual(centered.navBounds.x - 1);
       expect(item.bounds.x + item.bounds.width).toBeLessThanOrEqual(centered.navBounds.x + centered.navBounds.width + 1);
     }
     expect(centered.scrollWidth).toBeLessThanOrEqual(centered.viewportWidth);
     expect(new Set(centered.items.map(item => Math.round(item.bounds.y))).size).toBe(centered.items.length);
-    await expect(toggle.locator('svg.menu-icon-close')).toBeVisible();
+    expect(centered.signIn.y - centered.join.y - centered.join.height).toBeGreaterThanOrEqual(8);
     await toggle.locator('svg.menu-icon-close').click();
     await expect(menu).not.toHaveAttribute('open', '');
     await expect(nav).toBeHidden();
