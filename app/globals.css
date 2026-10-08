@@ -212,7 +212,9 @@
  .site-header .mobile-menu[open] .menu-icon-open{display:none}
  .site-header .mobile-menu[open] .menu-icon-close{display:block}
  .site-header .mobile-menu>.main-nav{position:absolute;z-index:30;top:100%;left:0;display:none;grid-template-columns:minmax(0,1fr);justify-items:stretch;align-items:stretch;gap:3px;width:100%;max-width:100%;margin:0;padding:12px 20px 16px;border-top:1px solid #edf0e8;background:#fff;box-shadow:0 12px 20px #203a321a;text-align:center}
- .site-header .mobile-menu[open]>.main-nav{display:grid}
+ /* Keep the closed disclosure authoritative even when other responsive nav rules apply. */
+ .site-header .mobile-menu:not([open])>#primary-menu{display:none!important}
+ .site-header .mobile-menu[open]>#primary-menu{display:grid}
  .site-header .mobile-menu>.main-nav>a{display:flex;flex-direction:row;justify-content:center;align-items:center;gap:10px;width:100%;min-height:54px;padding:7px 6px;text-align:center;white-space:normal;line-height:1.3;font-size:17px}
  .site-header .mobile-menu>.main-nav>.nav-action{width:100%;min-height:50px;max-width:200px;justify-self:center;align-self:center;justify-content:center;padding:8px 10px;text-align:center;white-space:normal;font-size:16px}
  .site-header .mobile-menu>.main-nav>.nav-signin{margin-left:0;margin-top:10px}
